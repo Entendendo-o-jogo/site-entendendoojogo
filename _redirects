@@ -1,0 +1,10 @@
+/quemsomos /quem-somos 301
+/termo_de_uso /termos 301
+/politica_de_privacidade /privacidade 301
+/livro/sistemas-taticos /livros/sistemas-taticos 301
+/livro/situacoes-taticas-de-jogo-fase-ofensiva /livros/situacoes-taticas-de-jogo-fase-ofensiva 301
+/livro/:slug /livros/:slug 301
+/acervo /biblioteca 302
+/biblioteca-eoj /biblioteca 302
+/curso/:slug /cursos 301
+/img/* https://nextjs-murex-two-93.vercel.app/img/:splat 302

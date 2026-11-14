@@ -70,3 +70,9 @@ img, video { max-width: 100%; }
 
 @media (max-width: 760px) { .eoj-lang .eoj-lang-t { display: none; } .eoj-lang { margin-right: 2px !important; } }
 @media (max-width: 760px) { .eoj-lang a[aria-current="true"] { box-shadow: inset 0 -2px 0 #A1C4E6; } .eoj-lang a:not([aria-current]) { opacity: 0.6 !important; } }
+
+/* Aba ativa no menu principal */
+#menu-principal a.eoj-ativo { color: #FFFFFF !important; box-shadow: inset 0 -2px 0 #A1C4E6; }
+@media (max-width: 1100px) {
+  #menu-principal[data-open="true"] a.eoj-ativo { box-shadow: inset 3px 0 0 #A1C4E6; padding-left: 12px !important; }
+}

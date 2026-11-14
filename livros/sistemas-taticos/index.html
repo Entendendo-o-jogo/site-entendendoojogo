@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistemas Táticos — Livros EOJ</title>
+<meta name="description" content="Livro Sistemas Táticos, do Entendendo o Jogo: tática do futebol explicada com exemplos práticos.">
+<link rel="canonical" href="https://www.entendendoojogo.com.br/livros/sistemas-taticos">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Entendendo o Jogo">
+<meta property="og:title" content="Sistemas Táticos — Livros EOJ">
+<meta property="og:description" content="Livro Sistemas Táticos, do Entendendo o Jogo: tática do futebol explicada com exemplos práticos.">
+<meta property="og:url" content="https://www.entendendoojogo.com.br/livros/sistemas-taticos">
+<meta property="og:image" content="https://www.entendendoojogo.com.br/assets/b1bd5708d475ba65092ac50c631b0e85.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F5F5}
+a{color:#4A79A6}a:hover{color:#3A6894}
+</style>
+<link rel="stylesheet" href="/site.css">
+<!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
+</head>
+<body>
+<div id="eoj-root"></div>
+<template id="eoj-tpl">
+<div style="font-family: Montserrat, system-ui, sans-serif; color: #111111; background: #F5F5F5; min-height: 100vh">
+
+<header style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1376px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px">
+<a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #FFFFFF">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#FFFFFF" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#FFFFFF"></rect><circle cx="20" cy="20" r="4" fill="#A1C4E6"></circle></svg>
+<span style="display: flex; flex-direction: column; font-family: Montserrat, sans-serif; text-transform: uppercase; line-height: 1"><span style="font-weight: 500; font-size: 11px; letter-spacing: 0.06em">Entendendo</span><span style="font-weight: 800; font-size: 19px; letter-spacing: 0.01em">O Jogo</span></span>
+</a>
+<nav aria-label="Principal" id="menu-principal" data-open="{{menuOpen}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; flex: 1 1 auto; font-size: 14px; font-weight: 500; white-space: nowrap">
+<a href="/biblioteca" style="color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 10px 0">Biblioteca EOJ <span style="background: #A1C4E6; color: #111111; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.04em">NOVO</span></a>
+<a href="/eojhub" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">EOJHub</a>
+<a href="/cursos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Cursos</a>
+<a href="/mentoria" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Mentoria</a>
+<a href="/" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Livros</a>
+<a href="/blog" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Blog</a>
+<a href="/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quem somos</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap">
+<a href="https://hub.entendendoojogo.com.br/users/sign_in" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 14px; font-weight: 600; padding: 11px 15px; border-radius: 8px">Acessar a EOJHub</a>
+<a href="/biblioteca" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 14px; font-weight: 600; padding: 11px 15px; border-radius: 8px">Acessar a Biblioteca EOJ</a>
+
+<button type="button" class="eoj-burger" aria-label="Abrir menu" aria-controls="menu-principal" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1.5px solid #4A4A4A; border-radius: 8px; background: none; color: #FFFFFF; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
+</div>
+</header>
+
+<section style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 28px 32px 80px; display: flex; flex-direction: column; gap: 36px">
+<nav aria-label="Caminho" style="font-size: 14px; color: #A6A6A6; display: flex; gap: 8px; flex-wrap: wrap"><a href="/" style="color: #CFCFCF; text-decoration: none; padding: 6px 0">Livros EOJ</a><span aria-hidden="true" style="padding: 6px 0">/</span><span style="padding: 6px 0">Sistemas Táticos</span></nav>
+<div style="display: flex; flex-wrap: wrap; gap: 64px; align-items: center">
+<div style="flex: 0 1 340px; min-width: 240px; display: flex; justify-content: center"><div style="position: relative; width: 100%; max-width: 340px"><img src="/assets/b1bd5708d475ba65092ac50c631b0e85.jpg" alt="Capa do livro Sistemas Táticos" style="width: 100%; display: block; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.5)"></div></div>
+<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<span style="align-self: flex-start; border: 1px solid #4A4A4A; color: #CFCFCF; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 99px; letter-spacing: 0.06em; text-transform: uppercase">Livro impresso · Livros EOJ</span>
+<h1 style="margin: 0; font-weight: 800; font-size: 50px; line-height: 1.02; text-transform: uppercase">Sistemas Táticos</h1>
+<p style="margin: 0; color: #A1C4E6; font-weight: 700; font-size: 17px; text-transform: uppercase; letter-spacing: 0.04em">Italo Resende e Vinicius Xavier · prefácio de Eduardo Barroca</p>
+<p style="margin: 0; font-size: 18px; line-height: 1.6; color: #CFCFCF; max-width: 600px">As plataformas de jogo e o confronto entre sistemas ofensivos e defensivos, com uma abordagem prática e aplicável no dia a dia.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 4px"><div style="border-top: 2px solid #A1C4E6; padding-top: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 150px; flex: 1 1 150px"><span style="font-weight: 800; font-size: 20px">3 capítulos</span><span style="font-size: 14px; color: #CFCFCF">da teoria ao confronto de sistemas</span></div><div style="border-top: 2px solid #A1C4E6; padding-top: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 150px; flex: 1 1 150px"><span style="font-weight: 800; font-size: 20px">14 confrontos</span><span style="font-size: 14px; color: #CFCFCF">analisados em jogos reais</span></div><div style="border-top: 2px solid #A1C4E6; padding-top: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 150px; flex: 1 1 150px"><span style="font-weight: 800; font-size: 20px">QR Codes</span><span style="font-size: 14px; color: #CFCFCF">com vídeos em cada capítulo</span></div></div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 8px">
+<span style="display: flex; flex-direction: column"><span style="font-weight: 800; font-size: 36px; line-height: 1">R$ 100,00</span><span style="font-size: 14px; color: #CFCFCF">+ frete</span></span>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #A1C4E6; color: #111111">Comprar o livro</a>
+<a href="#sumario" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; border: 1.5px solid #4A4A4A; color: #FFFFFF; padding: 14px 22px">Ver sumário</a>
+</div>
+<p style="margin: 0; font-size: 13px; color: #A6A6A6">A compra é feita pelo WhatsApp.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="sobre-t">
+<div style="max-width: 1240px; margin: 0 auto; padding: 72px 32px; display: flex; flex-direction: column; gap: 32px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Sobre o livro</p>
+<h2 id="sobre-t" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; text-transform: uppercase">Por dentro da obra</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 20px; align-items: start"><div style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><h3 style="margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase">Como nasceu a ideia</h3><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">O livro “Sistemas Táticos” nasceu da paixão compartilhada pelos autores, do domínio profundo do assunto e do desejo contínuo de registrar visões próprias e analisar os métodos de grandes treinadores.</p><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">Após o sucesso de público e vendas da primeira obra, Situações Táticas de Jogo: Fase Ofensiva, a chama pelo registro de novos estudos permaneceu mais viva do que nunca. A certeza de que um novo livro viria era absoluta, e conteúdo não faltava. O verdadeiro desafio era o tempo — escasso diante da rotina desgastante do futebol —, mas que foi conquistado dia após dia pelo desejo ardente de escrever.</p><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">Embora o público tenha pedido em peso uma sequência focada estritamente na fase defensiva, os autores decidiram priorizar outro tema que fascina a comunidade do futebol: os sistemas táticos. Buscando ir além da utopia teórica, o objetivo central desta obra é trazer uma abordagem prática e aplicável no dia a dia. Por isso, o livro não apenas detalha as plataformas de jogo, mas desvenda dinamicamente o confronto entre sistemas ofensivos e defensivos, cobrindo conceitos essenciais de ambas as fases do jogo.</p></div><div style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><h3 style="margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase">Tecnologia em prol do conhecimento: QR Codes</h3><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">Desde a primeira publicação, a experiência do leitor tem sido a prioridade máxima. Por isso, este novo livro mantém o formato interativo que conecta teoria e prática.</p><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">Vídeos ilustrativos: o leitor tem acesso a análises em vídeo com marcações visuais e legendas dinâmicas, detalhando cada sistema tático abordado.</p><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">Acesso prático: cada capítulo conta com um ou mais QR Codes. Basta apontar a câmera do celular ou tablet para ir direto aos vídeos correspondentes.</p></div><div style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 12px"><h3 style="margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase">Prefácio de Eduardo Barroca</h3><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">A escolha do prefaciador partiu do desejo de contar com alguém que compartilhasse os mesmos princípios dos autores: a busca pela evolução do futebol brasileiro, o desenvolvimento pessoal, a difusão do conhecimento e o domínio tático.</p><p style="margin: 0; font-size: 16px; line-height: 1.7; color: #333333">Além de ser um estudioso da bola e treinador consolidado no mercado, Barroca também é autor de livro publicado e uma grande referência para profissionais que, assim como os autores, não trilharam o caminho de jogadores profissionais, mas conquistaram espaço no futebol através do estudo obstinado.</p></div></div>
+</div>
+</section>
+
+<section id="sumario" aria-labelledby="sum-t" style="background: #FFFFFF; border-top: 1px solid #E2E2E2; border-bottom: 1px solid #E2E2E2">
+<div style="max-width: 1240px; margin: 0 auto; padding: 72px 32px; display: flex; flex-direction: column; gap: 32px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Conteúdo</p>
+<h2 id="sum-t" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; text-transform: uppercase">Sumário</h2>
+<ul style="margin: 0; padding: 0; list-style: none; columns: 2 380px; column-gap: 40px"><li style="break-inside: avoid; break-after: avoid; font-weight: 800; font-size: 15px; text-transform: uppercase; margin: 18px 0 6px; color: #111111">Capítulo 1 – Introduções às referências estruturais e funcionais</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">Introdução</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">Sistemas táticos e características dos jogadores</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">Sistemas táticos defensivos e marcação individual</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">Espaços em relação ao bloco defensivo</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1. Referências de análise dos sistemas táticos</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1.1. Referências estruturais</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1.2. Referências funcionais</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1.2.1 Característica do saldo de pressão</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1.2.2 Característica da cobertura dos saltos de pressão</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1.2.3 Distâncias de relação</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1.2.4 Fixações e atrações</li><li style="break-inside: avoid; break-after: avoid; font-weight: 800; font-size: 15px; text-transform: uppercase; margin: 18px 0 6px; color: #111111">Capítulo 2 – Potencialidades e vulnerabilidades ofensivas e defensivas dos sistemas táticos</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">Introdução</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">G:4:3:3</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">G:5:3:2</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">G:4:4:2</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">G:5:4:1</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">G:4:1:4:1</li><li style="break-inside: avoid; break-after: avoid; font-weight: 800; font-size: 15px; text-transform: uppercase; margin: 18px 0 6px; color: #111111">Capítulo 3 – Confronto de sistemas táticos</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">Introdução</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">1. Liverpool atacando em G:4:3:3 x Real Madrid defendendo em G:4:4:2 (Liga dos Campeões 2024/25)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">2. Manchester City atacando em G:3:3:4 x Crystal Palace defendendo em G:5:4:1/5:2:3 (final da FA Cup 2025)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">3. Leicester atacando em G:3:2:5 x Southampton defendendo em G:5:4:1/G:4:3:3 (Premier League 2024/25)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">4. Botafogo defendendo em G:4:3:3 x PSG atacando em G:3:2:5 (Copa do Mundo de Clubes 2025)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">5. Atlético de Madrid defendendo em G:5:3:2 x Real Madrid atacando em G:3:2:5 (Campeonato Espanhol 2025/26)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">6. Bahia em um G:3:2:5 ofensivo x América-RN em um G:4:4:2 defensivo (Copa do Nordeste 2025)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">7. Arsenal atacando em um G:3:2:5 x Aston Villa em G:4:4:2 defensivo (Premier League 24/25)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">8. Avaí em um G:3:2:5 ofensivo x Criciúma em G:5:2:3 defensivo (Campeonato Catarinense 2024)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">9. Brighton atacando em G:4:2:4 x Fulham defendendo em G:4:4:2 (Premier League 2025/26)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">10. Internacional em diferentes estruturas na fase ofensiva, partindo de um G:4:2:3:1 variando em G:4:1:4:1 ou G:3:2:5 ofensivo x Vitória em G:4:4:2 defensivo (Campeonato Brasileiro 2025)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">11. Aston Villa atacando em G:4:2:4 x Club Brugge defendendo em G:4:1:4:1 (Liga dos Campeões 24/25)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">12. Chelsea atacando em G:3:1:3:3 contra West Ham defendendo em G:5:2:3 (Premier League 25/26)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">13. Palmeiras atacando em um G:3:1:4:2 x Vitória em um G:5:4:1 defensivo (Campeonato Brasileiro 2025)</li><li style="break-inside: avoid; font-size: 15px; line-height: 1.5; color: #333333; padding: 4px 0 4px 14px; border-left: 2px solid #E2E2E2">14. Porto atacando em G:4:3:3 contra Benfica defendendo em G:4:4:2 (Liga Portugal 25/26)</li></ul>
+</div>
+</section>
+
+<section aria-labelledby="cta-t" style="padding: 72px 32px; ">
+<div style="max-width: 1176px; margin: 0 auto; background: #111111; color: #FFFFFF; border-radius: 20px; padding: 40px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between">
+<div style="display: flex; gap: 22px; align-items: center; flex-wrap: wrap">
+<img src="/assets/b1bd5708d475ba65092ac50c631b0e85.jpg" alt="" style="width: 90px; border-radius: 3px; display: block">
+<div style="display: flex; flex-direction: column; gap: 6px"><h2 id="cta-t" style="margin: 0; font-size: 24px; font-weight: 800; text-transform: uppercase">Sistemas Táticos</h2><span style="font-size: 16px; color: #CFCFCF">R$ 100,00 + frete</span></div>
+</div>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #A1C4E6; color: #111111">Comprar o livro</a>
+</div>
+</section>
+
+<section aria-labelledby="outro-t" style="background: #FFFFFF; border-top: 1px solid #E2E2E2">
+<div style="max-width: 1240px; margin: 0 auto; padding: 72px 32px; display: flex; flex-direction: column; gap: 32px">
+<h2 id="outro-t" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 36px; line-height: 1.05; text-transform: uppercase">Leia também</h2>
+<a href="/livros/situacoes-taticas-de-jogo-fase-ofensiva" style="text-decoration: none; color: #111111; background: #F5F5F5; border-radius: 14px; padding: 24px; display: flex; gap: 24px; align-items: center; max-width: 640px">
+<img src="/assets/b7d62d48caae5dfeb3c59cc03092a153.jpg" alt="Capa do livro Situações Táticas de Jogo: Fase Ofensiva" style="width: 110px; border-radius: 3px; display: block; box-shadow: 0 10px 24px rgba(0,0,0,0.18)">
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-weight: 800; font-size: 20px; text-transform: uppercase; line-height: 1.15">Situações Táticas de Jogo: Fase Ofensiva <span style="background: #B3261E; color: #FFFFFF; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 4px; vertical-align: middle">ESGOTADO</span></span><span style="font-size: 15px; color: #555555">O primeiro livro da coletânea: as situações táticas da fase ofensiva, da primeira fase de construção à ocupação da área.</span><span style="font-weight: 700; color: #4A79A6">Conheça o livro →</span></span>
+</a>
+</div>
+</section>
+
+<footer style="background: #111111; color: #CFCFCF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 40px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 320px">
+<span style="font-family: Montserrat, sans-serif; font-weight: 800; font-size: 24px; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.04em">Entendendo o Jogo</span>
+<span style="font-size: 15px; line-height: 1.6">Formação tática e análise de jogo para treinadores, analistas e profissionais do futebol.</span>
+<a href="mailto:entendendoojogo@gmail.com" style="color: #A1C4E6; text-decoration: none; font-size: 15px">entendendoojogo@gmail.com</a>
+</div>
+<nav aria-label="Rodapé" style="display: flex; flex-wrap: wrap; gap: 48px; font-size: 15px">
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Conteúdo</span><a href="/biblioteca" style="color: #CFCFCF; text-decoration: none">Biblioteca EOJ</a><a href="/blog" style="color: #CFCFCF; text-decoration: none">Blog</a><a href="/conteudos" style="color: #CFCFCF; text-decoration: none">Lives e podcasts</a><a href="/" style="color: #CFCFCF; text-decoration: none">Livros EOJ</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Comunidade</span><a href="https://chat.whatsapp.com/IfDikJxXWKVJVp5pad7DaE" style="color: #CFCFCF; text-decoration: none">Grupo sobre tática (WhatsApp)</a><a href="https://chat.whatsapp.com/Lk3CEDf12ZQ3IQRd9Y34Xi" style="color: #CFCFCF; text-decoration: none">Grupo sobre treino (WhatsApp)</a><a href="https://www.instagram.com/entendendoojogo/" style="color: #CFCFCF; text-decoration: none">Instagram</a><a href="https://www.youtube.com/channel/UCXC2Uxw9CoJHGAN_FC06LYQ" style="color: #CFCFCF; text-decoration: none">YouTube</a><a href="https://x.com/italobresende" style="color: #CFCFCF; text-decoration: none">X</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Ajuda</span><a href="/ajuda" style="color: #CFCFCF; text-decoration: none">Perguntas frequentes</a><a href="https://api.whatsapp.com/send?phone=6281385430917" style="color: #CFCFCF; text-decoration: none">WhatsApp</a><a href="/termos" style="color: #CFCFCF; text-decoration: none">Termo de uso</a><a href="/privacidade" style="color: #CFCFCF; text-decoration: none">Política de privacidade</a></div>
+</nav>
+</div>
+<div style="max-width: 1240px; margin: 0 auto; padding: 20px 32px 32px; border-top: 1px solid #2A2A2A; font-size: 13px; color: #A6A6A6">© 2026 Entendendo o Jogo. Todos os direitos reservados.</div>
+</footer>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" aria-label="Fale com o suporte pelo WhatsApp" title="Suporte pelo WhatsApp" style="position: fixed; right: 20px; bottom: 20px; z-index: 20; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: transparent; color: #25D366; text-decoration: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25))"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"></path><path d="M9 9.5c.3 1.8 1.7 3.6 3.6 4.4l1.2-1.1 2 .8-.4 1.6c-3.4.2-7-3.2-7.2-6.6l1.6-.5.8 2z"></path></svg></a>
+
+</div>
+</template>
+<script src="/eoj-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+EOJ.mount(typeof Component !== 'undefined' ? Component : null);
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+/* Ajustes comuns do site do Entendendo o Jogo (aplicados por cima dos estilos de cada página) */
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+img, video { max-width: 100%; }
+#eoj-root { overflow-x: clip; }
+.eoj-burger { display: none; }
+
+@media (max-width: 760px) {
+  /* Cabeçalho: logo, menu ☰ e nada mais */
+  header > div { padding: 12px 20px !important; gap: 10px 14px !important; }
+  nav[aria-label="Principal"] { display: none !important; }
+  nav[aria-label="Principal"][data-open="true"] {
+    display: flex !important; order: 3; flex: 1 1 100% !important; flex-direction: column;
+    align-items: stretch !important; gap: 0 !important; font-size: 16px !important;
+    border-top: 1px solid #2A2A2A; padding-top: 6px;
+  }
+  nav[aria-label="Principal"][data-open="true"] a { padding: 13px 0 !important; border-bottom: 1px solid #1F1F1F; }
+  header a[href^="https://hub.entendendoojogo"], header > div > div > a[href="/biblioteca"] { display: none !important; }
+  header > div > div { margin-left: auto; }
+  .eoj-burger { display: flex !important; }
+
+  /* Títulos */
+  h1[style*="font-size: 4"], h1[style*="font-size: 5"], h1[style*="font-size: 6"] { font-size: 38px !important; line-height: 1.02 !important; }
+  h2[style*="font-size: 3"], h2[style*="font-size: 4"] { font-size: 28px !important; line-height: 1.1 !important; }
+
+  /* Margens laterais e espaçamentos das seções */
+  [style*="padding: 72px 32px"], [style*="padding: 80px 32px"], [style*="padding: 64px 32px"],
+  [style*="padding: 56px 32px"], [style*="padding: 48px 32px"], [style*="padding: 40px 32px"],
+  [style*="padding: 88px 32px"], [style*="padding: 96px 32px"] {
+    padding-left: 20px !important; padding-right: 20px !important;
+  }
+  [style*="padding: 72px 32px"], [style*="padding: 80px 32px"], [style*="padding: 88px 32px"], [style*="padding: 96px 32px"] {
+    padding-top: 48px !important; padding-bottom: 48px !important;
+  }
+  [style*="max-width: 1240px"], [style*="max-width: 1376px"] { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Topo da home */
+  section > div[style*="padding: 56px 64px 64px"] { padding: 40px 20px 48px !important; min-height: 0 !important; }
+  div[style*="grid-template-columns: repeat(4, minmax(0, auto))"] { grid-template-columns: repeat(2, auto) !important; gap: 20px 28px !important; }
+
+  /* Grades de cartões: uma coluna */
+  [style*="minmax(220px"], [style*="minmax(240px"], [style*="minmax(250px"], [style*="minmax(260px"],
+  [style*="minmax(270px"], [style*="minmax(280px"], [style*="minmax(300px"], [style*="minmax(320px"],
+  [style*="minmax(340px"], [style*="minmax(400px"], [style*="minmax(420px"], [style*="minmax(440px"],
+  [style*="minmax(460px"] { grid-template-columns: 1fr !important; }
+
+  /* Itens flexíveis com largura mínima grande */
+  [style*="min-width: 280px"], [style*="min-width: 300px"], [style*="min-width: 320px"] { min-width: 0 !important; }
+
+  /* Cartões de depoimento em faixa horizontal */
+  .eoj-dep-row > figure { flex-basis: 300px !important; }
+
+  /* Botão do WhatsApp */
+  a[aria-label="Fale com o suporte pelo WhatsApp"] { width: 64px !important; height: 64px !important; right: 12px !important; bottom: 12px !important; }
+  a[aria-label="Fale com o suporte pelo WhatsApp"] svg { width: 56px; height: 56px; }
+}

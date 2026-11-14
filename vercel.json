@@ -41,6 +41,11 @@
       "source": "/biblioteca-eoj",
       "destination": "/biblioteca",
       "permanent": false
+    },
+    {
+      "source": "/curso/:slug",
+      "destination": "/cursos",
+      "permanent": true
     }
   ],
   "headers": [
@@ -52,6 +57,12 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/img/:path*",
+      "destination": "https://nextjs-murex-two-93.vercel.app/img/:path*"
     }
   ]
 }

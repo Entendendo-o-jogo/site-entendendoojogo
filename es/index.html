@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entendendo o Jogo — Formación táctica para el fútbol</title>
+<meta name="description" content="Cursos, mentoría y contenido práctico de táctica y análisis de juego para entrenadores, analistas y asistentes. Más de 3.000 alumnos en más de 20 países.">
+<link rel="canonical" href="https://entendendoojogo.com.br/es">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Entendendo o Jogo">
+<meta property="og:title" content="Entendendo o Jogo — Formación táctica para el fútbol">
+<meta property="og:description" content="Cursos, mentoría y contenido práctico de táctica y análisis de juego para entrenadores, analistas y asistentes. Más de 3.000 alumnos en más de 20 países.">
+<meta property="og:url" content="https://entendendoojogo.com.br/es">
+<meta property="og:image" content="https://entendendoojogo.com.br/assets/36d0b9fcd71d37c865fb7387f6a30cff.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F5F5}
+a{color:#4A79A6}a:hover{color:#3A6894}
+@keyframes eoj-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.eoj-marquee{overflow:hidden;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.eoj-track{display:flex;flex-wrap:nowrap;align-items:center;width:max-content;animation:eoj-scroll 75s linear infinite}
+.eoj-marquee:hover .eoj-track{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){.eoj-track{animation:none}}
+.eoj-burger{display:none}
+@media (max-width: 760px){
+header > div{padding:12px 20px !important;gap:10px 14px !important}
+nav[aria-label="Principal"]{display:none !important}
+nav[aria-label="Principal"][data-open="true"]{display:flex !important;order:3;flex:1 1 100% !important;flex-direction:column;align-items:stretch !important;gap:0 !important;font-size:16px !important;border-top:1px solid #2A2A2A;padding-top:6px}
+nav[aria-label="Principal"][data-open="true"] a{padding:13px 0 !important;border-bottom:1px solid #1F1F1F}
+header a[href^="https://hub.entendendoojogo"], header > div > div > a[href="/es/biblioteca"]{display:none !important}
+header > div > div{margin-left:auto}
+.eoj-burger{display:flex !important}
+h1{font-size:40px !important;line-height:1 !important}
+h2{font-size:30px !important}
+section > div[style*="padding: 56px 64px 64px"]{padding:40px 20px 48px !important;min-height:0 !important}
+div[style*="grid-template-columns: repeat(4, minmax(0, auto))"]{grid-template-columns:repeat(2, auto) !important;gap:20px 28px !important}
+div[style*="minmax(260px"],div[style*="minmax(280px"],div[style*="minmax(300px"],div[style*="minmax(420px"],div[style*="minmax(460px"]{grid-template-columns:1fr !important}
+section > div[style*="max-width: 1240px"]{padding-left:20px !important;padding-right:20px !important}
+a[aria-label="Fale com o suporte pelo WhatsApp"]{width:64px !important;height:64px !important;right:12px !important;bottom:12px !important}
+a[aria-label="Fale com o suporte pelo WhatsApp"] svg{width:56px;height:56px}
+}
+</style>
+<link rel="stylesheet" href="/site.css">
+<!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
+<link rel="alternate" hreflang="pt-BR" href="https://entendendoojogo.com.br/"><link rel="alternate" hreflang="es" href="https://entendendoojogo.com.br/es"><link rel="alternate" hreflang="en" href="https://entendendoojogo.com.br/en"><link rel="alternate" hreflang="x-default" href="https://entendendoojogo.com.br/">
+</head>
+<body>
+<div id="eoj-root"></div>
+<template id="eoj-tpl">
+<div style="font-family: Montserrat, system-ui, sans-serif; color: #111111; background: #F5F5F5; min-height: 100vh">
+
+<header style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1376px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: nowrap; align-items: center; gap: 14px 24px">
+<a href="/es" style="display: flex; flex: 0 0 auto; align-items: center; gap: 10px; text-decoration: none; color: #FFFFFF">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#FFFFFF" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#FFFFFF"></rect><circle cx="20" cy="20" r="4" fill="#A1C4E6"></circle></svg>
+<span style="display: flex; flex-direction: column; font-family: Montserrat, sans-serif; text-transform: uppercase; line-height: 1"><span style="font-weight: 500; font-size: 11px; letter-spacing: 0.06em">Entendendo</span><span style="font-weight: 800; font-size: 19px; letter-spacing: 0.01em">O Jogo</span></span>
+</a>
+<nav aria-label="Principal" id="menu-principal" data-open="{{menuOpen}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 500; white-space: nowrap">
+<a href="/es/biblioteca" style="color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 10px 0">Biblioteca EOJ <span style="background: #A1C4E6; color: #111111; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.04em">NUEVO</span></a>
+<a href="/es/eojhub" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">EOJHub</a>
+<a href="/es/cursos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Cursos</a>
+<a href="/es/mentoria" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Mentoría</a>
+<a href="/es/livros" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Libros</a>
+<a href="/es/blog" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Blog</a>
+<a href="/es/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quiénes somos</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto"><nav class="eoj-lang" aria-label="Idioma / Language" style="display: flex; align-items: center; gap: 2px; font-size: 12px; letter-spacing: 0.04em; margin-right: 6px"><a href="/" hreflang="pt-BR" lang="pt-BR" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px">PT</a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/es" hreflang="es" lang="es" aria-current="true" style="color: #FFFFFF; font-weight: 800; text-decoration: none; padding: 6px 4px">ES</a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/en" hreflang="en" lang="en" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px">EN</a></nav>
+<a href="https://hub.entendendoojogo.com.br/users/sign_in" style="background: {{accent}}; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acceder a EOJHub</a>
+<a href="/es/biblioteca" style="background: {{accent}}; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acceder a Biblioteca EOJ</a>
+
+<button type="button" class="eoj-burger" aria-label="Abrir menú" aria-controls="menu-principal" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1.5px solid #4A4A4A; border-radius: 8px; background: none; color: #FFFFFF; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
+</div>
+</header>
+
+<section style="position: relative; background: #111111; color: #FFFFFF; overflow: hidden">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: #111111 url(/assets/36d0b9fcd71d37c865fb7387f6a30cff.jpg) 70% 55% / cover no-repeat"></div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(17,17,17,0.92) 0%, rgba(17,17,17,0.78) 40%, rgba(17,17,17,0.45) 75%, rgba(17,17,17,0.35) 100%)"></div>
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(0deg, rgba(17,17,17,0.85), rgba(17,17,17,0))"></div>
+<div style="position: relative; padding: 56px 64px 64px; min-height: clamp(660px, calc(100vh - 72px), 940px); box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 40px 48px">
+<div style="position: relative; z-index: 1; max-width: 640px; display: flex; flex-direction: column; gap: 24px">
+<p style="margin: 0; color: #A1C4E6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Formación táctica para el fútbol</p>
+<h1 style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 68px; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em">Entiende el juego.<br>Llévalo a tu entrenamiento.</h1>
+<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #CFCFCF; max-width: 560px">Contenido práctico de táctica y análisis de juego para entrenadores, analistas y asistentes — y, próximamente, la Biblioteca EOJ: gratuita, llena de clips para usar en tu realidad.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px">
+<a href="/es/biblioteca" style="background: {{accent}}; color: #111111; text-decoration: none; font-weight: 600; font-size: 16px; padding: 15px 24px; border-radius: 8px; display: flex; align-items: center; gap: 10px">Conoce la Biblioteca EOJ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<a href="#cursos" style="border: 1.5px solid #4A4A4A; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 16px; padding: 14px 22px; border-radius: 8px">Ver cursos</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, auto)); justify-content: start; gap: 22px; margin-top: 18px">
+<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span style="font-weight: 800; font-size: 28px; white-space: nowrap; line-height: 1; font-variant-numeric: tabular-nums">{{alunos}}</span><span style="font-size: 13px; color: #CFCFCF; white-space: nowrap">alumnos formados</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span style="font-weight: 800; font-size: 28px; white-space: nowrap; line-height: 1; font-variant-numeric: tabular-nums">20+</span><span style="font-size: 13px; color: #CFCFCF; white-space: nowrap">países con alumnos</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span style="font-weight: 800; font-size: 28px; white-space: nowrap; line-height: 1; font-variant-numeric: tabular-nums">{{seguidores}}</span><span style="font-size: 13px; color: #CFCFCF; white-space: nowrap">seguidores</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span style="font-weight: 800; font-size: 28px; white-space: nowrap; line-height: 1">2018</span><span style="font-size: 13px; color: #CFCFCF; white-space: nowrap">nuestro comienzo</span></div>
+</div>
+</div>
+<p aria-hidden="true" style="margin: 0 72px 4px 0; text-align: right; flex: 0 0 auto; align-self: flex-end; font-size: 13px; font-weight: 600; letter-spacing: 0.22em; line-height: 1.9; text-transform: uppercase; color: #FFFFFF">Táctica.<br>Análisis de juego.<br>Entrenamiento.</p>
+</div>
+</section>
+
+<section aria-labelledby="clubes-t" style="background: #FFFFFF; border-bottom: 1px solid #E2E2E2">
+<div style="max-width: 1240px; margin: 0 auto; padding: 32px 32px 36px; display: flex; flex-direction: column; align-items: center; gap: 22px">
+<h2 id="clubes-t" style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #555555; flex: 0 0 auto">Dónde trabajan nuestros alumnos</h2>
+<div class="eoj-marquee"><div class="eoj-track"><div style="display: flex; align-items: center" role="list" aria-label="Clubes"><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/bf784295513c84304d1987affb79b686.svg" alt="São Paulo FC" title="São Paulo FC" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/24b8617e0362a89078ee779569a79e1f.png" alt="Flamengo" title="Flamengo" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/c15ed2e6d5b46574faf235d3bce664b1.png" alt="RB Bragantino" title="RB Bragantino" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/04e23ed7b4458490426742d14ddd8f07.svg" alt="Palmeiras" title="Palmeiras" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/dc5d2ccd796ca07ee40a8533bddde5bf.svg" alt="Botafogo" title="Botafogo" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/7c0c69cc447bfbf2290c6e568766b01d.svg" alt="Fluminense" title="Fluminense" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/a1ebcafc5cc5619474f99fba25f4a48e.svg" alt="Avaí" title="Avaí" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/d711918d2751f199454331e3a6245ffc.png" alt="Cuiabá" title="Cuiabá" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/dee15d558c888895af8660271f0cc0da.png" alt="Athletico Paranaense" title="Athletico Paranaense" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/29213822f81bb3191bcc3eaf7151abbf.png" alt="Atlético Mineiro" title="Atlético Mineiro" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/858499ba3864634b44215875e8f15936.png" alt="Bahia" title="Bahia" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/dd63f3aa2665ad8fcb5c7eda69839f95.png" alt="Chapecoense" title="Chapecoense" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/d1d29789a0f87186087f978053de8e23.png" alt="Corinthians" title="Corinthians" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/cb6f5370c8307f60c962e09ab31dc2bc.png" alt="Coritiba" title="Coritiba" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/47cebc0b58eef7808dbb0af2e18cd178.png" alt="Cruzeiro" title="Cruzeiro" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/d047525beba4516a67617f551e730dbb.png" alt="Grêmio" title="Grêmio" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/f661ed0ddd776aa6357ad592f55cedc3.png" alt="Internacional" title="Internacional" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/3001431fd4dd01871aec22fa0178aaa4.png" alt="Mirassol" title="Mirassol" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/aee86ef5d82db86ba9e9f5f54511ce2a.png" alt="Remo" title="Remo" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/e84c87ec9a47cd409dab8d44f2a509df.png" alt="Santos" title="Santos" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/302b7c438ec572cee4061b51ac847226.png" alt="Vasco da Gama" title="Vasco da Gama" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/7f5a9a002d784666f99ba57683dbe494.png" alt="Vitória" title="Vitória" style="height: 60px; width: 66px; object-fit: contain; display: block"></span></div><div style="display: flex; align-items: center" aria-hidden="true"><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/bf784295513c84304d1987affb79b686.svg" alt="" title="São Paulo FC" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/24b8617e0362a89078ee779569a79e1f.png" alt="" title="Flamengo" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/c15ed2e6d5b46574faf235d3bce664b1.png" alt="" title="RB Bragantino" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/04e23ed7b4458490426742d14ddd8f07.svg" alt="" title="Palmeiras" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/dc5d2ccd796ca07ee40a8533bddde5bf.svg" alt="" title="Botafogo" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/7c0c69cc447bfbf2290c6e568766b01d.svg" alt="" title="Fluminense" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/a1ebcafc5cc5619474f99fba25f4a48e.svg" alt="" title="Avaí" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/d711918d2751f199454331e3a6245ffc.png" alt="" title="Cuiabá" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/dee15d558c888895af8660271f0cc0da.png" alt="" title="Athletico Paranaense" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/29213822f81bb3191bcc3eaf7151abbf.png" alt="" title="Atlético Mineiro" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/858499ba3864634b44215875e8f15936.png" alt="" title="Bahia" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/dd63f3aa2665ad8fcb5c7eda69839f95.png" alt="" title="Chapecoense" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/d1d29789a0f87186087f978053de8e23.png" alt="" title="Corinthians" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/cb6f5370c8307f60c962e09ab31dc2bc.png" alt="" title="Coritiba" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/47cebc0b58eef7808dbb0af2e18cd178.png" alt="" title="Cruzeiro" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/d047525beba4516a67617f551e730dbb.png" alt="" title="Grêmio" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/f661ed0ddd776aa6357ad592f55cedc3.png" alt="" title="Internacional" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/3001431fd4dd01871aec22fa0178aaa4.png" alt="" title="Mirassol" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/aee86ef5d82db86ba9e9f5f54511ce2a.png" alt="" title="Remo" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/e84c87ec9a47cd409dab8d44f2a509df.png" alt="" title="Santos" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/302b7c438ec572cee4061b51ac847226.png" alt="" title="Vasco da Gama" style="height: 60px; width: 66px; object-fit: contain; display: block"></span><span style="flex: 0 0 auto; padding-right: 64px; display: block"><img src="/assets/7f5a9a002d784666f99ba57683dbe494.png" alt="" title="Vitória" style="height: 60px; width: 66px; object-fit: contain; display: block"></span></div></div></div>
+</div>
+</section>
+
+<section aria-labelledby="acervo-titulo" style="background: #FFFFFF; border-bottom: 1px solid #E2E2E2">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-direction: column; gap: 40px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 680px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Biblioteca EOJ · próximamente</p>
+<h2 id="acervo-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1; text-transform: uppercase">Clips tácticos listos para tu charla</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #555555">Cada clip muestra un comportamiento del juego, explicado y clasificado por momento, posición y nivel. Encuentra el ejemplo correcto, descárgalo y arma la secuencia de tu entrenamiento.</p>
+</div>
+<a href="/es/biblioteca" style="color: #4A79A6; font-weight: 600; font-size: 16px; text-decoration: none; padding: 12px 0; display: flex; align-items: center; gap: 8px">Entrar en la lista de espera <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
+<div style="background: #F5F5F5; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A79A6" stroke-width="2" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"></path></svg>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600">Filtra por lo que necesitas</h3>
+<p style="margin: 0; color: #555555; line-height: 1.55; font-size: 15px">Por subtema — sistemas tácticos, táctica individual, comportamiento por posición y balón parado —, por momento del juego y por equipo.</p>
+</div>
+<div style="background: #F5F5F5; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A79A6" stroke-width="2" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600">Descarga y usa con tu plantel</h3>
+<p style="margin: 0; color: #555555; line-height: 1.55; font-size: 15px">Lleva el clip a la charla, a la reunión del cuerpo técnico o a la clase, incluso sin internet en el centro de entrenamiento.</p>
+</div>
+<div style="background: #F5F5F5; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4A79A6" stroke-width="2" aria-hidden="true"><path d="M4 6h12M4 12h12M4 18h8M18 15v6M15 18h6"></path></svg>
+<h3 style="margin: 0; font-size: 18px; font-weight: 600">Arma tus playlists</h3>
+<p style="margin: 0; color: #555555; line-height: 1.55; font-size: 15px">Agrupa clips por entrenamiento, rival o tema y organiza el orden en que los vas a mostrar.</p>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px">
+<sc-for list="{{clips}}" as="c" hint-placeholder-count="3">
+<article style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
+<a href="/es/biblioteca" style="text-decoration: none; color: #111111; display: flex; flex-direction: column">
+<div style="position: relative; aspect-ratio: 16 / 10; background: #1C1C1C; overflow: hidden">
+<svg viewBox="0 0 160 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%" aria-hidden="true"><rect x="6" y="6" width="148" height="88" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></rect><line x1="80" y1="6" x2="80" y2="94" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></line><circle cx="80" cy="50" r="12" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></circle><rect x="6" y="28" width="20" height="44" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></rect><rect x="134" y="28" width="20" height="44" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></rect></svg>
+<sc-for list="{{c.dots}}" as="d" hint-placeholder-count="9">
+<div style="position: absolute; left: {{d.x}}%; top: {{d.y}}%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: {{d.color}}"></div>
+</sc-for>
+<div style="position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: rgba(17,17,17,0.75); display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></div>
+<span style="position: absolute; right: 10px; bottom: 10px; background: rgba(17,17,17,0.85); color: #FFFFFF; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px">{{c.dur}}</span>
+</div>
+<div style="padding: 16px 18px 6px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; color: #4A79A6; letter-spacing: 0.06em; text-transform: uppercase">{{c.m}} · {{c.f}}</span>
+<h3 style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35">{{c.t}}</h3>
+</div>
+</a>
+<div style="padding: 6px 18px 16px; display: flex; flex-wrap: wrap; gap: 6px">
+<span style="font-size: 12px; background: #E6EFF8; color: #3A6894; padding: 4px 9px; border-radius: 99px">{{c.s}}</span>
+</div>
+</article>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="cursos" aria-labelledby="cursos-titulo">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-direction: column; gap: 36px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Cursos online</p>
+<h2 id="cursos-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1; text-transform: uppercase">Profundiza con los cursos</h2>
+</div>
+<a href="https://api.whatsapp.com/send?phone=6281385430917&amp;text=Ol%C3%A1!%20Quero%20criar%20um%20combo%20de%20cursos%20do%20Entendendo%20o%20Jogo." style="color: #4A79A6; font-weight: 600; font-size: 16px; text-decoration: none; padding: 12px 0">¿Quieres más de un curso? Arma un combo por WhatsApp</a>
+<a href="/es/cursos" style="color: #4A79A6; font-weight: 700; font-size: 16px; text-decoration: none; padding: 12px 0">Ver catálogo con filtros →</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px">
+<sc-for list="{{cursos}}" as="k" hint-placeholder-count="8">
+<article style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
+<a href="{{k.det}}" style="display: block; position: relative; aspect-ratio: 1 / 1; background: #111111"><img src="{{k.img}}" alt="{{k.t}}" style="width: 100%; height: 100%; object-fit: cover; display: block"></a>
+<div style="padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 12px; flex: 1 1 auto">
+<div style="min-height: 22px"><sc-if value="{{k.badge}}" hint-placeholder-val="{{ false }}"><span style="background: #A1C4E6; color: #111111; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 99px; letter-spacing: 0.06em; text-transform: uppercase">{{k.badge}}</span></sc-if></div>
+<h3 style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 19px; line-height: 1.2; text-transform: uppercase">{{k.t}}</h3>
+<div style="display: flex; flex-direction: column; gap: 2px"><p style="margin: 0; font-size: 22px; font-weight: 700; color: #111111">{{k.preco}}</p><p style="margin: 0; font-size: 13px; color: #555555">o {{k.parc}}</p><div style="margin: 4px 0 0; font-size: 13px; color: #555555; display: flex; flex-direction: column; gap: 4px"><span style="display: flex; align-items: center; gap: 6px"><strong style="color: #111111; font-weight: 600">Formato:</strong> Online</span><span style="display: flex; align-items: center; gap: 6px"><strong style="color: #111111; font-weight: 600">Duración:</strong> {{k.horas}}</span><span style="display: flex; align-items: center; gap: 6px"><strong style="color: #111111; font-weight: 600">Idioma:</strong> <img src="/assets/6c6b4914b453e1fb7c8a71a6561dda49.svg" alt="Portugués" title="Portugués" width="20" height="14" style="display: inline-block; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.12)"> <sc-if value="{{k.es}}" hint-placeholder-val="{{ false }}"><img src="/assets/3566674e1879356073f736ce3e29b5ab.svg" alt="Español" title="Español" width="20" height="14" style="display: inline-block; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,0.12)"></sc-if></span></div></div>
+<div style="display: flex; gap: 10px; margin-top: auto">
+<a href="{{k.det}}" style="flex: 1 1 0; text-align: center; border: 1.5px solid #CCCCCC; color: #111111; text-decoration: none; font-weight: 600; font-size: 15px; padding: 12px; border-radius: 8px">Detalles</a>
+<a href="{{k.buy}}" style="flex: 1 1 0; text-align: center; background: #111111; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 15px; padding: 12px; border-radius: 8px">Comprar</a>
+
+</div>
+</div>
+</article>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: center"><a href="/es/cursos" style="display: inline-flex; align-items: center; gap: 10px; background: #111111; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 28px; border-radius: 8px">Ver todos los cursos, clases sueltas y combos →</a></div>
+</div>
+</section>
+
+<section id="mentoria" aria-labelledby="mentoria-titulo" style="padding: 0 32px 80px">
+<div style="max-width: 1176px; margin: 0 auto; background: #111111; color: #FFFFFF; border-radius: 20px; padding: 56px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+<div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<p style="margin: 0; color: #A1C4E6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Mentoría Táctica EOJ</p>
+<h2 id="mentoria-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 38px; line-height: 1.05; text-transform: uppercase">Domina el campo: mentoría en táctica y análisis de juego</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #CFCFCF">Acompañamiento continuo y personalizado con Ítalo Resende. Sin fórmulas listas: encuentros prácticos, debates y análisis de casos reales de tu contexto de trabajo.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px">
+<a href="/es/mentoria" style="background: {{accent}}; color: #111111; text-decoration: none; font-weight: 600; font-size: 16px; padding: 15px 24px; border-radius: 8px">Conocer la mentoría</a>
+<a href="https://entendendoojogo.com.br/img/pdfMentoria.pdf" style="border: 1.5px solid #4A4A4A; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 16px; padding: 14px 22px; border-radius: 8px">Descargar presentación</a>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" style="border: 1.5px solid #4A4A4A; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 16px; padding: 14px 22px; border-radius: 8px">Pide un presupuesto</a>
+</div>
+<p style="margin: 0; font-size: 14px; color: #A6A6A6">Cupos limitados. Formatos con precios diferentes y mentores invitados además de Ítalo.</p>
+</div>
+<ol style="flex: 1 1 380px; min-width: 0; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px">
+<sc-for list="{mentoria}" as="mt" hint-placeholder-count="4">
+<li style="display: flex; gap: 18px; padding: 16px 0; border-top: 1px solid #2A2A2A">
+<span style="font-weight: 800; font-size: 22px; color: #A1C4E6; width: 34px; flex: 0 0 auto">{{mt.n}}</span>
+<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 700; font-size: 16px">{{mt.t}}</span><span style="font-size: 14px; line-height: 1.5; color: #CFCFCF">{{mt.d}}</span></span>
+</li>
+</sc-for>
+</ol>
+</div>
+</section>
+
+<section id="livros" aria-labelledby="livros-titulo">
+<div style="max-width: 1240px; margin: 0 auto; padding: 0 32px 80px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 20px"><div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Libros EOJ</p>
+<h2 id="livros-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1; text-transform: uppercase">Lecturas para profundizar</h2>
+</div>
+<a href="/es/livros" style="color: #4A79A6; font-weight: 700; font-size: 16px; text-decoration: none; padding: 12px 0">Ver todos los libros y el e-book gratuito →</a></div>
+<article aria-labelledby="destaque-t" style="background: #111111; color: #FFFFFF; border-radius: 16px; padding: 32px; display: flex; flex-wrap: wrap; gap: 36px; align-items: center">
+<a href="/es/livros/sistemas-taticos" style="flex: 0 0 170px; display: block"><img src="/assets/b1bd5708d475ba65092ac50c631b0e85.jpg" alt="Portada del libro Sistemas Táticos" style="width: 170px; display: block; border-radius: 4px; box-shadow: 0 20px 40px rgba(0,0,0,0.5)"></a>
+<div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: flex-start; background: #A1C4E6; color: #111111; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 99px; letter-spacing: 0.06em; text-transform: uppercase">Libro destacado (en portugués)</span>
+<h3 id="destaque-t" style="margin: 0; font-size: 28px; font-weight: 800; line-height: 1.1; text-transform: uppercase">Sistemas Táticos</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.65; color: #CFCFCF">Las plataformas de juego y el enfrentamiento entre sistemas ofensivos y defensivos, con un enfoque práctico y aplicable en el día a día. Son 3 capítulos que van de las referencias estructurales y funcionales al análisis de 14 enfrentamientos en partidos reales, con códigos QR que llevan a los videos de cada sistema.</p>
+<p style="margin: 0; font-size: 14px; color: #A6A6A6">Italo Resende y Vinicius Xavier · prólogo de Eduardo Barroca</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+<span style="font-weight: 800; font-size: 26px">R$ 100,00 <span style="font-size: 14px; font-weight: 600; color: #CFCFCF">+ envío</span></span>
+<a href="/es/livros/sistemas-taticos" style="display: inline-flex; align-items: center; gap: 10px; background: #A1C4E6; color: #111111; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px">Conoce el libro</a>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" style="display: inline-flex; align-items: center; gap: 10px; border: 1.5px solid #4A4A4A; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 16px; padding: 14px 22px; border-radius: 8px">Comprar</a>
+</div>
+</div>
+</article>
+</div>
+</section>
+
+<section id="blog" aria-labelledby="blog-titulo" style="background: #FFFFFF; border-top: 1px solid #E2E2E2">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-direction: column; gap: 36px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Blog</p>
+<h2 id="blog-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1; text-transform: uppercase">Textos tácticos</h2>
+</div>
+<a href="/es/blog" style="color: #4A79A6; font-weight: 600; font-size: 16px; text-decoration: none; padding: 12px 0">Ver todos los textos</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px">
+<sc-for list="{{posts}}" as="b" hint-placeholder-count="3">
+<a href="{{b.url}}" style="text-decoration: none; color: #111111; border-top: 3px solid #111111; padding-top: 18px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 12px; font-weight: 600; color: #4A79A6; letter-spacing: 0.08em; text-transform: uppercase">{{b.tag}}</span>
+<h3 style="margin: 0; font-size: 21px; font-weight: 600; line-height: 1.3">{{b.t}}</h3>
+<span style="font-size: 15px; color: #555555; line-height: 1.55">{{b.d}}</span>
+<span style="font-size: 15px; font-weight: 600; color: #4A79A6">Leer artículo (PT) →</span>
+</a>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section id="quem-somos" aria-labelledby="qs-titulo" style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; gap: 56px; align-items: flex-start">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+<p style="margin: 0; color: #A1C4E6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Quiénes somos</p>
+<h2 id="qs-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1.02; text-transform: uppercase">Conocimiento táctico accesible y práctico</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.65; color: #CFCFCF">Entendendo o Jogo nació en 2018, en Instagram, para compartir de forma simple lo que Ítalo Resende estudiaba sobre el juego. Se convirtió en referencia en formación táctica, apoyada en tres pilares: situaciones de juego, sistemas tácticos y capacidades tácticas individuales.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 8px">
+<sc-for list="{stats}" as="st" hint-placeholder-count="4">
+<div style="border-top: 2px solid #A1C4E6; padding-top: 14px; display: flex; flex-direction: column; gap: 4px"><span style="font-weight: 800; font-size: 34px; line-height: 1">{{st.n}}</span><span style="font-size: 14px; color: #CFCFCF">{{st.l}}</span></div>
+</sc-for>
+</div>
+</div>
+<div style="flex: 1 1 380px; min-width: 0; background: #1C1C1C; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 13px; font-weight: 700; color: #A1C4E6; letter-spacing: 0.1em; text-transform: uppercase">Fundador</span>
+<h3 style="margin: 0; font-size: 26px; font-weight: 800; text-transform: uppercase">Ítalo Resende</h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #CFCFCF">Asistente técnico de fútbol profesional y exanalista de rendimiento. Educación Física por la UFV, especialización en Fútbol por el NUPEF y Licencia PRO CBF Academy.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{clubes}" as="cl" hint-placeholder-count="6"><span style="font-size: 13px; background: #2A2A2A; color: #FFFFFF; padding: 6px 10px; border-radius: 99px">{{cl.n}}</span></sc-for>
+</div>
+<a href="/es/quem-somos" style="margin-top: 6px; align-self: flex-start; color: #A1C4E6; font-weight: 600; font-size: 15px; text-decoration: none; padding: 8px 0">Conoce nuestra historia →</a>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="prof-home-t" style="background: #FFFFFF; border-top: 1px solid #E2E2E2">
+<div style="max-width: 1240px; margin: 0 auto; padding: 72px 32px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 12px"><p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Profesores</p><h2 id="prof-home-t" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1; text-transform: uppercase">Quiénes ya dieron clase en EOJ</h2></div>
+<a href="/es/eojhub" style="color: #4A79A6; font-weight: 700; font-size: 16px; text-decoration: none; padding: 12px 0">Conoce EOJHub →</a>
+</div>
+<div style="overflow-x: auto; padding-bottom: 4px"><div style="display: grid; grid-template-columns: repeat(15, minmax(64px, 1fr)); gap: 12px; min-width: 1050px"><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/7540707b30fa89ac456de189fbdb5d72.jpg" alt="Leandro Zago" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Leandro Zago</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/5440acb1fdc8b78617662b1b4b0cf4d2.jpg" alt="Fabio Matias" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Fabio Matias</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/6f34406d32d4372ce70970b34c210388.jpg" alt="William Baptista" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">William Baptista</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/eee661a477b80b8f81ad6d3b39fb4c05.jpg" alt="Rodrigo Leitão" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Rodrigo Leitão</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/c8c21272a31cb12b56f43b4ca5702276.jpg" alt="Zé Ricardo" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Zé Ricardo</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/d6931833460c27d2ea6bacd261324f14.jpg" alt="Eduardo Barroca" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Eduardo Barroca</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/058bfe9a387554d33c2b76f0e8dbcc6d.jpg" alt="Gustavo Leal" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Gustavo Leal</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/85cc9948c8f854fe05fcf6b2bb6d4931.jpg" alt="Próspero Paoli" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Próspero Paoli</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/53111b186147306c37363e7bff06eabc.jpg" alt="Eduardo Oliveira" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Eduardo Oliveira</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/b9a5d21ae345dd049000ed71c63017c0.jpg" alt="Enric Soriano" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Enric Soriano</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/0ec703493187ddce41535d87633d205b.jpg" alt="Ivan Pernía" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Ivan Pernía</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/2015f63aa5ba8af845309bf90c65423c.jpg" alt="Pedro Bouças" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Pedro Bouças</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/ac98a1da33e5e0768af3728f7ce9e152.jpg" alt="Óscar Cano" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Óscar Cano</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/bb845328534a2ea478137f059e8d9d05.jpg" alt="Fernando Valente" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">Fernando Valente</figcaption></figure><figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0"><img src="/assets/b1f878236fb122b9339493d1774bd7e3.jpg" alt="João Nuno Fonseca" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-radius: 10px"><figcaption style="font-size: 12px; font-weight: 700; color: #111111; line-height: 1.25">João Nuno Fonseca</figcaption></figure></div></div>
+</div>
+</section>
+
+<section aria-labelledby="dep-titulo">
+<div style="max-width: 1240px; margin: 0 auto; padding: 80px 32px; display: flex; flex-direction: column; gap: 36px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; color: #4A79A6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Testimonios</p>
+<h2 id="dep-titulo" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: 42px; line-height: 1; text-transform: uppercase">De nuestros alumnos</h2>
+</div>
+<div class="eoj-dep-row" style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 18px; align-items: stretch; margin: 0 -2px">
+<sc-for list="{{deps}}" as="q" hint-placeholder-count="7">
+<figure style="margin: 0; flex: 0 0 360px; scroll-snap-align: start; background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 26px 26px 22px; display: flex; flex-direction: column; gap: 18px; box-sizing: border-box"><svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true" style="flex: 0 0 auto"><path d="M0 24V14.4C0 6.2 4.4 1.4 12 0l1.4 3.4C9 4.8 6.8 7.6 6.6 11.4H12V24H0zm17 0V14.4C17 6.2 21.4 1.4 29 0l1 3.4c-4.4 1.4-6.6 4.2-6.8 8H29V24H17z" fill="#A1C4E6"></path></svg><blockquote style="margin: 0; flex: 1 1 auto; font-size: 15px; line-height: 1.65; color: #333333">{{q.q}}</blockquote><figcaption style="display: flex; align-items: center; gap: 14px; border-top: 1px solid #EDEDED; padding-top: 18px; min-height: 66px"><span style="width: 64px; height: 64px; border-radius: 10px; overflow: hidden; background: #A1C4E6; flex: 0 0 auto; display: block"><img src="{{q.f}}" alt="{{q.n}}" style="width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply"></span><span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-weight: 700; font-size: 16px; color: #111111">{{q.n}}</span><span style="font-size: 14px; color: #555555">{{q.cargo}}</span><span style="font-size: 13px; font-weight: 600; color: #4A79A6">{{q.clube}}</span></span></figcaption></figure>
+</sc-for>
+</div>
+<p style="margin: -16px 0 0; font-size: 14px; color: #555555">Desliza hacia el lado para ver más testimonios →</p>
+</div>
+</section>
+
+<footer style="background: #111111; color: #CFCFCF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 40px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 320px">
+<span style="font-family: Montserrat, sans-serif; font-weight: 800; font-size: 24px; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.04em">Entendendo o Jogo</span>
+<span style="font-size: 15px; line-height: 1.6">Formación táctica y análisis de juego para entrenadores, analistas y profesionales del fútbol.</span>
+<a href="mailto:entendendoojogo@gmail.com" style="color: #A1C4E6; text-decoration: none; font-size: 15px">entendendoojogo@gmail.com</a>
+</div>
+<nav aria-label="Pie de página" style="display: flex; flex-wrap: wrap; gap: 48px; font-size: 15px">
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Contenido</span><a href="/es/biblioteca" style="color: #CFCFCF; text-decoration: none">Biblioteca EOJ</a><a href="/es/blog" style="color: #CFCFCF; text-decoration: none">Blog</a><a href="/es/conteudos" style="color: #CFCFCF; text-decoration: none">Lives y podcasts</a><a href="/es/livros" style="color: #CFCFCF; text-decoration: none">Libros EOJ</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Comunidad</span><a href="https://chat.whatsapp.com/IfDikJxXWKVJVp5pad7DaE" style="color: #CFCFCF; text-decoration: none">Grupo sobre táctica (WhatsApp)</a><a href="https://chat.whatsapp.com/Lk3CEDf12ZQ3IQRd9Y34Xi" style="color: #CFCFCF; text-decoration: none">Grupo sobre entrenamiento (WhatsApp)</a><a href="https://www.instagram.com/entendendoojogo/" style="color: #CFCFCF; text-decoration: none">Instagram</a><a href="https://www.youtube.com/channel/UCXC2Uxw9CoJHGAN_FC06LYQ" style="color: #CFCFCF; text-decoration: none">YouTube</a><a href="https://x.com/italobresende" style="color: #CFCFCF; text-decoration: none">X</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Ayuda</span><a href="/es/ajuda" style="color: #CFCFCF; text-decoration: none">Preguntas frecuentes</a><a href="https://api.whatsapp.com/send?phone=6281385430917" style="color: #CFCFCF; text-decoration: none">WhatsApp</a><a href="/termos" style="color: #CFCFCF; text-decoration: none">Términos de uso (en portugués)</a><a href="/privacidade" style="color: #CFCFCF; text-decoration: none">Política de privacidad (en portugués)</a></div>
+</nav>
+</div>
+<div style="max-width: 1240px; margin: 0 auto; padding: 20px 32px 32px; border-top: 1px solid #2A2A2A; font-size: 13px; color: #A6A6A6">© 2026 Entendendo o Jogo. Todos los derechos reservados.</div>
+</footer>
+
+<a href="https://api.whatsapp.com/send?phone=6281385430917" aria-label="Habla con el soporte por WhatsApp" title="Soporte por WhatsApp" style="position: fixed; right: 20px; bottom: 20px; z-index: 20; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: transparent; color: #25D366; text-decoration: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25))"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"></path><path d="M9 9.5c.3 1.8 1.7 3.6 3.6 4.4l1.2-1.1 2 .8-.4 1.6c-3.4.2-7-3.2-7.2-6.6l1.6-.5.8 2z"></path></svg></a>
+</div>
+</template>
+<script src="/eoj-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { p: 0, menu: false }; }
+  componentDidMount() { var self = this; this.timer = setInterval(function () { var p = Math.min(1, self.state.p + 0.05); self.setState({ p: p }); if (p >= 1) clearInterval(self.timer); }, 40); }
+  componentWillUnmount() { clearInterval(this.timer); }
+  renderVals() {
+    var selfM = this;
+    var ease = 1 - Math.pow(1 - this.state.p, 3);
+    var fmt = function (n) { return Math.round(n).toLocaleString('pt-BR') + '+'; };
+    function dots(seed) {
+      var s = seed * 7919 + 13;
+      function r() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
+      var out = [];
+      for (var i = 0; i < 5; i++) out.push({ x: Math.round(14 + r() * 72), y: Math.round(16 + r() * 68), color: '#FFFFFF' });
+      for (var j = 0; j < 4; j++) out.push({ x: Math.round(14 + r() * 72), y: Math.round(16 + r() * 68), color: '#A1C4E6' });
+      return out;
+    }
+    var clips = [
+      { t: 'Salida de 3 con lateral por dentro', m: 'Org. ofensiva', f: 'Construcción', p: 'Lateral', n: 'Profesional', s: 'Sistemas tácticos', dur: '0:42' },
+      { t: 'Presión alta orientada a la banda', m: 'Org. defensiva', f: 'Presión alta', p: 'Extremo', n: 'Profesional', s: 'Sistemas tácticos', dur: '0:35' },
+      { t: 'Atracción y liberación por el pivote', m: 'Org. ofensiva', f: 'Creación', p: 'Pivote', n: 'Sub-17 / Sub-20', s: 'Táctica individual', dur: '0:51' }
+    ].map(function (c, i) { c.dots = dots(i + 3); return c; });
+    return {
+      menuOpen: this.state.menu ? "true" : "false", toggleMenu: function () { selfM.setState({ menu: !selfM.state.menu }); },
+      alunos: fmt(3000 * ease),
+      seguidores: fmt(50000 * ease),
+      accent: this.props.accent ?? '#A1C4E6',
+      heroDots: [
+        { x: 25, y: 65, color: '#FFFFFF' }, { x: 38, y: 30, color: '#FFFFFF' }, { x: 54, y: 40, color: '#FFFFFF' }, { x: 69, y: 27, color: '#FFFFFF' }, { x: 45, y: 78, color: '#FFFFFF' },
+        { x: 50, y: 55, color: '#A1C4E6' }, { x: 62, y: 46, color: '#A1C4E6' }, { x: 60, y: 70, color: '#A1C4E6' }, { x: 74, y: 52, color: '#A1C4E6' }, { x: 42, y: 45, color: '#A1C4E6' }
+      ],
+      clips: clips,
+      cursos: [{"img": "/assets/3a25eff83b4ee32e892140a51591be64.jpg", "horas": "20 horas", "t": "Indicadores táticos por posição", "preco": "R$ 499,99", "parc": "4x de R$ 136,09", "badge": "Lançamento", "det": "/cursos/indicadores", "buy": "https://pay.hotmart.com/T89761885Q?off=irrribdo&bid=1784689914440", "es": true, "lang": "Português e Espanhol"}, {"img": "/assets/8df48004de24ae32ca6623bc2d582d7f.jpg", "horas": "20 horas", "t": "Jogo de Posição", "preco": "R$ 429,00", "parc": "12x de R$ 44,37", "badge": "Mais vendido", "det": "/cursos/jogo-de-posicao", "buy": "https://pay.hotmart.com/T89761885Q?off=npblpgqb&bid=1705350171845", "es": true, "lang": "Português e Espanhol"}, {"img": "/assets/eca72320c3efc935e20a5d2fab39999f.jpg", "horas": "20 horas", "t": "Treinamento tático – módulo 1", "preco": "R$ 499,99", "parc": "3x de R$ 178,43", "badge": "", "det": "/cursos/treinamento-tatico-1", "buy": "https://pay.hotmart.com/T89761885Q?off=mrzr2huv&bid=1752888652085", "es": false, "lang": "Português"}, {"img": "/assets/da4682b97124d2d55656dbfd7865da29.jpg", "horas": "20 horas", "t": "Bolas paradas", "preco": "R$ 399,99", "parc": "3x de R$ 142,74", "badge": "", "det": "/cursos/bolas-paradas", "buy": "https://pay.hotmart.com/T89761885Q?off=jqzqajq3&bid=1717674314619", "es": false, "lang": "Português"}],
+      livros: [
+        { img: '/assets/d87cb6a1b9dfb875b96e95c936625b1c.jpg', url: '/assets/9bceccf3c371ec35bd6bbd011acbd3f1.pdf', ebook: true, livro: false, esgotado: false, disponivel: true, filtro: 'none', cta: 'Descarga el E-book', t: 'E-book gratuito: Análisis del balón parado del Mundial 2026', d: 'Por Italo Resende. Los goles de balón parado comparados con los Mundiales de 2018 y 2022, el análisis de los córners y una sección especial con todos los goles del torneo, con acceso al video de cada jugada. 71 páginas, en portugués.', preco: 'Gratuito' },
+        { img: '/assets/b7d62d48caae5dfeb3c59cc03092a153.jpg', url: '/livros/situacoes-taticas-de-jogo-fase-ofensiva', ebook: false, livro: true, esgotado: true, disponivel: false, filtro: 'grayscale(0.6) brightness(0.75)', cta: 'Ver detalles', t: 'Situações Táticas de Jogo: Fase Ofensiva', d: 'De Italo Resende y Vinicius Xavier. El primer libro de EOJ, escrito durante la pandemia, sobre las situaciones tácticas de la fase ofensiva.', preco: 'R$ 69,90 ou 12x de R$ 7,00' }
+      ],
+      mentoria: [{"n": "01", "t": "Modelos e sistemas táticos de jogo", "d": "Estruturar e aplicar ideias táticas em todas as fases do jogo."}, {"n": "02", "t": "Leitura espacial e padrões", "d": "Gatilhos de pressão, espaços de aceleração e comportamentos dos adversários."}, {"n": "03", "t": "Análise de desempenho aplicada", "d": "Dados e vídeos transformados em ferramentas para treinos e preleções."}, {"n": "04", "t": "Resolução de problemas complexos", "d": "Adaptar a estratégia em tempo real durante os 90 minutos."}],
+      posts: [{"tag": "05 oct 2026", "t": "Saídas de bola e pressões altas: os dilemas encontrados no jogo entre Vasco e Cruzeiro", "d": "Diferentes maneiras de atacar a partir da saída de bola e de defendê-la.", "url": "/blog/saidas-de-bola-e-pressoes-altas-os-dilemas-encontrados-no-jogo-entre-vasco-e-cruzeiro"}, {"tag": "05 out 2026", "t": "Uso dos zagueiros na saída de bola: dinâmicas e variações para quebrar a primeira pressão", "d": "A transformação da função do zagueiro, do futebol antigo ao moderno.", "url": "/blog/uso-dos-zagueiros-na-saida-de-bola-dinamicas-e-variacoes-para-quebrar-a-primeira-pressao"}, {"tag": "18 set 2026", "t": "Falta de compactação: um erro comum em escanteios defensivos", "d": "Bolas paradas como armas táticas decisivas e os pormenores do escanteio defensivo.", "url": "/blog/falta-de-compactacao-um-erro-defensivo-comum-em-escanteios-defensivos"}],
+      stats: [{"n": "50.000+", "l": "seguidores"}, {"n": "3.000+", "l": "alunos formados"}, {"n": "10+", "l": "cursos"}, {"n": "1.000+", "l": "horas de conteúdo"}],
+      clubes: [{"n": "Guarani"}, {"n": "Persija (Indonésia)"}, {"n": "Athletico Paranaense"}, {"n": "Madura United (Indonésia)"}, {"n": "OutlierFC"}, {"n": "S. C. Aymorés"}],
+      deps: [{"n": "Arthur de Vito", "f": "/assets/90d82d3fce8378e3196b82be22989dec.jpg", "r": "Analista de desempenho · Profissional do Flamengo", "q": "Antes de tudo, sou um admirador da página “Entendendo o Jogo”, que sempre nos traz exemplos práticos e claros sobre vários aspectos do jogo. Sobre os cursos, têm ótima profundidade teórica, sempre associando com bons exemplos práticos, estimulando reflexões e proporcionando muito aprendizado sobre diversos pormenores do jogo!", "cargo": "Analista de desempenho", "clube": "Profissional do Flamengo", "ini": "AV"}, {"n": "Camila Lima", "f": "/assets/f4e5ef49676fe4bea7c4827592020b91.jpg", "r": "Analista de desempenho · Feminino profissional do RB Bragantino", "q": "Os cursos do “Entendendo o Jogo” são de suma importância para todos que trabalham com futebol, pela excelência e seriedade dos conteúdos apresentados, que nos levam desde a perspectiva macro até os pormenores do jogo, o que auxilia a entender tanto o coletivo quanto suas individualidades.", "cargo": "Analista de desempenho", "clube": "Feminino profissional do RB Bragantino", "ini": "CL"}, {"n": "Wellington David", "f": "/assets/4b1d73ce68615b497ad7f08556a23522.jpg", "r": "Analista de desempenho · Profissional do Cuiabá", "q": "Recomendo os cursos para todos que interessam entrar ou que já estejam no futebol. Pois, além de contar com excelentes professores, conteúdos riquíssimos e boa didática, as aulas são gravadas e disponibilizadas para acessá-las novamente quando quiser.", "cargo": "Analista de desempenho", "clube": "Profissional do Cuiabá", "ini": "WD"}, {"n": "Vinícius Xavier", "f": "/assets/47d2dec883fd005549ab4f9b39f9fccf.jpg", "r": "Auxiliar técnico · Profissional do Botafogo-PB", "q": "Na minha visão, o grande diferencial dos cursos do “Entendendo o Jogo” é a aplicabilidade do conteúdo. Por diversas vezes, após assistir uma aula, fui para o treino no campo ou treino de vídeo e usei insights que tive através do conteúdo.", "cargo": "Auxiliar técnico", "clube": "Profissional do Botafogo-PB", "ini": "VX"}, {"n": "Roberto Augusto Lazzarotto Pereira", "f": "/assets/57107226d272ddb26ddbd8e06600a184.jpg", "r": "Analista de desempenho", "q": "Excelência e profundidade definem. São cursos que entregam muito conteúdo de qualidade com detalhes de alto nível, sempre abordados com uma visão lógica sobre o jogar.", "cargo": "Analista de desempenho", "clube": "Profissional do futebol", "ini": "RP"}, {"n": "Andrey Píffero", "f": "/assets/aa8120241f0fba98f1c1a3b830c0dbe3.jpg", "r": "Treinador do sub-15 do Botafogo", "q": "As temáticas dos cursos do “Entendendo o Jogo” carregam consigo muitas percepções, bem aproveitadas, geram um impacto na prática do dia a dia. São cursos que fazem refletirmos sobre as escalas que encontramos no jogo (individual, setorial, intersetorial, grupal e coletiva) e nos possibilitam um olhar mais criterioso para o dia a dia de ensino e treino com nossos atletas.", "cargo": "Treinador do sub-15", "clube": "Botafogo", "ini": "AP"}, {"n": "Renata Ruel", "f": "/assets/649cfcd45e763e5fd3f250d50d21a678.jpg", "r": "Comentarista dos canais ESPN e Star+", "q": "Conhecer sobre futebol é essencial para todos que trabalham com esse esporte, inclusive para os árbitros. Fazer o curso do “Entendendo o Jogo” tem me ajudado demais profissionalmente a agregar o entendimento do jogo com as regras do futebol. Eu super recomendo.", "cargo": "Comentarista", "clube": "ESPN e Star+", "ini": "RR"}]
+    };
+  }
+}
+EOJ.mount(typeof Component !== 'undefined' ? Component : null);
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Libros EOJ — Entendendo o Jogo</title>
+<meta name="description" content="Los libros de Entendendo o Jogo (en portugués): Sistemas Táticos y Situações Táticas de Jogo, y el e-book gratuito sobre el balón parado del Mundial 2026.">
+<link rel="canonical" href="https://entendendoojogo.com.br/es/livros">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Entendendo o Jogo">
+<meta property="og:title" content="Libros EOJ — Entendendo o Jogo">
+<meta property="og:description" content="Los libros de Entendendo o Jogo (en portugués): Sistemas Táticos y Situações Táticas de Jogo, y el e-book gratuito sobre el balón parado del Mundial 2026.">
+<meta property="og:url" content="https://entendendoojogo.com.br/es/livros">
+<meta property="og:image" content="https://entendendoojogo.com.br/assets/b1bd5708d475ba65092ac50c631b0e85.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F5F5}
+a{color:#4A79A6}a:hover{color:#3A6894}
+
+</style>
+<link rel="stylesheet" href="/site.css">
+<!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
+<link rel="alternate" hreflang="pt-BR" href="https://entendendoojogo.com.br/livros"><link rel="alternate" hreflang="es" href="https://entendendoojogo.com.br/es/livros"><link rel="alternate" hreflang="en" href="https://entendendoojogo.com.br/en/livros"><link rel="alternate" hreflang="x-default" href="https://entendendoojogo.com.br/livros">
+</head>
+<body>
+<div id="eoj-root"></div>
+<template id="eoj-tpl">
+<div style="font-family: Montserrat, system-ui, sans-serif; color: #111111; background: #F5F5F5; min-height: 100vh">
+<header style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1376px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: nowrap; align-items: center; gap: 14px 24px">
+<a href="/es" style="display: flex; flex: 0 0 auto; align-items: center; gap: 10px; text-decoration: none; color: #FFFFFF">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#FFFFFF" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#FFFFFF"></rect><circle cx="20" cy="20" r="4" fill="#A1C4E6"></circle></svg>
+<span style="display: flex; flex-direction: column; font-family: Montserrat, sans-serif; text-transform: uppercase; line-height: 1"><span style="font-weight: 500; font-size: 11px; letter-spacing: 0.06em">Entendendo</span><span style="font-weight: 800; font-size: 19px; letter-spacing: 0.01em">O Jogo</span></span>
+</a>
+<nav aria-label="Principal" id="menu-principal" data-open="{{menuOpen}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 500; white-space: nowrap">
+<a href="/es/biblioteca" style="color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 10px 0">Biblioteca EOJ <span style="background: #A1C4E6; color: #111111; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.04em">NUEVO</span></a>
+<a href="/es/eojhub" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">EOJHub</a>
+<a href="/es/cursos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Cursos</a>
+<a href="/es/mentoria" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Mentoría</a>
+<a href="/es/livros" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Libros</a>
+<a href="/es/blog" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Blog</a>
+<a href="/es/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quiénes somos</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto"><nav class="eoj-lang" aria-label="Idioma / Language" style="display: flex; align-items: center; gap: 2px; font-size: 12px; letter-spacing: 0.04em; margin-right: 6px"><a href="/livros" hreflang="pt-BR" lang="pt-BR" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px">PT</a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/es/livros" hreflang="es" lang="es" aria-current="true" style="color: #FFFFFF; font-weight: 800; text-decoration: none; padding: 6px 4px">ES</a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/en/livros" hreflang="en" lang="en" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px">EN</a></nav>
+<a href="https://hub.entendendoojogo.com.br/users/sign_in" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acceder a EOJHub</a>
+<a href="/es/biblioteca" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acceder a Biblioteca EOJ</a>
+
+<button type="button" class="eoj-burger" aria-label="Abrir menú" aria-controls="menu-principal" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1.5px solid #4A4A4A; border-radius: 8px; background: none; color: #FFFFFF; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
+</div>
+</header>
+<section style="background: #111111; color: #FFFFFF"><div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 60px; display: flex; flex-direction: column; gap: 14px"><p style="margin: 0; color: #A1C4E6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Libros EOJ</p><h1 style="margin: 0; font-weight: 800; font-size: 52px; line-height: 1; text-transform: uppercase; max-width: 960px">Lecturas para profundizar</h1><p style="margin: 0; font-size: 18px; line-height: 1.6; color: #CFCFCF; max-width: 720px">Los libros de Entendendo o Jogo, escritos para llevar la táctica del papel al campo, y un e-book gratuito para empezar. Todos están en portugués.</p></div></section>
+<div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 80px; display: flex; flex-direction: column; gap: 28px">
+<article aria-labelledby="lv1" style="background: #111111; color: #FFFFFF; border-radius: 18px; padding: 36px; display: flex; flex-wrap: wrap; gap: 40px; align-items: center">
+<a href="/es/livros/sistemas-taticos" style="flex: 0 0 220px; display: block"><img src="/assets/b1bd5708d475ba65092ac50c631b0e85.jpg" alt="Portada del libro Sistemas Táticos" style="width: 220px; display: block; border-radius: 6px; box-shadow: 0 24px 50px rgba(0,0,0,0.5)"></a>
+<div style="flex: 1 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: flex-start; background: #A1C4E6; color: #111111; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 99px; letter-spacing: 0.06em; text-transform: uppercase">Libro destacado (en portugués)</span>
+<h2 id="lv1" style="margin: 0; font-size: 34px; font-weight: 800; line-height: 1.05; text-transform: uppercase">Sistemas Táticos</h2>
+<p style="margin: 0; font-size: 16px; line-height: 1.65; color: #CFCFCF">Las plataformas de juego y el enfrentamiento entre sistemas ofensivos y defensivos, con un enfoque práctico y aplicable en el día a día.</p>
+<p style="margin: 0; font-size: 14px; color: #A6A6A6">Italo Resende y Vinicius Xavier · prólogo de Eduardo Barroca</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 4px"><span style="font-weight: 800; font-size: 28px">R$ 100,00 <span style="font-size: 14px; font-weight: 600; color: #CFCFCF">+ envío</span></span>
+<a href="/es/livros/sistemas-taticos" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #A1C4E6; color: #111111">Conocer el libro</a><a href="https://api.whatsapp.com/send?phone=6281385430917&text=Ol%C3%A1!%20Quero%20comprar%20o%20livro%20Sistemas%20T%C3%A1ticos." style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; border: 1.5px solid #4A4A4A; color: #FFFFFF; padding: 14px 22px">Comprar por WhatsApp</a></div>
+</div></article>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 24px">
+<article aria-labelledby="lv2" style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 16px; padding: 28px; display: flex; gap: 24px; align-items: flex-start">
+<a href="/es/livros/situacoes-taticas-de-jogo-fase-ofensiva" style="flex: 0 0 140px; display: block"><img src="/assets/b7d62d48caae5dfeb3c59cc03092a153.jpg" alt="Portada del libro Situações Táticas de Jogo: Fase Ofensiva" style="width: 140px; display: block; border-radius: 4px; filter: grayscale(0.6) brightness(0.8)"></a>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<span style="align-self: flex-start; background: #B3261E; color: #FFFFFF; font-weight: 800; font-size: 12px; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 4px">AGOTADO</span>
+<h2 id="lv2" style="margin: 0; font-size: 21px; font-weight: 800; line-height: 1.2">Situações Táticas de Jogo: Fase Ofensiva</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #555555">El primer libro de EOJ, escrito durante la pandemia, sobre las situaciones tácticas de la fase ofensiva. De Italo Resende y Vinicius Xavier.</p>
+<a href="/es/livros/situacoes-taticas-de-jogo-fase-ofensiva" style="margin-top: 4px; align-self: flex-start; font-weight: 700; font-size: 15px; text-decoration: none; padding: 6px 0">Ver detalles →</a>
+</div></article>
+<article aria-labelledby="lv3" style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 16px; padding: 28px; display: flex; gap: 24px; align-items: flex-start">
+<a href="#ebook-form" style="flex: 0 0 140px; display: block"><img src="/assets/d87cb6a1b9dfb875b96e95c936625b1c.jpg" alt="Portada del e-book Análisis del balón parado del Mundial 2026" style="width: 140px; display: block; border-radius: 4px"></a>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<span style="align-self: flex-start; background: #E3F1E6; color: #1E5B2C; font-weight: 800; font-size: 12px; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 4px">GRATIS</span>
+<h2 id="lv3" style="margin: 0; font-size: 21px; font-weight: 800; line-height: 1.2">E-book: Análisis del balón parado del Mundial 2026</h2>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #555555">Los goles de balón parado comparados con los Mundiales de 2018 y 2022, el análisis de los córners y todos los goles del torneo, con acceso al video de cada jugada. 71 páginas, en portugués. Por Italo Resende.</p>
+<sc-if value="{{form}}" hint-placeholder-val="{{ true }}"><form id="ebook-form" onSubmit="{{enviar}}" style="margin: 4px 0 0; display: flex; flex-direction: column; gap: 10px; max-width: 520px">
+<span style="font-size: 14px; font-weight: 600; color: #111111">Escribe tu nombre y e-mail para descargarlo gratis:</span>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<label style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #555555">Nombre<input type="text" name="nome" autocomplete="name" value="{{nome}}" onInput="{{onNome}}" style="font: inherit; font-size: 15px; color: #111111; padding: 11px 12px; border: 1.5px solid #CCCCCC; border-radius: 8px; background: #FFFFFF"></label>
+<label style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #555555">E-mail<input type="email" name="email" autocomplete="email" value="{{email}}" onInput="{{onEmail}}" style="font: inherit; font-size: 15px; color: #111111; padding: 11px 12px; border: 1.5px solid #CCCCCC; border-radius: 8px; background: #FFFFFF"></label>
+</div>
+<button type="submit" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; align-self: flex-start; border: 0; cursor: pointer; background: #111111; color: #FFFFFF; font-size: 15px; padding: 13px 20px">{{btn}}</button>
+<sc-if value="{{erro}}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; font-size: 14px; color: #B3261E">{{erro}}</p></sc-if>
+<span style="font-size: 12px; color: #777777">Sin spam. Recibes novedades y contenidos de Entendendo o Jogo y puedes darte de baja cuando quieras.</span>
+</form></sc-if>
+<sc-if value="{{ok}}" hint-placeholder-val="{{ false }}"><div role="status" style="margin-top: 4px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start">
+<span style="font-size: 15px; font-weight: 600; color: #1E5B2C">¡Listo, {{primeiro}}! Tu e-book está disponible.</span>
+<a href="/assets/9bceccf3c371ec35bd6bbd011acbd3f1.pdf" download="E-book - Analise das bolas paradas da Copa do Mundo 2026.pdf" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #111111; color: #FFFFFF; font-size: 15px; padding: 13px 20px">Descargar el E-book (PDF)</a>
+</div></sc-if>
+</div></article>
+</div>
+</div>
+<footer style="background: #111111; color: #CFCFCF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 40px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 320px">
+<span style="font-family: Montserrat, sans-serif; font-weight: 800; font-size: 24px; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.04em">Entendendo o Jogo</span>
+<span style="font-size: 15px; line-height: 1.6">Formación táctica y análisis de juego para entrenadores, analistas y profesionales del fútbol.</span>
+<a href="mailto:entendendoojogo@gmail.com" style="color: #A1C4E6; text-decoration: none; font-size: 15px">entendendoojogo@gmail.com</a>
+</div>
+<nav aria-label="Pie de página" style="display: flex; flex-wrap: wrap; gap: 48px; font-size: 15px">
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Contenido</span><a href="/es/biblioteca" style="color: #CFCFCF; text-decoration: none">Biblioteca EOJ</a><a href="/es/blog" style="color: #CFCFCF; text-decoration: none">Blog</a><a href="/es/conteudos" style="color: #CFCFCF; text-decoration: none">Lives y podcasts</a><a href="/es/livros" style="color: #CFCFCF; text-decoration: none">Libros EOJ</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Comunidad</span><a href="https://chat.whatsapp.com/IfDikJxXWKVJVp5pad7DaE" style="color: #CFCFCF; text-decoration: none">Grupo sobre táctica (WhatsApp)</a><a href="https://chat.whatsapp.com/Lk3CEDf12ZQ3IQRd9Y34Xi" style="color: #CFCFCF; text-decoration: none">Grupo sobre entrenamiento (WhatsApp)</a><a href="https://www.instagram.com/entendendoojogo/" style="color: #CFCFCF; text-decoration: none">Instagram</a><a href="https://www.youtube.com/channel/UCXC2Uxw9CoJHGAN_FC06LYQ" style="color: #CFCFCF; text-decoration: none">YouTube</a><a href="https://x.com/italobresende" style="color: #CFCFCF; text-decoration: none">X</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Ayuda</span><a href="/es/ajuda" style="color: #CFCFCF; text-decoration: none">Preguntas frecuentes</a><a href="https://api.whatsapp.com/send?phone=6281385430917" style="color: #CFCFCF; text-decoration: none">WhatsApp</a><a href="/termos" style="color: #CFCFCF; text-decoration: none">Términos de uso (en portugués)</a><a href="/privacidade" style="color: #CFCFCF; text-decoration: none">Política de privacidad (en portugués)</a></div>
+</nav>
+</div>
+<div style="max-width: 1240px; margin: 0 auto; padding: 20px 32px 32px; border-top: 1px solid #2A2A2A; font-size: 13px; color: #A6A6A6">© 2026 Entendendo o Jogo. Todos los derechos reservados.</div>
+</footer>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" aria-label="Habla con el soporte por WhatsApp" title="Soporte por WhatsApp" style="position: fixed; right: 20px; bottom: 20px; z-index: 20; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: transparent; color: #25D366; text-decoration: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25))"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"></path><path d="M9 9.5c.3 1.8 1.7 3.6 3.6 4.4l1.2-1.1 2 .8-.4 1.6c-3.4.2-7-3.2-7.2-6.6l1.6-.5.8 2z"></path></svg></a>
+</div>
+</template>
+<script src="/eoj-runtime.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { nome: '', email: '', ok: false, sending: false, erro: '' }; }
+  renderVals() {
+    var self = this, st = this.state;
+    var URL_LISTA = 'https://script.google.com/macros/s/AKfycbxmodmm8q1bcH-zWhGvC9ZopHqLj6fFKRUpFRNfrKkzp7qWgxb1GUGI491oZmBPyQ22Kw/exec';
+    return {
+      nome: st.nome, email: st.email, ok: st.ok, form: !st.ok, erro: st.erro,
+      primeiro: (st.nome || '').trim().split(' ')[0],
+      btn: st.sending ? 'Enviando…' : 'Liberar mi e-book',
+      onNome: function (ev) { self.setState({ nome: ev.target.value, erro: '' }); },
+      onEmail: function (ev) { self.setState({ email: ev.target.value, erro: '' }); },
+      enviar: function (ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        var nm = (st.nome || '').trim(), em = (st.email || '').trim();
+        if (nm.length < 2) { self.setState({ erro: 'Escribe tu nombre.' }); return; }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { self.setState({ erro: 'Escribe un e-mail válido.' }); return; }
+        if (st.sending) return;
+        self.setState({ sending: true, erro: '' });
+        var body = new URLSearchParams({ email: em, nome: nm, origem: 'E-book bolas paradas Copa 2026 (ES) | Nome: ' + nm });
+        fetch(URL_LISTA, { method: 'POST', mode: 'no-cors', body: body })
+          .then(function () { self.setState({ ok: true, sending: false }); })
+          .catch(function () { self.setState({ sending: false, erro: 'No fue posible enviar ahora. Inténtalo de nuevo en unos instantes.' }); });
+      }
+    };
+  }
+}
+EOJ.mount(typeof Component !== 'undefined' ? Component : null);
+</script>
+</body>
+</html>

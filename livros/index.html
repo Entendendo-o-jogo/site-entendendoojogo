@@ -24,6 +24,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 </style>
 <link rel="stylesheet" href="/site.css">
 <!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
+<link rel="alternate" hreflang="pt-BR" href="https://entendendoojogo.com.br/livros"><link rel="alternate" hreflang="es" href="https://entendendoojogo.com.br/es/livros"><link rel="alternate" hreflang="en" href="https://entendendoojogo.com.br/en/livros"><link rel="alternate" hreflang="x-default" href="https://entendendoojogo.com.br/livros">
 </head>
 <body>
 <div id="eoj-root"></div>
@@ -44,7 +45,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 <a href="/blog" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Blog</a>
 <a href="/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quem somos</a>
 </nav>
-<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto">
+<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto"><nav class="eoj-lang" aria-label="Idioma / Language" style="display: flex; align-items: center; gap: 2px; font-size: 12px; letter-spacing: 0.04em; margin-right: 6px"><a href="/livros" hreflang="pt-BR" lang="pt-BR" aria-current="true" style="color: #FFFFFF; font-weight: 800; text-decoration: none; padding: 6px 4px">PT</a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/es/livros" hreflang="es" lang="es" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px">ES</a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/en/livros" hreflang="en" lang="en" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px">EN</a></nav>
 <a href="https://hub.entendendoojogo.com.br/users/sign_in" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar EOJHub</a>
 <a href="/biblioteca" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar Biblioteca EOJ</a>
 
@@ -73,12 +74,25 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 <a href="/livros/situacoes-taticas-de-jogo-fase-ofensiva" style="margin-top: 4px; align-self: flex-start; font-weight: 700; font-size: 15px; text-decoration: none; padding: 6px 0">Ver detalhes →</a>
 </div></article>
 <article aria-labelledby="lv3" style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 16px; padding: 28px; display: flex; gap: 24px; align-items: flex-start">
-<a href="/assets/9bceccf3c371ec35bd6bbd011acbd3f1.pdf" download="E-book - Analise das bolas paradas da Copa do Mundo 2026.pdf" style="flex: 0 0 140px; display: block"><img src="/assets/d87cb6a1b9dfb875b96e95c936625b1c.jpg" alt="Capa do e-book Análise das bolas paradas da Copa do Mundo 2026" style="width: 140px; display: block; border-radius: 4px"></a>
+<a href="#ebook-form" style="flex: 0 0 140px; display: block"><img src="/assets/d87cb6a1b9dfb875b96e95c936625b1c.jpg" alt="Capa do e-book Análise das bolas paradas da Copa do Mundo 2026" style="width: 140px; display: block; border-radius: 4px"></a>
 <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px">
 <span style="align-self: flex-start; background: #E3F1E6; color: #1E5B2C; font-weight: 800; font-size: 12px; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 4px">GRATUITO</span>
 <h2 id="lv3" style="margin: 0; font-size: 21px; font-weight: 800; line-height: 1.2">E-book: Análise das bolas paradas da Copa do Mundo 2026</h2>
 <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #555555">Os gols de bola parada comparados às Copas de 2018 e 2022, a análise dos escanteios e todos os gols do torneio, com acesso ao vídeo de cada lance. 71 páginas. Por Italo Resende.</p>
-<a href="/assets/9bceccf3c371ec35bd6bbd011acbd3f1.pdf" download="E-book - Analise das bolas paradas da Copa do Mundo 2026.pdf" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; margin-top: 4px; align-self: flex-start; background: #111111; color: #FFFFFF; font-size: 15px; padding: 13px 20px">Baixe o E-book</a>
+<sc-if value="{{form}}" hint-placeholder-val="{{ true }}"><form id="ebook-form" onSubmit="{{enviar}}" style="margin: 4px 0 0; display: flex; flex-direction: column; gap: 10px; max-width: 520px">
+<span style="font-size: 14px; font-weight: 600; color: #111111">Informe seu nome e e-mail para baixar gratuitamente:</span>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<label style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #555555">Nome<input type="text" name="nome" autocomplete="name" value="{{nome}}" onInput="{{onNome}}" style="font: inherit; font-size: 15px; color: #111111; padding: 11px 12px; border: 1.5px solid #CCCCCC; border-radius: 8px; background: #FFFFFF"></label>
+<label style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #555555">E-mail<input type="email" name="email" autocomplete="email" value="{{email}}" onInput="{{onEmail}}" style="font: inherit; font-size: 15px; color: #111111; padding: 11px 12px; border: 1.5px solid #CCCCCC; border-radius: 8px; background: #FFFFFF"></label>
+</div>
+<button type="submit" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; align-self: flex-start; border: 0; cursor: pointer; background: #111111; color: #FFFFFF; font-size: 15px; padding: 13px 20px">{{btn}}</button>
+<sc-if value="{{erro}}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; font-size: 14px; color: #B3261E">{{erro}}</p></sc-if>
+<span style="font-size: 12px; color: #777777">Sem spam. Você recebe novidades e conteúdos do Entendendo o Jogo e pode sair quando quiser.</span>
+</form></sc-if>
+<sc-if value="{{ok}}" hint-placeholder-val="{{ false }}"><div role="status" style="margin-top: 4px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start">
+<span style="font-size: 15px; font-weight: 600; color: #1E5B2C">Pronto, {{primeiro}}! Seu e-book está liberado.</span>
+<a href="/assets/9bceccf3c371ec35bd6bbd011acbd3f1.pdf" download="E-book - Analise das bolas paradas da Copa do Mundo 2026.pdf" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #111111; color: #FFFFFF; font-size: 15px; padding: 13px 20px">Baixar o E-book (PDF)</a>
+</div></sc-if>
 </div></article>
 </div>
 </div>
@@ -103,8 +117,29 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 <script src="/eoj-runtime.js"></script>
 <script>
 class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { nome: '', email: '', ok: false, sending: false, erro: '' }; }
   renderVals() {
-    return {};
+    var self = this, st = this.state;
+    var URL_LISTA = 'https://script.google.com/macros/s/AKfycbxmodmm8q1bcH-zWhGvC9ZopHqLj6fFKRUpFRNfrKkzp7qWgxb1GUGI491oZmBPyQ22Kw/exec';
+    return {
+      nome: st.nome, email: st.email, ok: st.ok, form: !st.ok, erro: st.erro,
+      primeiro: (st.nome || '').trim().split(' ')[0],
+      btn: st.sending ? 'Enviando…' : 'Liberar meu e-book',
+      onNome: function (ev) { self.setState({ nome: ev.target.value, erro: '' }); },
+      onEmail: function (ev) { self.setState({ email: ev.target.value, erro: '' }); },
+      enviar: function (ev) {
+        if (ev && ev.preventDefault) ev.preventDefault();
+        var nm = (st.nome || '').trim(), em = (st.email || '').trim();
+        if (nm.length < 2) { self.setState({ erro: 'Digite seu nome.' }); return; }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { self.setState({ erro: 'Digite um e-mail válido.' }); return; }
+        if (st.sending) return;
+        self.setState({ sending: true, erro: '' });
+        var body = new URLSearchParams({ email: em, nome: nm, origem: 'E-book bolas paradas Copa 2026 | Nome: ' + nm });
+        fetch(URL_LISTA, { method: 'POST', mode: 'no-cors', body: body })
+          .then(function () { self.setState({ ok: true, sending: false }); })
+          .catch(function () { self.setState({ sending: false, erro: 'Não foi possível enviar agora. Tente de novo em instantes.' }); });
+      }
+    };
   }
 }
 EOJ.mount(typeof Component !== 'undefined' ? Component : null);

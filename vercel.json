@@ -2,17 +2,56 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/quemsomos", "destination": "/quem-somos", "permanent": true },
-    { "source": "/termo_de_uso", "destination": "/termos", "permanent": true },
-    { "source": "/politica_de_privacidade", "destination": "/privacidade", "permanent": true },
-    { "source": "/livros", "destination": "/#livros", "permanent": true },
-    { "source": "/livro/sistemas-taticos", "destination": "/livros/sistemas-taticos", "permanent": true },
-    { "source": "/livro/situacoes-taticas-de-jogo-fase-ofensiva", "destination": "/livros/situacoes-taticas-de-jogo-fase-ofensiva", "permanent": true },
-    { "source": "/livro/:slug", "destination": "/livros/:slug", "permanent": true },
-    { "source": "/acervo", "destination": "/biblioteca", "permanent": false },
-    { "source": "/biblioteca-eoj", "destination": "/biblioteca", "permanent": false }
+    {
+      "source": "/quemsomos",
+      "destination": "/quem-somos",
+      "permanent": true
+    },
+    {
+      "source": "/termo_de_uso",
+      "destination": "/termos",
+      "permanent": true
+    },
+    {
+      "source": "/politica_de_privacidade",
+      "destination": "/privacidade",
+      "permanent": true
+    },
+    {
+      "source": "/livro/sistemas-taticos",
+      "destination": "/livros/sistemas-taticos",
+      "permanent": true
+    },
+    {
+      "source": "/livro/situacoes-taticas-de-jogo-fase-ofensiva",
+      "destination": "/livros/situacoes-taticas-de-jogo-fase-ofensiva",
+      "permanent": true
+    },
+    {
+      "source": "/livro/:slug",
+      "destination": "/livros/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/acervo",
+      "destination": "/biblioteca",
+      "permanent": false
+    },
+    {
+      "source": "/biblioteca-eoj",
+      "destination": "/biblioteca",
+      "permanent": false
+    }
   ],
   "headers": [
-    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ]
 }

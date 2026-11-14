@@ -1,6 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PG5487N7WD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-PG5487N7WD');
+document.addEventListener('click', function (ev) {
+  var a = ev.target.closest && ev.target.closest('a[href]');
+  if (!a) return;
+  var h = a.getAttribute('href') || '';
+  var txt = (a.textContent || '').trim().slice(0, 80);
+  if (h.indexOf('pay.hotmart.com') >= 0) gtag('event', 'begin_checkout', { link_url: h, link_text: txt });
+  else if (h.indexOf('wa.me') >= 0 || h.indexOf('whatsapp.com') >= 0) gtag('event', 'contact', { method: 'whatsapp', link_text: txt });
+  else if (h.indexOf('hub.entendendoojogo.com.br') >= 0) gtag('event', 'eojhub_click', { link_url: h, link_text: txt });
+  else if (a.hasAttribute('download')) gtag('event', 'generate_lead', { method: 'ebook_download', link_text: txt });
+}, true);
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Situações Táticas de Jogo: Fase Ofensiva — EOJ Books</title>

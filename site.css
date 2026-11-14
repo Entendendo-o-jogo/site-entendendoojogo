@@ -8,13 +8,13 @@ img, video { max-width: 100%; }
 @media (max-width: 760px) {
   /* Cabeçalho: logo, menu ☰ e nada mais */
   header > div { padding: 12px 20px !important; gap: 10px 14px !important; }
-  nav[aria-label="Principal"] { display: none !important; }
-  nav[aria-label="Principal"][data-open="true"] {
+  #menu-principal { display: none !important; }
+  #menu-principal[data-open="true"] {
     display: flex !important; order: 3; flex: 1 1 100% !important; flex-direction: column;
     align-items: stretch !important; gap: 0 !important; font-size: 16px !important;
     border-top: 1px solid #2A2A2A; padding-top: 6px;
   }
-  nav[aria-label="Principal"][data-open="true"] a { padding: 13px 0 !important; border-bottom: 1px solid #1F1F1F; }
+  #menu-principal[data-open="true"] a { padding: 13px 0 !important; border-bottom: 1px solid #1F1F1F; }
   header a[href^="https://hub.entendendoojogo"], header > div > div > a[href$="/biblioteca"] { display: none !important; }
   header > div > div { margin-left: auto; }
   .eoj-burger { display: flex !important; }
@@ -53,4 +53,17 @@ img, video { max-width: 100%; }
   /* Botão do WhatsApp */
   a[aria-label="Fale com o suporte pelo WhatsApp"] { width: 64px !important; height: 64px !important; right: 12px !important; bottom: 12px !important; }
   a[aria-label="Fale com o suporte pelo WhatsApp"] svg { width: 56px; height: 56px; }
+}
+
+/* Telas médias (tablet / notebook pequeno): cabeçalho recolhido no menu ☰ */
+@media (max-width: 1100px) {
+  header > div { flex-wrap: wrap !important; }
+  #menu-principal { display: none !important; }
+  #menu-principal[data-open="true"] {
+    display: flex !important; order: 3; flex: 1 1 100% !important; flex-direction: column;
+    align-items: stretch !important; gap: 0 !important; font-size: 16px !important;
+    border-top: 1px solid #2A2A2A; padding-top: 6px;
+  }
+  #menu-principal[data-open="true"] a { padding: 13px 0 !important; border-bottom: 1px solid #1F1F1F; }
+  .eoj-burger { display: flex !important; }
 }

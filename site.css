@@ -67,3 +67,6 @@ img, video { max-width: 100%; }
   #menu-principal[data-open="true"] a { padding: 13px 0 !important; border-bottom: 1px solid #1F1F1F; }
   .eoj-burger { display: flex !important; }
 }
+
+@media (max-width: 760px) { .eoj-lang .eoj-lang-t { display: none; } .eoj-lang { margin-right: 2px !important; } }
+@media (max-width: 760px) { .eoj-lang a[aria-current="true"] { box-shadow: inset 0 -2px 0 #A1C4E6; } .eoj-lang a:not([aria-current]) { opacity: 0.6 !important; } }

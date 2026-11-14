@@ -10,6 +10,8 @@ window.eojLoadGA = function () {
   s.src = 'https://www.googletagmanager.com/gtag/js?id=G-PG5487N7WD';
   document.head.appendChild(s);
   gtag('js', new Date()); gtag('config', 'G-PG5487N7WD');
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '249992227113113'); fbq('track', 'PageView');
 };
 (function () { try { if (localStorage.getItem('eoj-cookies') === 'aceito') window.eojLoadGA(); } catch (e) {} })();
 document.addEventListener('click', function (ev) {
@@ -18,10 +20,11 @@ document.addEventListener('click', function (ev) {
   if (!a) return;
   var h = a.getAttribute('href') || '';
   var txt = (a.textContent || '').trim().slice(0, 80);
-  if (h.indexOf('pay.hotmart.com') >= 0) gtag('event', 'begin_checkout', { link_url: h, link_text: txt });
-  else if (h.indexOf('wa.me') >= 0 || h.indexOf('whatsapp.com') >= 0) gtag('event', 'contact', { method: 'whatsapp', link_text: txt });
+  var fb = window.fbq || function () {};
+  if (h.indexOf('pay.hotmart.com') >= 0) { gtag('event', 'begin_checkout', { link_url: h, link_text: txt }); fb('track', 'InitiateCheckout'); }
+  else if (h.indexOf('wa.me') >= 0 || h.indexOf('whatsapp.com') >= 0) { gtag('event', 'contact', { method: 'whatsapp', link_text: txt }); fb('track', 'Contact'); }
   else if (h.indexOf('hub.entendendoojogo.com.br') >= 0) gtag('event', 'eojhub_click', { link_url: h, link_text: txt });
-  else if (a.hasAttribute('download')) gtag('event', 'generate_lead', { method: 'ebook_download', link_text: txt });
+  else if (a.hasAttribute('download')) { gtag('event', 'generate_lead', { method: 'ebook_download', link_text: txt }); fb('track', 'Lead'); }
 }, true);
 </script>
 
@@ -141,7 +144,7 @@ class Component extends DCLogic {
 EOJ.mount(typeof Component !== 'undefined' ? Component : null);
 </script>
 <div id="eoj-consent" role="dialog" aria-live="polite" aria-label="Cookie notice" hidden style="position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 90; max-width: 760px; margin: 0 auto; background: #111111; color: #FFFFFF; border: 1px solid #2A2A2A; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 18px 20px; display: none; flex-wrap: wrap; align-items: center; gap: 14px 20px; font-size: 14px; line-height: 1.5; font-family: Montserrat, system-ui, sans-serif">
-<p style="margin: 0; flex: 1 1 320px">We use analytics cookies (Google Analytics) to understand how the site is used and improve our content. You can accept or decline. <a href="/privacidade" style="color: #A1C4E6">Privacy policy (PT)</a></p>
+<p style="margin: 0; flex: 1 1 320px">We use analytics and marketing cookies (Google Analytics and Meta) to understand how the site is used, improve our content and show relevant ads. You can accept or decline. <a href="/privacidade" style="color: #A1C4E6">Privacy policy (PT)</a></p>
 <div style="display: flex; gap: 10px; flex: 0 0 auto">
 <button type="button" data-eoj-cookies="recusado" style="font: inherit; font-weight: 600; background: transparent; color: #FFFFFF; border: 1px solid #555555; border-radius: 8px; padding: 10px 16px; cursor: pointer">Decline</button>
 <button type="button" data-eoj-cookies="aceito" style="font: inherit; font-weight: 700; background: #A1C4E6; color: #111111; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer">Accept</button>

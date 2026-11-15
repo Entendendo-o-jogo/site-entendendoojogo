@@ -83,3 +83,8 @@ html { scroll-padding-top: 84px; }
 @media (max-width: 1100px) {
   header #menu-principal[data-open="true"] { max-height: calc(100vh - 72px); overflow-y: auto; }
 }
+
+/* Home: cada frase do título em uma linha */
+.eoj-linha { display: block; }
+@media (min-width: 761px) { .eoj-linha { white-space: nowrap; } }
+@media (max-width: 760px) { .eoj-hero-h1 { font-size: 38px !important; line-height: 1.02 !important; } }

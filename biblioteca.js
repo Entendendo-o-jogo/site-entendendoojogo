@@ -106,7 +106,7 @@
   // ---------- Playlists ----------
   B.playlists = function () {
     if (!B.user) return Promise.resolve([]);
-    return sb.from('playlists').select('id, nome, criado_em, playlist_clipes(clipe, ordem)').order('criado_em', { ascending: true }).then(ok);
+    return sb.from('playlists').select('id, nome, criado_em, codigo, playlist_clipes(clipe, ordem)').order('criado_em', { ascending: true }).then(ok);
   };
   B.novaPlaylist = function (nome) { return sb.from('playlists').insert({ nome: nome }).select().single().then(ok).then(function (d) { B.ev('bib_playlist_criar'); return d; }); };
   B.renomearPlaylist = function (id, nome) { return sb.from('playlists').update({ nome: nome }).eq('id', id).then(ok); };
@@ -114,6 +114,18 @@
   B.adicionar = function (playlist, clipe) {
     return sb.from('playlist_clipes').upsert({ playlist: playlist, clipe: clipe, ordem: Date.now() % 2147483647 }, { onConflict: 'playlist,clipe', ignoreDuplicates: true }).then(ok).then(function (d) { B.ev('bib_playlist_adicionar', { clipe_id: clipe }); return d; });
   };
+  // Compartilhar por link: código aleatório (sem ele, a playlist é privada)
+  function novoCodigo() {
+    var b = new Uint8Array(9); (window.crypto || window.msCrypto).getRandomValues(b);
+    return btoa(String.fromCharCode.apply(null, b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  B.compartilhar = function (id, on) {
+    var cod = on ? novoCodigo() : null;
+    return sb.from('playlists').update({ codigo: cod }).eq('id', id).then(ok).then(function () { B.ev(on ? 'bib_playlist_compartilhar' : 'bib_playlist_privar'); return cod; });
+  };
+  B.linkPlaylist = function (cod) { return location.origin + '/biblioteca/playlist?c=' + encodeURIComponent(cod); };
+  B.playlistPublica = function (cod) { return sb.rpc('playlist_compartilhada', { cod: cod }).then(ok); };
+  B.copiarTexto = function (t) { return navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject(new Error('clip')); };
   B.remover = function (playlist, clipe) { return sb.from('playlist_clipes').delete().eq('playlist', playlist).eq('clipe', clipe).then(ok); };
 
   // ---------- Vimeo ----------

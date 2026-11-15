@@ -209,7 +209,7 @@
     host.id = 'eoj-player';
     host.style.cssText = 'position:absolute;z-index:5;background:#000;border-radius:12px;overflow:hidden;display:none';
     host.innerHTML = '<iframe src="' + esc(B.player(c)) + '" title="' + esc(c.titulo) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>' +
-      '<div class="eoj-fim" hidden style="position:absolute;inset:0;background:#111111;color:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;overflow:auto"></div>';
+      '<div class="eoj-fim" style="position:absolute;inset:0;background:#111111;color:#FFFFFF;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;overflow:auto"></div>';
     document.body.appendChild(host);
     var fim = host.querySelector('.eoj-fim'), iframe = host.querySelector('iframe'), player = null;
     var lista = (rel || []).slice(0, 3);
@@ -225,12 +225,12 @@
     function ligar() {
       if (!window.Vimeo || !window.Vimeo.Player) return;
       player = new window.Vimeo.Player(iframe);
-      player.on('ended', function () { fim.hidden = false; });
-      player.on('play', function () { fim.hidden = true; });
+      player.on('ended', function () { fim.style.display = 'flex'; });
+      player.on('play', function () { fim.style.display = 'none'; });
     }
     // "Assistir de novo": recarrega o player do início (mais confiável que voltar o tempo depois do fim)
     fim.querySelector('.eoj-denovo').addEventListener('click', function () {
-      fim.hidden = true;
+      fim.style.display = 'none';
       var novo = iframe.cloneNode(false);
       novo.src = B.player(c) + '&autoplay=1';
       iframe.replaceWith(novo); iframe = novo; player = null;

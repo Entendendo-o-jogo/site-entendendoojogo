@@ -127,6 +127,8 @@
     });
   };
   B.videosDaPasta = function (pasta) { return B.funcao({ acao: 'pasta', pasta: pasta }).then(function (d) { return d.videos || []; }); };
+  B.auditarVimeo = function (pastaBib) { return B.funcao({ acao: 'auditar', pastaBiblioteca: pastaBib }); };
+  B.protegerVimeo = function (ids) { return B.funcao({ acao: 'proteger', ids: ids }); };
   B.linkDownload = function (id) { return B.funcao({ acao: 'baixar', id: id }); };
 
   // Lê o nome do arquivo: início com sistema (4-3-3) = Sistemas táticos; com posição = Tática individual.

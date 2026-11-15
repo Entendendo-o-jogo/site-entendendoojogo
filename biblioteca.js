@@ -117,10 +117,15 @@
 
   // Lê o nome do arquivo: início com sistema (4-3-3) = Sistemas táticos; com posição = Tática individual.
   var POS = ['goleiro', 'zagueiro', 'lateral', 'ala', 'volante', 'meia', 'meio-campista', 'ponta', 'extremo', 'atacante', 'centroavante', 'segundo atacante'];
+  var PLURAL = { goleiros: 'goleiro', zagueiros: 'zagueiro', laterais: 'lateral', alas: 'ala', volantes: 'volante', meias: 'meia', 'meio-campistas': 'meio-campista', pontas: 'ponta', extremos: 'extremo', atacantes: 'atacante', centroavantes: 'centroavante' };
   function semAcento(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
   B.lerNome = function (nome) {
-    var titulo = String(nome || '').replace(/\.(mp4|mov|m4v|avi|mkv)$/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+    var base = String(nome || '').replace(/\.(mp4|mov|m4v|avi|mkv)$/i, '');
+    var partes = base.split('_').map(function (x) { return x.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+    var titulo = partes.join(' - ');
     var n = semAcento(titulo), c = { titulo: titulo, tipo: 'Clipe separado' };
+    var w0 = semAcento(partes[0] || '').split(/[\s-]/)[0];
+    if (PLURAL[w0]) n = PLURAL[w0] + n.slice(w0.length);
     if (/^\d(\s*[-.]\s*\d){2,3}\b/.test(n)) c.subtema = 'Sistemas táticos';
     else {
       var p = POS.slice().sort(function (a, b) { return b.length - a.length; }).find(function (x) { return n === x || n.indexOf(x + ' ') === 0 || n.indexOf(x + '-') === 0 || n.indexOf(x + ':') === 0; });
@@ -137,6 +142,10 @@
     if (tem(/\bpositivo\b/)) c.resultado = 'Positivo'; else if (tem(/\bnegativo\b/)) c.resultado = 'Negativo';
     if (tem(/\bcompilado\b/)) c.tipo = 'Compilado';
     if (tem(/\bfeminino\b/)) c.genero = 'Feminino'; else c.genero = 'Masculino';
+    if (partes.length >= 3) {
+      var ult = partes[partes.length - 1];
+      if (!/^\d/.test(ult) && !/^(tv|camera.*|positivo|negativo|compilado|clipe separado|feminino|masculino|org\.?\s.*|organizacao.*|transicao.*|bolas? paradas?)$/.test(semAcento(ult))) c.equipe = ult;
+    }
     c.titulo = B.limparTitulo(titulo);
     return c;
   };
@@ -167,7 +176,7 @@
     host.id = 'eoj-player';
     host.style.cssText = 'position:absolute;z-index:5;background:#000;border-radius:12px;overflow:hidden;display:none';
     host.innerHTML = '<iframe src="' + esc(B.player(c)) + '" title="' + esc(c.titulo) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>' +
-      '<div class="eoj-fim" hidden style="position:absolute;inset:0;background:rgba(17,17,17,0.97);color:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;overflow:auto"></div>';
+      '<div class="eoj-fim" hidden style="position:absolute;inset:0;background:#111111;color:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;overflow:auto"></div>';
     document.body.appendChild(host);
     var fim = host.querySelector('.eoj-fim'), iframe = host.querySelector('iframe'), player = null;
     var lista = (rel || []).slice(0, 3);

@@ -59,6 +59,20 @@
     var id = c.id; var d = {}; for (var k in c) if (k !== 'id' && k !== 'criado_em') d[k] = c[k];
     return (id ? sb.from('clipes').update(d).eq('id', id) : sb.from('clipes').insert(d)).select().single().then(ok);
   };
+  // ---------- Equipes e escudos ----------
+  B.equipes = function () {
+    return sb.from('equipes').select('nome, escudo').then(ok).then(function (rows) { var m = {}; rows.forEach(function (r) { m[r.nome] = r.escudo || ''; }); return m; });
+  };
+  B.salvarEquipe = function (nome, escudo) { return sb.from('equipes').upsert({ nome: nome, escudo: escudo }, { onConflict: 'nome' }).then(ok); };
+  B.enviarEscudo = function (nome, arquivo) {
+    var ext = (String(arquivo.name || '').match(/\.(png|svg|webp|jpe?g)$/i) || ['', 'png'])[1].toLowerCase();
+    var slug = semAcento(nome).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'equipe';
+    var caminho = slug + '-' + Date.now() + '.' + ext;
+    return sb.storage.from('escudos').upload(caminho, arquivo, { upsert: true, contentType: arquivo.type || undefined }).then(ok).then(function () {
+      var url = sb.storage.from('escudos').getPublicUrl(caminho).data.publicUrl;
+      return B.salvarEquipe(nome, url).then(function () { return url; });
+    });
+  };
   B.inserirVarios = function (lista) { return sb.from('clipes').insert(lista).select('id').then(ok); };
   B.excluirClipe = function (id) { return sb.from('clipes').delete().eq('id', id).then(ok); };
 
@@ -144,7 +158,7 @@
     if (tem(/\bfeminino\b/)) c.genero = 'Feminino'; else c.genero = 'Masculino';
     if (partes.length >= 3) {
       var ult = partes[partes.length - 1];
-      if (!/^\d/.test(ult) && !/^(tv|camera.*|positivo|negativo|compilado|clipe separado|feminino|masculino|org\.?\s.*|organizacao.*|transicao.*|bolas? paradas?)$/.test(semAcento(ult))) c.equipe = ult;
+      if (!/^\d/.test(ult) && !/^(tv|camera.*|positivo|negativo|compilado|clipe separado|feminino|masculino|org\.?\s.*|organizacao.*|transicao.*|bolas? paradas?)$/.test(semAcento(ult))) { c.equipe = ult; titulo = partes.slice(0, -1).join(' - '); }
     }
     c.titulo = B.limparTitulo(titulo);
     return c;

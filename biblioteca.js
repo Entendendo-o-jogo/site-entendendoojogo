@@ -59,6 +59,7 @@
     var id = c.id; var d = {}; for (var k in c) if (k !== 'id' && k !== 'criado_em') d[k] = c[k];
     return (id ? sb.from('clipes').update(d).eq('id', id) : sb.from('clipes').insert(d)).select().single().then(ok);
   };
+  B.inserirVarios = function (lista) { return sb.from('clipes').insert(lista).select('id').then(ok); };
   B.excluirClipe = function (id) { return sb.from('clipes').delete().eq('id', id).then(ok); };
 
   // ---------- Favoritos ----------
@@ -101,6 +102,44 @@
   B.player = function (c) {
     return 'https://player.vimeo.com/video/' + c.vimeo_id + '?' + (c.vimeo_hash ? 'h=' + c.vimeo_hash + '&' : '') + 'title=0&byline=0&portrait=0&dnt=1';
   };
+  // ---------- Função segura no Supabase (pasta do Vimeo e download) ----------
+  B.funcao = function (corpo) {
+    return sb.functions.invoke('vimeo', { body: corpo }).then(function (r) {
+      if (r.error) {
+        var ctx = r.error.context;
+        return (ctx && ctx.json ? ctx.json() : Promise.resolve({})).then(function (d) { var e = new Error((d && d.erro) || 'falha'); e.codigo = d && d.erro; throw e; });
+      }
+      return r.data;
+    });
+  };
+  B.videosDaPasta = function (pasta) { return B.funcao({ acao: 'pasta', pasta: pasta }).then(function (d) { return d.videos || []; }); };
+  B.linkDownload = function (id) { return B.funcao({ acao: 'baixar', id: id }); };
+
+  // Lê o nome do arquivo: início com sistema (4-3-3) = Sistemas táticos; com posição = Tática individual.
+  var POS = ['goleiro', 'zagueiro', 'lateral', 'ala', 'volante', 'meia', 'meio-campista', 'ponta', 'extremo', 'atacante', 'centroavante', 'segundo atacante'];
+  function semAcento(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  B.lerNome = function (nome) {
+    var titulo = String(nome || '').replace(/\.(mp4|mov|m4v|avi|mkv)$/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+    var n = semAcento(titulo), c = { titulo: titulo, tipo: 'Clipe separado' };
+    if (/^\d(\s*[-.]\s*\d){2,3}\b/.test(n)) c.subtema = 'Sistemas táticos';
+    else {
+      var p = POS.slice().sort(function (a, b) { return b.length - a.length; }).find(function (x) { return n === x || n.indexOf(x + ' ') === 0 || n.indexOf(x + '-') === 0 || n.indexOf(x + ':') === 0; });
+      if (p) { c.subtema = 'Tática individual'; c.posicao = p.charAt(0).toUpperCase() + p.slice(1); }
+    }
+    function tem(re) { return re.test(n); }
+    if (tem(/\b(org(\.|anizacao)?\s*ofensiva)\b/)) c.momento = 'Org. ofensiva';
+    else if (tem(/\b(org(\.|anizacao)?\s*defensiva)\b/)) c.momento = 'Org. defensiva';
+    else if (tem(/\btransicao\s*ofensiva\b/)) c.momento = 'Transição ofensiva';
+    else if (tem(/\btransicao\s*defensiva\b/)) c.momento = 'Transição defensiva';
+    else if (tem(/\b(bolas? paradas?|escanteio|tiro livre)\b/)) c.momento = 'Bolas paradas';
+    if (tem(/\bcamera\s*tatica\b/)) c.camera = 'Câmera tática';
+    else if (tem(/\b(camera\s*(da\s*)?tv|tv)\b/)) c.camera = 'Câmera da TV';
+    if (tem(/\bpositivo\b/)) c.resultado = 'Positivo'; else if (tem(/\bnegativo\b/)) c.resultado = 'Negativo';
+    if (tem(/\bcompilado\b/)) c.tipo = 'Compilado';
+    if (tem(/\bfeminino\b/)) c.genero = 'Feminino'; else c.genero = 'Masculino';
+    return c;
+  };
+
   B.dur = function (s) { s = Math.round(+s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); };
   B.param = function (k) { return new URLSearchParams(location.search).get(k); };
 

@@ -137,7 +137,24 @@
     if (tem(/\bpositivo\b/)) c.resultado = 'Positivo'; else if (tem(/\bnegativo\b/)) c.resultado = 'Negativo';
     if (tem(/\bcompilado\b/)) c.tipo = 'Compilado';
     if (tem(/\bfeminino\b/)) c.genero = 'Feminino'; else c.genero = 'Masculino';
+    c.titulo = B.limparTitulo(titulo);
     return c;
+  };
+
+  // Tira do título as palavras que já viraram filtro (momento, câmera, resultado, compilado, gênero)
+  var FRASES = [['org', 'ofensiva'], ['org', 'defensiva'], ['organizacao', 'ofensiva'], ['organizacao', 'defensiva'],
+    ['transicao', 'ofensiva'], ['transicao', 'defensiva'], ['camera', 'tatica'], ['camera', 'da', 'tv'], ['camera', 'tv'], ['tv'],
+    ['positivo'], ['negativo'], ['compilado'], ['clipe', 'separado'], ['feminino'], ['masculino']];
+  B.limparTitulo = function (t) {
+    var w = String(t || '').split(/\s+/).filter(Boolean), n = w.map(function (x) { return semAcento(x).replace(/[.,;:()]/g, ''); }), out = [];
+    for (var i = 0; i < w.length;) {
+      var f = FRASES.find(function (p) { return p.every(function (x, j) { return n[i + j] === x; }); });
+      if (f) { i += f.length; continue; }
+      out.push(w[i]); i++;
+    }
+    var s = (' ' + out.join(' ') + ' ').replace(/(\s+[-–|])+\s+/g, ' - ').replace(/^\s*-\s+|\s+-\s*$/g, '').trim();
+    if (!s) return String(t || '').trim();
+    return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
   B.dur = function (s) { s = Math.round(+s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); };

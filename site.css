@@ -88,3 +88,4 @@ html { scroll-padding-top: 84px; }
 .eoj-linha { display: block; }
 @media (min-width: 761px) { .eoj-linha { white-space: nowrap; } }
 @media (max-width: 760px) { .eoj-hero-h1 { font-size: 38px !important; line-height: 1.02 !important; } }
+@media (max-width: 760px) { .eoj-num { font-size: 26px !important; } .eoj-nums { gap: 22px !important; } }

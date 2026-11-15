@@ -9,12 +9,12 @@
     },
     {
       "source": "/es/biblioteca",
-      "destination": "/biblioteca/acervo",
+      "destination": "/es/biblioteca/acervo",
       "permanent": false
     },
     {
       "source": "/en/biblioteca",
-      "destination": "/biblioteca/acervo",
+      "destination": "/en/biblioteca/acervo",
       "permanent": false
     },
     {

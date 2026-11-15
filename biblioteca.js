@@ -7,6 +7,68 @@
   var sb = window.supabase.createClient(URL, KEY);
   var B = window.EOJB = { sb: sb, user: null, perfil: null };
 
+  // ---------- Idioma (pt / es / en, pelo endereço da página) ----------
+  var LG = (/^\/(es|en)(\/|$)/.exec(location.pathname) || [])[1] || 'pt';
+  B.lang = LG;
+  B.u = function (path) { return (LG === 'pt' ? '' : '/' + LG) + path; };
+  // Textos deste arquivo
+  var TX = {
+    es: {
+      'E-mail ou senha incorretos.': 'Correo o contraseña incorrectos.',
+      'Este e-mail já tem conta. Use "Entrar".': 'Este correo ya tiene cuenta. Usa "Entrar".',
+      'A senha precisa ter pelo menos 6 caracteres.': 'La contraseña debe tener al menos 6 caracteres.',
+      'Digite um e-mail válido.': 'Escribe un correo válido.',
+      'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.': 'Demasiados intentos seguidos. Espera unos minutos e inténtalo de nuevo.',
+      'Confirme seu e-mail pelo link que enviamos antes de entrar.': 'Confirma tu correo con el enlace que te enviamos antes de entrar.',
+      'Sem conexão. Verifique a internet e tente de novo.': 'Sin conexión. Revisa internet e inténtalo de nuevo.',
+      'Não foi possível concluir agora. Tente de novo em instantes.': 'No se pudo completar ahora. Inténtalo de nuevo en unos instantes.',
+      'Entre na sua conta': 'Entra en tu cuenta', 'Recuperar a senha': 'Recuperar la contraseña', 'Crie sua conta grátis': 'Crea tu cuenta gratis',
+      'Aguarde…': 'Espera…', 'Entrar': 'Entrar', 'Enviar link': 'Enviar enlace', 'Criar conta': 'Crear cuenta',
+      'Digite seu nome.': 'Escribe tu nombre.',
+      'Se houver uma conta com esse e-mail, enviamos um link para criar uma nova senha.': 'Si existe una cuenta con ese correo, te enviamos un enlace para crear una nueva contraseña.',
+      'Conta criada! Confirme seu e-mail pelo link que enviamos e depois entre.': '¡Cuenta creada! Confirma tu correo con el enlace que te enviamos y luego entra.',
+      'Continue na Biblioteca EOJ': 'Sigue en la Biblioteca EOJ', 'Assistir de novo': 'Ver de nuevo', 'Ver o acervo': 'Ver el acervo'
+    },
+    en: {
+      'E-mail ou senha incorretos.': 'Wrong email or password.',
+      'Este e-mail já tem conta. Use "Entrar".': 'This email already has an account. Use "Sign in".',
+      'A senha precisa ter pelo menos 6 caracteres.': 'Your password needs at least 6 characters.',
+      'Digite um e-mail válido.': 'Enter a valid email.',
+      'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.': 'Too many attempts in a row. Wait a few minutes and try again.',
+      'Confirme seu e-mail pelo link que enviamos antes de entrar.': 'Confirm your email with the link we sent before signing in.',
+      'Sem conexão. Verifique a internet e tente de novo.': 'No connection. Check your internet and try again.',
+      'Não foi possível concluir agora. Tente de novo em instantes.': "Couldn't finish that now. Try again in a moment.",
+      'Entre na sua conta': 'Sign in to your account', 'Recuperar a senha': 'Reset your password', 'Crie sua conta grátis': 'Create your free account',
+      'Aguarde…': 'Please wait…', 'Entrar': 'Sign in', 'Enviar link': 'Send link', 'Criar conta': 'Create account',
+      'Digite seu nome.': 'Enter your name.',
+      'Se houver uma conta com esse e-mail, enviamos um link para criar uma nova senha.': "If there's an account with that email, we've sent a link to create a new password.",
+      'Conta criada! Confirme seu e-mail pelo link que enviamos e depois entre.': 'Account created. Confirm your email with the link we sent, then sign in.',
+      'Continue na Biblioteca EOJ': 'Keep going in the EOJ Library', 'Assistir de novo': 'Watch again', 'Ver o acervo': 'Browse the library'
+    }
+  };
+  function L(t) { return (TX[LG] && TX[LG][t]) || t; }
+  B.L = L;
+  // Valores dos filtros e da ficha (no banco ficam em português; aqui só muda o texto exibido)
+  var VAL = {
+    es: { 'Todos': 'Todos', 'Todas': 'Todas', 'Org. ofensiva': 'Org. ofensiva', 'Org. defensiva': 'Org. defensiva', 'Transição ofensiva': 'Transición ofensiva', 'Transição defensiva': 'Transición defensiva',
+      'Bolas paradas': 'Balón parado', 'Sistemas táticos': 'Sistemas tácticos', 'Tática individual': 'Táctica individual', 'Comportamento por posição': 'Comportamiento por posición',
+      'Clipe separado': 'Clip individual', 'Compilado': 'Compilado', 'Positivo': 'Positivo', 'Negativo': 'Negativo', 'Câmera tática': 'Cámara táctica', 'Câmera da TV': 'Cámara de TV',
+      'Masculino': 'Masculino', 'Feminino': 'Femenino', 'Profissional': 'Profesional', 'Base': 'Formativo', 'Amador': 'Amateur',
+      'Goleiro': 'Portero', 'Zagueiro': 'Central', 'Lateral': 'Lateral', 'Ala': 'Carrilero', 'Volante': 'Pivote', 'Meia': 'Mediapunta', 'Meio-campista': 'Centrocampista', 'Ponta': 'Extremo', 'Extremo': 'Extremo', 'Atacante': 'Delantero', 'Centroavante': 'Delantero centro', 'Segundo atacante': 'Segundo delantero',
+      'Treinador(a)': 'Entrenador(a)', 'Analista de desempenho': 'Analista de rendimiento', 'Auxiliar técnico(a)': 'Asistente técnico(a)', 'Preparador(a) físico(a)': 'Preparador(a) físico(a)', 'Coordenador(a) de base': 'Coordinador(a) de cantera', 'Jogador(a)': 'Jugador(a)', 'Estudante': 'Estudiante', 'Outro': 'Otro',
+      'Construção': 'Construcción', 'Criação': 'Creación', 'Finalização': 'Finalización', 'Saída de bola': 'Salida de balón', 'Pressão alta': 'Presión alta', 'Bloco médio': 'Bloque medio', 'Bloco baixo': 'Bloque bajo', 'Contra-ataque': 'Contraataque', 'Contrapressão': 'Contrapresión', 'Escanteio': 'Córner', 'Escanteios': 'Córners', 'Falta': 'Falta', 'Faltas': 'Faltas', 'Arremesso lateral': 'Saque de banda', 'Arremessos laterais': 'Saques de banda', 'Pênalti': 'Penalti',
+      'Terceiro homem': 'Tercer hombre', 'Vantagem posicional': 'Ventaja posicional', 'Superioridade numérica': 'Superioridad numérica', 'Amplitude': 'Amplitud', 'Profundidade': 'Profundidad', 'Apoio': 'Apoyo', 'Cobertura': 'Cobertura', 'Flutuação': 'Flotación', 'Homem livre': 'Hombre libre', 'Atração': 'Atracción', 'Ruptura': 'Ruptura', 'Desmarque': 'Desmarque', 'Compactação': 'Compactación', 'Basculação': 'Basculación' },
+    en: { 'Todos': 'All', 'Todas': 'All', 'Org. ofensiva': 'In possession', 'Org. defensiva': 'Out of possession', 'Transição ofensiva': 'Attacking transition', 'Transição defensiva': 'Defensive transition',
+      'Bolas paradas': 'Set pieces', 'Sistemas táticos': 'Tactical systems', 'Tática individual': 'Individual tactics', 'Comportamento por posição': 'Positional behaviour',
+      'Clipe separado': 'Single clip', 'Compilado': 'Compilation', 'Positivo': 'Positive', 'Negativo': 'Negative', 'Câmera tática': 'Tactical camera', 'Câmera da TV': 'TV camera',
+      'Masculino': "Men's", 'Feminino': "Women's", 'Profissional': 'Professional', 'Base': 'Youth', 'Amador': 'Amateur',
+      'Goleiro': 'Goalkeeper', 'Zagueiro': 'Centre-back', 'Lateral': 'Full-back', 'Ala': 'Wing-back', 'Volante': 'Defensive midfielder', 'Meia': 'Attacking midfielder', 'Meio-campista': 'Midfielder', 'Ponta': 'Winger', 'Extremo': 'Winger', 'Atacante': 'Forward', 'Centroavante': 'Striker', 'Segundo atacante': 'Second striker',
+      'Treinador(a)': 'Coach', 'Analista de desempenho': 'Performance analyst', 'Auxiliar técnico(a)': 'Assistant coach', 'Preparador(a) físico(a)': 'Fitness coach', 'Coordenador(a) de base': 'Academy coordinator', 'Jogador(a)': 'Player', 'Estudante': 'Student', 'Outro': 'Other',
+      'Construção': 'Build-up', 'Criação': 'Chance creation', 'Finalização': 'Finishing', 'Saída de bola': 'Playing out from the back', 'Pressão alta': 'High press', 'Bloco médio': 'Mid block', 'Bloco baixo': 'Low block', 'Contra-ataque': 'Counter-attack', 'Contrapressão': 'Counter-press', 'Escanteio': 'Corner', 'Escanteios': 'Corners', 'Falta': 'Free kick', 'Faltas': 'Free kicks', 'Arremesso lateral': 'Throw-in', 'Arremessos laterais': 'Throw-ins', 'Pênalti': 'Penalty',
+      'Terceiro homem': 'Third man', 'Vantagem posicional': 'Positional advantage', 'Superioridade numérica': 'Numerical superiority', 'Amplitude': 'Width', 'Profundidade': 'Depth', 'Apoio': 'Support', 'Cobertura': 'Cover', 'Flutuação': 'Floating', 'Homem livre': 'Free man', 'Atração': 'Drawing in', 'Ruptura': 'Run in behind', 'Desmarque': 'Movement off the ball', 'Compactação': 'Compactness', 'Basculação': 'Shifting' }
+  };
+  B.t = function (v) { if (!v || LG === 'pt') return v; var d = VAL[LG]; return d[v] || d[String(v).charAt(0).toUpperCase() + String(v).slice(1)] || v; };
+
   function carregarPerfil() {
     if (!B.user) { B.perfil = null; return Promise.resolve(null); }
     return sb.from('perfis').select('*').eq('id', B.user.id).maybeSingle()
@@ -40,19 +102,19 @@
   function ok(r) { if (r.error) throw r.error; return r.data; }
   B.msg = function (e) {
     var m = (e && (e.message || e.error_description)) || String(e || '');
-    if (/Invalid login credentials/i.test(m)) return 'E-mail ou senha incorretos.';
-    if (/already registered|already been registered|User already/i.test(m)) return 'Este e-mail já tem conta. Use "Entrar".';
-    if (/Password should be at least|weak/i.test(m)) return 'A senha precisa ter pelo menos 6 caracteres.';
-    if (/valid email|invalid format|Unable to validate email/i.test(m)) return 'Digite um e-mail válido.';
-    if (/rate limit|too many/i.test(m)) return 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.';
-    if (/Email not confirmed/i.test(m)) return 'Confirme seu e-mail pelo link que enviamos antes de entrar.';
-    if (/Failed to fetch|NetworkError/i.test(m)) return 'Sem conexão. Verifique a internet e tente de novo.';
-    return 'Não foi possível concluir agora. Tente de novo em instantes.';
+    if (/Invalid login credentials/i.test(m)) return L('E-mail ou senha incorretos.');
+    if (/already registered|already been registered|User already/i.test(m)) return L('Este e-mail já tem conta. Use "Entrar".');
+    if (/Password should be at least|weak/i.test(m)) return L('A senha precisa ter pelo menos 6 caracteres.');
+    if (/valid email|invalid format|Unable to validate email/i.test(m)) return L('Digite um e-mail válido.');
+    if (/rate limit|too many/i.test(m)) return L('Muitas tentativas seguidas. Espere alguns minutos e tente de novo.');
+    if (/Email not confirmed/i.test(m)) return L('Confirme seu e-mail pelo link que enviamos antes de entrar.');
+    if (/Failed to fetch|NetworkError/i.test(m)) return L('Sem conexão. Verifique a internet e tente de novo.');
+    return L('Não foi possível concluir agora. Tente de novo em instantes.');
   };
 
   // ---------- Conta ----------
   B.cadastrar = function (nome, email, senha, funcao) {
-    return sb.auth.signUp({ email: email, password: senha, options: { data: { nome: nome, funcao: funcao }, emailRedirectTo: location.origin + '/biblioteca/acervo' } })
+    return sb.auth.signUp({ email: email, password: senha, options: { data: { nome: nome, funcao: funcao }, emailRedirectTo: location.origin + B.u('/biblioteca/acervo') } })
       .then(ok).then(function (d) { B.ev('sign_up', { method: 'email', funcao: funcao || '' }); B.user = d.user && d.session ? d.user : null; return carregarPerfil().then(function () { return d; }); });
   };
   B.entrar = function (email, senha) {
@@ -61,7 +123,7 @@
   };
   B.sair = function () { return sb.auth.signOut().then(function () { B.user = null; B.perfil = null; }); };
   B.esqueci = function (email) {
-    return sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/biblioteca/entrar?modo=nova-senha' }).then(ok);
+    return sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + B.u('/biblioteca/entrar') + '?modo=nova-senha' }).then(ok);
   };
   B.novaSenha = function (senha) { return sb.auth.updateUser({ password: senha }).then(ok); };
 
@@ -123,7 +185,7 @@
     var cod = on ? novoCodigo() : null;
     return sb.from('playlists').update({ codigo: cod }).eq('id', id).then(ok).then(function () { B.ev(on ? 'bib_playlist_compartilhar' : 'bib_playlist_privar'); return cod; });
   };
-  B.linkPlaylist = function (cod) { return location.origin + '/biblioteca/playlist?c=' + encodeURIComponent(cod); };
+  B.linkPlaylist = function (cod) { return location.origin + B.u('/biblioteca/playlist') + '?c=' + encodeURIComponent(cod); };
   B.playlistPublica = function (cod) { return sb.rpc('playlist_compartilhada', { cod: cod }).then(ok); };
   B.copiarTexto = function (t) { return navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject(new Error('clip')); };
   B.remover = function (playlist, clipe) { return sb.from('playlist_clipes').delete().eq('playlist', playlist).eq('clipe', clipe).then(ok); };
@@ -243,15 +305,15 @@
     host.addEventListener('click', function (ev) { var a = ev.target.closest && ev.target.closest('.eoj-fim a[href]'); if (a) B.ev('bib_fim_clique', { destino: a.getAttribute('href') }); });
     var fim = host.querySelector('.eoj-fim'), iframe = host.querySelector('iframe'), player = null, tocou = false;
     var lista = (rel || []).slice(0, 3);
-    fim.innerHTML = '<p style="margin:0;color:#A1C4E6;font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Continue na Biblioteca EOJ</p>' +
+    fim.innerHTML = '<p style="margin:0;color:#A1C4E6;font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">' + L('Continue na Biblioteca EOJ') + '</p>' +
       (lista.length ? '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:820px;width:100%">' + lista.map(function (r) {
-        return '<a href="/biblioteca/clipe?id=' + r.id + '" style="flex:1 1 200px;max-width:260px;color:#FFFFFF;text-decoration:none;display:flex;flex-direction:column;gap:8px;text-align:left">' +
+        return '<a href="' + B.u('/biblioteca/clipe') + '?id=' + r.id + '" style="flex:1 1 200px;max-width:260px;color:#FFFFFF;text-decoration:none;display:flex;flex-direction:column;gap:8px;text-align:left">' +
           '<span style="display:block;aspect-ratio:16/10;background:#1C1C1C;border-radius:8px;overflow:hidden">' + (r.thumb ? '<img src="' + esc(r.thumb) + '" alt="" style="width:100%;height:100%;object-fit:cover">' : '') + '</span>' +
           '<span style="font-size:14px;font-weight:600;line-height:1.35">' + esc(r.titulo) + '</span></a>';
       }).join('') + '</div>' : '') +
       '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">' +
-      '<button type="button" class="eoj-denovo" style="font:inherit;font-size:15px;font-weight:700;background:#A1C4E6;color:#111111;border:0;border-radius:8px;padding:12px 18px;cursor:pointer">Assistir de novo</button>' +
-      '<a href="/biblioteca/acervo" style="font:inherit;font-size:15px;font-weight:600;color:#FFFFFF;border:1.5px solid #4A4A4A;border-radius:8px;padding:11px 18px;text-decoration:none">Ver o acervo</a></div>';
+      '<button type="button" class="eoj-denovo" style="font:inherit;font-size:15px;font-weight:700;background:#A1C4E6;color:#111111;border:0;border-radius:8px;padding:12px 18px;cursor:pointer">' + L('Assistir de novo') + '</button>' +
+      '<a href="' + B.u('/biblioteca/acervo') + '" style="font:inherit;font-size:15px;font-weight:600;color:#FFFFFF;border:1.5px solid #4A4A4A;border-radius:8px;padding:11px 18px;text-decoration:none">' + L('Ver o acervo') + '</a></div>';
     function ligar() {
       if (!window.Vimeo || !window.Vimeo.Player) return;
       player = new window.Vimeo.Player(iframe);
@@ -302,9 +364,9 @@
     function ir(m) { return function () { self.setState({ gate: m, gerr: '', gmsg: '' }); }; }
     return {
       gateOpen: !!st.gate, gateCad: st.gate === 'cadastro', gateEnt: st.gate === 'entrar', gateEsq: st.gate === 'esqueci',
-      gateTitle: st.gate === 'entrar' ? 'Entre na sua conta' : st.gate === 'esqueci' ? 'Recuperar a senha' : (st.gateTitle || 'Crie sua conta grátis'),
+      gateTitle: st.gate === 'entrar' ? L('Entre na sua conta') : st.gate === 'esqueci' ? L('Recuperar a senha') : (st.gateTitle || L('Crie sua conta grátis')),
       gateErr: st.gerr || '', gateMsg: st.gmsg || '',
-      gateBtn: st.gbusy ? 'Aguarde…' : st.gate === 'entrar' ? 'Entrar' : st.gate === 'esqueci' ? 'Enviar link' : 'Criar conta',
+      gateBtn: st.gbusy ? L('Aguarde…') : st.gate === 'entrar' ? L('Entrar') : st.gate === 'esqueci' ? L('Enviar link') : L('Criar conta'),
       gf: f,
       gset: function (ev) { f[ev.target.name] = ev.target.value; },
       gateClose: function () { self.setState({ gate: null, gerr: '', gmsg: '' }); },
@@ -312,14 +374,14 @@
       gateSubmit: function () {
         if (st.gbusy) return;
         var em = f.email.trim(), modo = st.gate;
-        if (modo === 'cadastro' && f.nome.trim().length < 2) return self.setState({ gerr: 'Digite seu nome.' });
-        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return self.setState({ gerr: 'Digite um e-mail válido.' });
-        if (modo !== 'esqueci' && f.senha.length < 6) return self.setState({ gerr: 'A senha precisa ter pelo menos 6 caracteres.' });
+        if (modo === 'cadastro' && f.nome.trim().length < 2) return self.setState({ gerr: L('Digite seu nome.') });
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return self.setState({ gerr: L('Digite um e-mail válido.') });
+        if (modo !== 'esqueci' && f.senha.length < 6) return self.setState({ gerr: L('A senha precisa ter pelo menos 6 caracteres.') });
         self.setState({ gbusy: true, gerr: '', gmsg: '' });
         var p = modo === 'entrar' ? B.entrar(em, f.senha) : modo === 'esqueci' ? B.esqueci(em) : B.cadastrar(f.nome.trim(), em, f.senha, f.funcao);
         p.then(function (d) {
-          if (modo === 'esqueci') return self.setState({ gbusy: false, gmsg: 'Se houver uma conta com esse e-mail, enviamos um link para criar uma nova senha.' });
-          if (!B.user) return self.setState({ gbusy: false, gmsg: 'Conta criada! Confirme seu e-mail pelo link que enviamos e depois entre.' });
+          if (modo === 'esqueci') return self.setState({ gbusy: false, gmsg: L('Se houver uma conta com esse e-mail, enviamos um link para criar uma nova senha.') });
+          if (!B.user) return self.setState({ gbusy: false, gmsg: L('Conta criada! Confirme seu e-mail pelo link que enviamos e depois entre.') });
           f.senha = '';
           self.setState({ gbusy: false, gate: null });
           if (depois) depois(modo);

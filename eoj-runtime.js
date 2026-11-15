@@ -126,6 +126,7 @@
       var n = byPath(fp);
       if (n && n.focus) { n.focus({ preventScroll: true }); if (sel && n.setSelectionRange) { try { n.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
     }
+    if (window.__eojDD && window.eojDD) window.eojDD(true);
     if (instance && instance.componentDidUpdate) { try { instance.componentDidUpdate(); } catch (e) {} }
   }
   function schedule() { if (!pending && root) { pending = true; requestAnimationFrame(render); } }
@@ -139,4 +140,25 @@
       if (instance && instance.componentDidMount) instance.componentDidMount();
     }
   };
+})();
+
+// Menu "Conteúdos" (submenu do cabeçalho): abre/fecha no clique, fecha com Esc ou clique fora
+(function () {
+  function set(on) {
+    window.__eojDD = on;
+    var dds = document.querySelectorAll('.eoj-dd');
+    for (var i = 0; i < dds.length; i++) {
+      dds[i].setAttribute('data-open', on ? 'true' : 'false');
+      var b = dds[i].querySelector('.eoj-dd-b'); if (b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+  }
+  window.eojDD = set;
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.eoj-dd-b');
+    if (b) { e.preventDefault(); set(b.parentNode.getAttribute('data-open') !== 'true'); return; }
+    if (window.__eojDD && !(e.target.closest && e.target.closest('.eoj-dd'))) set(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && window.__eojDD) { set(false); var b = document.querySelector('.eoj-dd-b'); if (b) b.focus(); }
+  });
 })();

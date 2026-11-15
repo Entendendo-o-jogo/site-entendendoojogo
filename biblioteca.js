@@ -163,7 +163,7 @@
       proximo();
     });
   };
-  B.linkDownload = function (id) { return B.funcao({ acao: 'baixar', id: id }).then(function (d) { B.ev('bib_download', { clipe_id: id }); return d; }); };
+  B.linkDownload = function (id, qualidade) { return B.funcao({ acao: 'baixar', id: id, qualidade: qualidade || 720 }).then(function (d) { B.ev('bib_download', { clipe_id: id, qualidade: d.altura }); return d; }); };
 
   // Lê o nome do arquivo: início com sistema (4-3-3) = Sistemas táticos; com posição = Tática individual.
   var POS = ['goleiro', 'zagueiro', 'lateral', 'ala', 'volante', 'meia', 'meio-campista', 'ponta', 'extremo', 'atacante', 'centroavante', 'segundo atacante'];
@@ -270,7 +270,13 @@
     window.addEventListener('resize', posicionar);
     if (window.ResizeObserver) new ResizeObserver(posicionar).observe(document.body);
     posicionar();
-    return { posicionar: posicionar };
+    function ir(seg) {
+      fim.style.display = 'none';
+      var slot = document.querySelector('[data-player-slot]');
+      if (slot && slot.getBoundingClientRect().top < 0) slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (player) player.setCurrentTime(seg).then(function () { return player.play(); }).catch(function () {});
+    }
+    return { posicionar: posicionar, ir: ir };
   };
 
   B.dur = function (s) { s = Math.round(+s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); };

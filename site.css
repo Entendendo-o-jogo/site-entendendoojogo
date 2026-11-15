@@ -121,8 +121,7 @@ html { scroll-padding-top: 84px; }
   .eoj-mat > div:last-child { padding: 16px !important; }
   .eoj-mat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px !important; }
   .eoj-mat-g { grid-column: span 2; }
-  .eoj-mat-p { grid-column: span 1; }
-  .eoj-mat-p:last-child { grid-column: span 2; aspect-ratio: 16 / 9; }
+  .eoj-mat-p { grid-column: span 2; aspect-ratio: 16 / 9; }
   .eoj-mat-pill { left: 8px !important; bottom: 8px !important; font-size: 10px !important; padding: 5px 9px 5px 8px !important; gap: 6px !important; letter-spacing: 0.03em !important; }
   .eoj-mat-pill > span { width: 7px !important; height: 7px !important; }
 }

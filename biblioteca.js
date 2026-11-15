@@ -73,6 +73,7 @@
       return B.salvarEquipe(nome, url).then(function () { return url; });
     });
   };
+  B.contas = function () { return sb.rpc('admin_contas').then(ok); };
   B.inserirVarios = function (lista) { return sb.from('clipes').insert(lista).select('id').then(ok); };
   B.excluirClipe = function (id) { return sb.from('clipes').delete().eq('id', id).then(ok); };
 

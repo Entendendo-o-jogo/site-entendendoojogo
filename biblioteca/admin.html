@@ -217,7 +217,8 @@ class Component extends DCLogic {
           var lote = ids.slice(i, i + 10);
           EOJB.protegerVimeo(lote).then(function (d) {
             if (!d.feitos.length && d.falhas.some(function (f) { return /vimeo 40[13]/.test(f.erro); })) {
-              return self.setState({ protBusy: false, audMsg: 'O Vimeo recusou a alteração (' + feitos + '/' + ids.length + ' feitos). A chave no Supabase precisa da permissão “Edit”.' });
+              var det = (d.falhas[0] && d.falhas[0].erro) || '';
+              return self.setState({ protBusy: false, audMsg: 'O Vimeo recusou a alteração (' + feitos + '/' + ids.length + ' feitos). Normalmente é a chave sem a permissão “Edit”.\nResposta do Vimeo: ' + det });
             }
             feitos += d.feitos.length; i += d.feitos.length;
             var lim = d.falhas.filter(function (f) { return f.erro === 'limite'; }).length;

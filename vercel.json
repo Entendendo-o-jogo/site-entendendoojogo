@@ -3,6 +3,21 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/biblioteca",
+      "destination": "/biblioteca/acervo",
+      "permanent": false
+    },
+    {
+      "source": "/es/biblioteca",
+      "destination": "/biblioteca/acervo",
+      "permanent": false
+    },
+    {
+      "source": "/en/biblioteca",
+      "destination": "/biblioteca/acervo",
+      "permanent": false
+    },
+    {
       "source": "/quemsomos",
       "destination": "/quem-somos",
       "permanent": true
@@ -34,12 +49,12 @@
     },
     {
       "source": "/acervo",
-      "destination": "/biblioteca",
+      "destination": "/biblioteca/acervo",
       "permanent": false
     },
     {
       "source": "/biblioteca-eoj",
-      "destination": "/biblioteca",
+      "destination": "/biblioteca/acervo",
       "permanent": false
     },
     {

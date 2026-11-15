@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://entendendoojogo.com.br/</loc></url>
   <url><loc>https://entendendoojogo.com.br/ajuda</loc></url>
-  <url><loc>https://entendendoojogo.com.br/biblioteca</loc></url>
+  <url><loc>https://entendendoojogo.com.br/biblioteca/acervo</loc></url>
   <url><loc>https://entendendoojogo.com.br/blog</loc></url>
   <url><loc>https://entendendoojogo.com.br/blog/angulacao-de-passe-no-futebol</loc></url>
   <url><loc>https://entendendoojogo.com.br/blog/ataques-a-ultima-linha-do-adversario-parte-1</loc></url>
@@ -33,7 +33,6 @@
   <url><loc>https://entendendoojogo.com.br/termos</loc></url>
   <url><loc>https://entendendoojogo.com.br/en</loc></url>
   <url><loc>https://entendendoojogo.com.br/en/ajuda</loc></url>
-  <url><loc>https://entendendoojogo.com.br/en/biblioteca</loc></url>
   <url><loc>https://entendendoojogo.com.br/en/blog</loc></url>
   <url><loc>https://entendendoojogo.com.br/en/conteudos</loc></url>
   <url><loc>https://entendendoojogo.com.br/en/cursos</loc></url>
@@ -53,7 +52,6 @@
   <url><loc>https://entendendoojogo.com.br/en/quem-somos</loc></url>
   <url><loc>https://entendendoojogo.com.br/es</loc></url>
   <url><loc>https://entendendoojogo.com.br/es/ajuda</loc></url>
-  <url><loc>https://entendendoojogo.com.br/es/biblioteca</loc></url>
   <url><loc>https://entendendoojogo.com.br/es/blog</loc></url>
   <url><loc>https://entendendoojogo.com.br/es/conteudos</loc></url>
   <url><loc>https://entendendoojogo.com.br/es/cursos</loc></url>

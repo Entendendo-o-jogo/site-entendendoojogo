@@ -130,6 +130,22 @@
   B.videosDaPasta = function (pasta) { return B.funcao({ acao: 'pasta', pasta: pasta }).then(function (d) { return d.videos || []; }); };
   B.auditarVimeo = function (pastaBib) { return B.funcao({ acao: 'auditar', pastaBiblioteca: pastaBib }); };
   B.protegerVimeo = function (ids) { return B.funcao({ acao: 'proteger', ids: ids }); };
+  // Baixa vários clipes em sequência (cada arquivo num iframe escondido, para não sair da página)
+  B.baixarVarios = function (ids, progresso) {
+    var feitos = 0, falhas = 0, i = 0;
+    return new Promise(function (fim) {
+      function proximo() {
+        if (i >= ids.length) return fim({ feitos: feitos, falhas: falhas });
+        var id = ids[i++];
+        B.linkDownload(id).then(function (d) {
+          var f = document.createElement('iframe'); f.style.display = 'none'; f.src = d.link; document.body.appendChild(f);
+          setTimeout(function () { f.remove(); }, 120000);
+          feitos++;
+        }).catch(function () { falhas++; }).then(function () { if (progresso) progresso(feitos + falhas, ids.length); setTimeout(proximo, 1500); });
+      }
+      proximo();
+    });
+  };
   B.linkDownload = function (id) { return B.funcao({ acao: 'baixar', id: id }); };
 
   // Lê o nome do arquivo: início com sistema (4-3-3) = Sistemas táticos; com posição = Tática individual.
@@ -206,15 +222,20 @@
       '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">' +
       '<button type="button" class="eoj-denovo" style="font:inherit;font-size:15px;font-weight:700;background:#A1C4E6;color:#111111;border:0;border-radius:8px;padding:12px 18px;cursor:pointer">Assistir de novo</button>' +
       '<a href="/biblioteca/acervo" style="font:inherit;font-size:15px;font-weight:600;color:#FFFFFF;border:1.5px solid #4A4A4A;border-radius:8px;padding:11px 18px;text-decoration:none">Ver o acervo</a></div>';
-    fim.querySelector('.eoj-denovo').addEventListener('click', function () {
-      fim.hidden = true; if (player) player.setCurrentTime(0).then(function () { return player.play(); }).catch(function () {});
-    });
     function ligar() {
       if (!window.Vimeo || !window.Vimeo.Player) return;
       player = new window.Vimeo.Player(iframe);
       player.on('ended', function () { fim.hidden = false; });
       player.on('play', function () { fim.hidden = true; });
     }
+    // "Assistir de novo": recarrega o player do início (mais confiável que voltar o tempo depois do fim)
+    fim.querySelector('.eoj-denovo').addEventListener('click', function () {
+      fim.hidden = true;
+      var novo = iframe.cloneNode(false);
+      novo.src = B.player(c) + '&autoplay=1';
+      iframe.replaceWith(novo); iframe = novo; player = null;
+      novo.addEventListener('load', ligar, { once: true });
+    });
     if (window.Vimeo && window.Vimeo.Player) ligar();
     else {
       var s = document.createElement('script'); s.src = 'https://player.vimeo.com/api/player.js'; s.onload = ligar; document.head.appendChild(s);

@@ -113,15 +113,19 @@ html { scroll-padding-top: 84px; }
   header > div > div > a[href$="/biblioteca/acervo"] { display: none !important; }
 }
 
-/* Materiais extras dos cursos: mosaico (2 grandes + 3 menores) */
-.eoj-mat-g { grid-column: span 3; aspect-ratio: 16 / 9; }
-.eoj-mat-p { grid-column: span 2; aspect-ratio: 4 / 3; }
+/* Materiais extras dos cursos: faixa com os cartões passando em loop */
+.eoj-mq { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.eoj-mq-t { display: flex; gap: 18px; width: max-content; animation: eoj-mq 34s linear infinite; }
+.eoj-mq:hover .eoj-mq-t, .eoj-mq:focus-within .eoj-mq-t { animation-play-state: paused; }
+@keyframes eoj-mq { to { transform: translateX(calc(-50% - 9px)); } }
+@media (prefers-reduced-motion: reduce) {
+  .eoj-mq { -webkit-mask-image: none; mask-image: none; padding: 0 24px; }
+  .eoj-mq-t { animation: none; flex-wrap: wrap; width: auto; }
+  .eoj-mq-c[aria-hidden] { display: none !important; }
+}
 @media (max-width: 760px) {
   .eoj-mat { padding: 18px !important; }
-  .eoj-mat > div:last-child { padding: 16px !important; }
-  .eoj-mat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px !important; }
-  .eoj-mat-g { grid-column: span 2; }
-  .eoj-mat-p { grid-column: span 2; aspect-ratio: 16 / 9; }
-  .eoj-mat-pill { left: 8px !important; bottom: 8px !important; font-size: 10px !important; padding: 5px 9px 5px 8px !important; gap: 6px !important; letter-spacing: 0.03em !important; }
-  .eoj-mat-pill > span { width: 7px !important; height: 7px !important; }
+  .eoj-mq-c { flex-basis: 260px !important; }
+  .eoj-mq-n { font-size: 11.5px !important; letter-spacing: 0.02em !important; }
+  .eoj-mq-t { animation-duration: 26s; }
 }

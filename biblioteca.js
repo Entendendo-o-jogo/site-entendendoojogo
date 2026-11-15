@@ -20,6 +20,23 @@
   B.isAdmin = function () { return !!(B.perfil && B.perfil.papel === 'admin'); };
   B.nome = function () { return (B.perfil && B.perfil.nome) || (B.user && B.user.email) || ''; };
 
+  // ---------- Medição (GA4) — só envia se a pessoa aceitou os cookies ----------
+  B.ev = function (nome, dados) {
+    try { if (window.__eojGA && window.gtag) window.gtag('event', nome, Object.assign({ area: 'biblioteca' }, dados || {})); } catch (e) {}
+  };
+  var _ultBusca = '', _tBusca = null;
+  B.filtros = function (f, total) {
+    var sig = JSON.stringify(f);
+    if (sig === _ultBusca) return;
+    clearTimeout(_tBusca);
+    _tBusca = setTimeout(function () {
+      _ultBusca = sig;
+      var ativos = Object.keys(f).filter(function (k) { return k !== 'q' && f[k] && !/^(Todos|Todas)$/.test(f[k]); });
+      if (f.q && f.q.trim().length >= 2) B.ev('search', { search_term: f.q.trim().slice(0, 100), resultados: total });
+      if (ativos.length) B.ev('bib_filtro', { filtros: ativos.map(function (k) { return k + ':' + f[k]; }).join(' | ').slice(0, 100), resultados: total });
+    }, 1500);
+  };
+
   function ok(r) { if (r.error) throw r.error; return r.data; }
   B.msg = function (e) {
     var m = (e && (e.message || e.error_description)) || String(e || '');
@@ -36,11 +53,11 @@
   // ---------- Conta ----------
   B.cadastrar = function (nome, email, senha, funcao) {
     return sb.auth.signUp({ email: email, password: senha, options: { data: { nome: nome, funcao: funcao }, emailRedirectTo: location.origin + '/biblioteca/acervo' } })
-      .then(ok).then(function (d) { B.user = d.user && d.session ? d.user : null; return carregarPerfil().then(function () { return d; }); });
+      .then(ok).then(function (d) { B.ev('sign_up', { method: 'email', funcao: funcao || '' }); B.user = d.user && d.session ? d.user : null; return carregarPerfil().then(function () { return d; }); });
   };
   B.entrar = function (email, senha) {
     return sb.auth.signInWithPassword({ email: email, password: senha })
-      .then(ok).then(function (d) { B.user = d.user; return carregarPerfil(); });
+      .then(ok).then(function (d) { B.ev('login', { method: 'email' }); B.user = d.user; return carregarPerfil(); });
   };
   B.sair = function () { return sb.auth.signOut().then(function () { B.user = null; B.perfil = null; }); };
   B.esqueci = function (email) {
@@ -83,7 +100,7 @@
     return sb.from('favoritos').select('clipe').then(ok).then(function (rows) { return rows.map(function (r) { return r.clipe; }); });
   };
   B.favoritar = function (clipe, on) {
-    return (on ? sb.from('favoritos').insert({ clipe: clipe }) : sb.from('favoritos').delete().eq('clipe', clipe).eq('usuario', B.user.id)).then(ok);
+    return (on ? sb.from('favoritos').insert({ clipe: clipe }) : sb.from('favoritos').delete().eq('clipe', clipe).eq('usuario', B.user.id)).then(ok).then(function (d) { B.ev(on ? 'bib_salvar' : 'bib_remover_salvo', { clipe_id: clipe }); return d; });
   };
 
   // ---------- Playlists ----------
@@ -91,11 +108,11 @@
     if (!B.user) return Promise.resolve([]);
     return sb.from('playlists').select('id, nome, criado_em, playlist_clipes(clipe, ordem)').order('criado_em', { ascending: true }).then(ok);
   };
-  B.novaPlaylist = function (nome) { return sb.from('playlists').insert({ nome: nome }).select().single().then(ok); };
+  B.novaPlaylist = function (nome) { return sb.from('playlists').insert({ nome: nome }).select().single().then(ok).then(function (d) { B.ev('bib_playlist_criar'); return d; }); };
   B.renomearPlaylist = function (id, nome) { return sb.from('playlists').update({ nome: nome }).eq('id', id).then(ok); };
   B.excluirPlaylist = function (id) { return sb.from('playlists').delete().eq('id', id).then(ok); };
   B.adicionar = function (playlist, clipe) {
-    return sb.from('playlist_clipes').upsert({ playlist: playlist, clipe: clipe, ordem: Date.now() % 2147483647 }, { onConflict: 'playlist,clipe', ignoreDuplicates: true }).then(ok);
+    return sb.from('playlist_clipes').upsert({ playlist: playlist, clipe: clipe, ordem: Date.now() % 2147483647 }, { onConflict: 'playlist,clipe', ignoreDuplicates: true }).then(ok).then(function (d) { B.ev('bib_playlist_adicionar', { clipe_id: clipe }); return d; });
   };
   B.remover = function (playlist, clipe) { return sb.from('playlist_clipes').delete().eq('playlist', playlist).eq('clipe', clipe).then(ok); };
 
@@ -135,9 +152,9 @@
     var feitos = 0, falhas = 0, i = 0;
     return new Promise(function (fim) {
       function proximo() {
-        if (i >= ids.length) return fim({ feitos: feitos, falhas: falhas });
+        if (i >= ids.length) { B.ev('bib_download_playlist', { quantidade: feitos, falhas: falhas }); return fim({ feitos: feitos, falhas: falhas }); }
         var id = ids[i++];
-        B.linkDownload(id).then(function (d) {
+        B.funcao({ acao: 'baixar', id: id }).then(function (d) {
           var f = document.createElement('iframe'); f.style.display = 'none'; f.src = d.link; document.body.appendChild(f);
           setTimeout(function () { f.remove(); }, 120000);
           feitos++;
@@ -146,7 +163,7 @@
       proximo();
     });
   };
-  B.linkDownload = function (id) { return B.funcao({ acao: 'baixar', id: id }); };
+  B.linkDownload = function (id) { return B.funcao({ acao: 'baixar', id: id }).then(function (d) { B.ev('bib_download', { clipe_id: id }); return d; }); };
 
   // Lê o nome do arquivo: início com sistema (4-3-3) = Sistemas táticos; com posição = Tática individual.
   var POS = ['goleiro', 'zagueiro', 'lateral', 'ala', 'volante', 'meia', 'meio-campista', 'ponta', 'extremo', 'atacante', 'centroavante', 'segundo atacante'];
@@ -211,7 +228,8 @@
     host.innerHTML = '<iframe src="' + esc(B.player(c)) + '" title="' + esc(c.titulo) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>' +
       '<div class="eoj-fim" style="position:absolute;inset:0;background:#111111;color:#FFFFFF;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;overflow:auto"></div>';
     document.body.appendChild(host);
-    var fim = host.querySelector('.eoj-fim'), iframe = host.querySelector('iframe'), player = null;
+    host.addEventListener('click', function (ev) { var a = ev.target.closest && ev.target.closest('.eoj-fim a[href]'); if (a) B.ev('bib_fim_clique', { destino: a.getAttribute('href') }); });
+    var fim = host.querySelector('.eoj-fim'), iframe = host.querySelector('iframe'), player = null, tocou = false;
     var lista = (rel || []).slice(0, 3);
     fim.innerHTML = '<p style="margin:0;color:#A1C4E6;font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Continue na Biblioteca EOJ</p>' +
       (lista.length ? '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:820px;width:100%">' + lista.map(function (r) {
@@ -225,12 +243,13 @@
     function ligar() {
       if (!window.Vimeo || !window.Vimeo.Player) return;
       player = new window.Vimeo.Player(iframe);
-      player.on('ended', function () { fim.style.display = 'flex'; });
-      player.on('play', function () { fim.style.display = 'none'; });
+      var info = { clipe_id: c.id, titulo: String(c.titulo || '').slice(0, 100) };
+      player.on('ended', function () { fim.style.display = 'flex'; B.ev('bib_clipe_completo', info); });
+      player.on('play', function () { fim.style.display = 'none'; if (!tocou) { tocou = true; B.ev('bib_play', info); } });
     }
     // "Assistir de novo": recarrega o player do início (mais confiável que voltar o tempo depois do fim)
     fim.querySelector('.eoj-denovo').addEventListener('click', function () {
-      fim.style.display = 'none';
+      fim.style.display = 'none'; B.ev('bib_assistir_de_novo', { clipe_id: c.id });
       var novo = iframe.cloneNode(false);
       novo.src = B.player(c) + '&autoplay=1';
       iframe.replaceWith(novo); iframe = novo; player = null;

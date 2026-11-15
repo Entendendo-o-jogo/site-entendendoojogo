@@ -112,3 +112,10 @@ html { scroll-padding-top: 84px; }
   #menu-principal { flex-wrap: nowrap !important; gap: 0 16px !important; }
   header > div > div > a[href$="/biblioteca/acervo"] { display: none !important; }
 }
+
+/* Materiais extras dos cursos: etiquetas menores no celular */
+@media (max-width: 760px) {
+  .eoj-mat { padding: 18px !important; }
+  .eoj-mat-pill { left: 8px !important; bottom: 8px !important; font-size: 10px !important; padding: 5px 10px 5px 8px !important; gap: 6px !important; white-space: nowrap; letter-spacing: 0.04em !important; }
+  .eoj-mat-pill > span { width: 7px !important; height: 7px !important; }
+}

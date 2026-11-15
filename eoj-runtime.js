@@ -112,6 +112,11 @@
     var frag = document.createDocumentFragment();
     for (var i = 0; i < out.length; i++) frag.appendChild(out[i]);
     root.replaceChildren(frag);
+    // <select data-value> e <input type=checkbox data-checked> mantêm o valor entre renderizações
+    var sels = root.querySelectorAll('select[data-value]');
+    for (var s = 0; s < sels.length; s++) sels[s].value = sels[s].getAttribute('data-value');
+    var chks = root.querySelectorAll('input[data-checked]');
+    for (var c = 0; c < chks.length; c++) chks[c].checked = chks[c].getAttribute('data-checked') === 'true';
     if (fp) {
       var n = byPath(fp);
       if (n && n.focus) { n.focus({ preventScroll: true }); if (sel && n.setSelectionRange) { try { n.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }

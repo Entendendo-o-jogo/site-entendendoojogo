@@ -157,6 +157,56 @@
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
+  // ---------- Player do clipe ----------
+  // Fica fora da área que a página redesenha (assim o vídeo não recomeça ao salvar/favoritar)
+  // e, ao terminar, cobre a "tela de fim" do Vimeo com sugestões só da Biblioteca.
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); }
+  B.montarPlayer = function (c, rel) {
+    var velho = document.getElementById('eoj-player'); if (velho) velho.remove();
+    var host = document.createElement('div');
+    host.id = 'eoj-player';
+    host.style.cssText = 'position:absolute;z-index:5;background:#000;border-radius:12px;overflow:hidden;display:none';
+    host.innerHTML = '<iframe src="' + esc(B.player(c)) + '" title="' + esc(c.titulo) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>' +
+      '<div class="eoj-fim" hidden style="position:absolute;inset:0;background:rgba(17,17,17,0.97);color:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;overflow:auto"></div>';
+    document.body.appendChild(host);
+    var fim = host.querySelector('.eoj-fim'), iframe = host.querySelector('iframe'), player = null;
+    var lista = (rel || []).slice(0, 3);
+    fim.innerHTML = '<p style="margin:0;color:#A1C4E6;font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Continue na Biblioteca EOJ</p>' +
+      (lista.length ? '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:820px;width:100%">' + lista.map(function (r) {
+        return '<a href="/biblioteca/clipe?id=' + r.id + '" style="flex:1 1 200px;max-width:260px;color:#FFFFFF;text-decoration:none;display:flex;flex-direction:column;gap:8px;text-align:left">' +
+          '<span style="display:block;aspect-ratio:16/10;background:#1C1C1C;border-radius:8px;overflow:hidden">' + (r.thumb ? '<img src="' + esc(r.thumb) + '" alt="" style="width:100%;height:100%;object-fit:cover">' : '') + '</span>' +
+          '<span style="font-size:14px;font-weight:600;line-height:1.35">' + esc(r.titulo) + '</span></a>';
+      }).join('') + '</div>' : '') +
+      '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">' +
+      '<button type="button" class="eoj-denovo" style="font:inherit;font-size:15px;font-weight:700;background:#A1C4E6;color:#111111;border:0;border-radius:8px;padding:12px 18px;cursor:pointer">Assistir de novo</button>' +
+      '<a href="/biblioteca/acervo" style="font:inherit;font-size:15px;font-weight:600;color:#FFFFFF;border:1.5px solid #4A4A4A;border-radius:8px;padding:11px 18px;text-decoration:none">Ver o acervo</a></div>';
+    fim.querySelector('.eoj-denovo').addEventListener('click', function () {
+      fim.hidden = true; if (player) player.setCurrentTime(0).then(function () { return player.play(); }).catch(function () {});
+    });
+    function ligar() {
+      if (!window.Vimeo || !window.Vimeo.Player) return;
+      player = new window.Vimeo.Player(iframe);
+      player.on('ended', function () { fim.hidden = false; });
+      player.on('play', function () { fim.hidden = true; });
+    }
+    if (window.Vimeo && window.Vimeo.Player) ligar();
+    else {
+      var s = document.createElement('script'); s.src = 'https://player.vimeo.com/api/player.js'; s.onload = ligar; document.head.appendChild(s);
+    }
+    function posicionar() {
+      var slot = document.querySelector('[data-player-slot]');
+      if (!slot || !slot.offsetParent) { host.style.display = 'none'; return; }
+      var r = slot.getBoundingClientRect();
+      host.style.display = 'block'; host.style.fontFamily = getComputedStyle(slot).fontFamily;
+      host.style.top = (r.top + window.scrollY) + 'px'; host.style.left = (r.left + window.scrollX) + 'px';
+      host.style.width = r.width + 'px'; host.style.height = r.height + 'px';
+    }
+    window.addEventListener('resize', posicionar);
+    if (window.ResizeObserver) new ResizeObserver(posicionar).observe(document.body);
+    posicionar();
+    return { posicionar: posicionar };
+  };
+
   B.dur = function (s) { s = Math.round(+s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); };
   B.param = function (k) { return new URLSearchParams(location.search).get(k); };
 

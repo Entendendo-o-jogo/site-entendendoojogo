@@ -121,6 +121,7 @@
       var n = byPath(fp);
       if (n && n.focus) { n.focus({ preventScroll: true }); if (sel && n.setSelectionRange) { try { n.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
     }
+    if (instance && instance.componentDidUpdate) { try { instance.componentDidUpdate(); } catch (e) {} }
   }
   function schedule() { if (!pending && root) { pending = true; requestAnimationFrame(render); } }
 

@@ -111,6 +111,11 @@
     renderChildren(tpl, values(), out);
     var frag = document.createDocumentFragment();
     for (var i = 0; i < out.length; i++) frag.appendChild(out[i]);
+    // Elementos com data-keep já preenchidos por outro script (ex.: o mapa) são reaproveitados
+    var antigos = {}, ks = root.querySelectorAll('[data-keep][data-pronto]');
+    for (var k = 0; k < ks.length; k++) antigos[ks[k].getAttribute('data-keep')] = ks[k];
+    var novos = frag.querySelectorAll('[data-keep]');
+    for (var q = 0; q < novos.length; q++) { var velho = antigos[novos[q].getAttribute('data-keep')]; if (velho) novos[q].replaceWith(velho); }
     root.replaceChildren(frag);
     // <select data-value> e <input type=checkbox data-checked> mantêm o valor entre renderizações
     var sels = root.querySelectorAll('select[data-value]');

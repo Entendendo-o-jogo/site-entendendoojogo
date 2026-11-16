@@ -52,7 +52,7 @@
   var VAL = {
     es: { 'Todos': 'Todos', 'Todas': 'Todas', 'Org. ofensiva': 'Org. ofensiva', 'Org. defensiva': 'Org. defensiva', 'Transição ofensiva': 'Transición ofensiva', 'Transição defensiva': 'Transición defensiva',
       'Bolas paradas': 'Balón parado', 'Sistemas táticos': 'Sistemas tácticos', 'Tática individual': 'Táctica individual', 'Comportamento por posição': 'Comportamiento por posición',
-      'Clipe separado': 'Clip individual', 'Compilado': 'Compilado', 'Positivo': 'Positivo', 'Negativo': 'Negativo', 'Câmera tática': 'Cámara táctica', 'Câmera da TV': 'Cámara de TV',
+      'Clipe separado': 'Clip individual', 'Compilado': 'Compilado', 'Cortes de jogos': 'Cortes de partidos', 'Jogos completos': 'Partidos completos', 'Treinos': 'Entrenamientos', 'Positivo': 'Positivo', 'Negativo': 'Negativo', 'Câmera tática': 'Cámara táctica', 'Câmera da TV': 'Cámara de TV',
       'Masculino': 'Masculino', 'Feminino': 'Femenino', 'Profissional': 'Profesional', 'Base': 'Formativo', 'Amador': 'Amateur',
       'Goleiro': 'Portero', 'Zagueiro': 'Central', 'Lateral': 'Lateral', 'Ala': 'Carrilero', 'Volante': 'Pivote', 'Meia': 'Mediapunta', 'Meio-campista': 'Centrocampista', 'Ponta': 'Extremo', 'Extremo': 'Extremo', 'Atacante': 'Delantero', 'Centroavante': 'Delantero centro', 'Segundo atacante': 'Segundo delantero',
       'Treinador(a)': 'Entrenador(a)', 'Analista de desempenho': 'Analista de rendimiento', 'Auxiliar técnico(a)': 'Asistente técnico(a)', 'Preparador(a) físico(a)': 'Preparador(a) físico(a)', 'Coordenador(a) de base': 'Coordinador(a) de cantera', 'Jogador(a)': 'Jugador(a)', 'Estudante': 'Estudiante', 'Outro': 'Otro',
@@ -60,7 +60,7 @@
       'Terceiro homem': 'Tercer hombre', 'Vantagem posicional': 'Ventaja posicional', 'Superioridade numérica': 'Superioridad numérica', 'Amplitude': 'Amplitud', 'Profundidade': 'Profundidad', 'Apoio': 'Apoyo', 'Cobertura': 'Cobertura', 'Flutuação': 'Flotación', 'Homem livre': 'Hombre libre', 'Atração': 'Atracción', 'Ruptura': 'Ruptura', 'Desmarque': 'Desmarque', 'Compactação': 'Compactación', 'Basculação': 'Basculación' },
     en: { 'Todos': 'All', 'Todas': 'All', 'Org. ofensiva': 'In possession', 'Org. defensiva': 'Out of possession', 'Transição ofensiva': 'Attacking transition', 'Transição defensiva': 'Defensive transition',
       'Bolas paradas': 'Set pieces', 'Sistemas táticos': 'Tactical systems', 'Tática individual': 'Individual tactics', 'Comportamento por posição': 'Positional behaviour',
-      'Clipe separado': 'Single clip', 'Compilado': 'Compilation', 'Positivo': 'Positive', 'Negativo': 'Negative', 'Câmera tática': 'Tactical camera', 'Câmera da TV': 'TV camera',
+      'Clipe separado': 'Single clip', 'Compilado': 'Compilation', 'Cortes de jogos': 'Match cuts', 'Jogos completos': 'Full matches', 'Treinos': 'Training sessions', 'Positivo': 'Positive', 'Negativo': 'Negative', 'Câmera tática': 'Tactical camera', 'Câmera da TV': 'TV camera',
       'Masculino': "Men's", 'Feminino': "Women's", 'Profissional': 'Professional', 'Base': 'Youth', 'Amador': 'Amateur',
       'Goleiro': 'Goalkeeper', 'Zagueiro': 'Centre-back', 'Lateral': 'Full-back', 'Ala': 'Wing-back', 'Volante': 'Defensive midfielder', 'Meia': 'Attacking midfielder', 'Meio-campista': 'Midfielder', 'Ponta': 'Winger', 'Extremo': 'Winger', 'Atacante': 'Forward', 'Centroavante': 'Striker', 'Segundo atacante': 'Second striker',
       'Treinador(a)': 'Coach', 'Analista de desempenho': 'Performance analyst', 'Auxiliar técnico(a)': 'Assistant coach', 'Preparador(a) físico(a)': 'Fitness coach', 'Coordenador(a) de base': 'Academy coordinator', 'Jogador(a)': 'Player', 'Estudante': 'Student', 'Outro': 'Other',
@@ -139,8 +139,25 @@
     return (id ? sb.from('clipes').update(d).eq('id', id) : sb.from('clipes').insert(d)).select().single().then(ok);
   };
   // ---------- Equipes e escudos ----------
+  // Seleções: bandeira automática (flagcdn) quando não há escudo cadastrado. Aceita "Itália", "Seleção da Itália", "Itália Sub-20", "Itália (feminino)"...
+  var PAISES = { 'brasil': 'br', 'argentina': 'ar', 'uruguai': 'uy', 'paraguai': 'py', 'chile': 'cl', 'colombia': 'co', 'peru': 'pe', 'equador': 'ec', 'bolivia': 'bo', 'venezuela': 've',
+    'mexico': 'mx', 'estados unidos': 'us', 'eua': 'us', 'canada': 'ca', 'costa rica': 'cr', 'panama': 'pa', 'honduras': 'hn', 'jamaica': 'jm',
+    'italia': 'it', 'espanha': 'es', 'franca': 'fr', 'alemanha': 'de', 'inglaterra': 'gb-eng', 'escocia': 'gb-sct', 'pais de gales': 'gb-wls', 'gales': 'gb-wls', 'irlanda do norte': 'gb-nir', 'irlanda': 'ie',
+    'portugal': 'pt', 'holanda': 'nl', 'paises baixos': 'nl', 'belgica': 'be', 'croacia': 'hr', 'suica': 'ch', 'dinamarca': 'dk', 'suecia': 'se', 'noruega': 'no', 'finlandia': 'fi', 'islandia': 'is',
+    'polonia': 'pl', 'austria': 'at', 'servia': 'rs', 'turquia': 'tr', 'grecia': 'gr', 'ucrania': 'ua', 'russia': 'ru', 'hungria': 'hu', 'republica tcheca': 'cz', 'tchequia': 'cz', 'eslovaquia': 'sk',
+    'eslovenia': 'si', 'romenia': 'ro', 'albania': 'al', 'georgia': 'ge', 'bosnia': 'ba', 'macedonia do norte': 'mk', 'montenegro': 'me', 'bulgaria': 'bg',
+    'marrocos': 'ma', 'senegal': 'sn', 'nigeria': 'ng', 'gana': 'gh', 'camaroes': 'cm', 'costa do marfim': 'ci', 'egito': 'eg', 'argelia': 'dz', 'tunisia': 'tn', 'africa do sul': 'za', 'mali': 'ml',
+    'japao': 'jp', 'coreia do sul': 'kr', 'australia': 'au', 'arabia saudita': 'sa', 'ira': 'ir', 'catar': 'qa', 'china': 'cn', 'indonesia': 'id', 'nova zelandia': 'nz', 'uzbequistao': 'uz', 'iraque': 'iq', 'emirados arabes': 'ae' };
+  B.bandeira = function (nome) {
+    var n = semAcento(nome || '').replace(/\(.*?\)/g, ' ').replace(/^selecao (da |do |de |dos |das )?/, '').replace(/\b(sub|u)[- ]?\d+\b|\bfeminin[oa]\b|\bmasculin[oa]\b|\bolimpic[oa]\b/g, ' ').replace(/\s+/g, ' ').trim();
+    var cod = PAISES[n];
+    return cod ? 'https://flagcdn.com/w160/' + cod + '.png' : '';
+  };
   B.equipes = function () {
-    return sb.from('equipes').select('nome, escudo').then(ok).then(function (rows) { var m = {}; rows.forEach(function (r) { m[r.nome] = r.escudo || ''; }); return m; });
+    return sb.from('equipes').select('nome, escudo').then(ok).then(function (rows) {
+      var m = {}; rows.forEach(function (r) { m[r.nome] = r.escudo || ''; });
+      return typeof Proxy === 'function' ? new Proxy(m, { get: function (t, k) { return typeof k === 'string' ? (t[k] || B.bandeira(k)) : t[k]; } }) : m;
+    });
   };
   B.salvarEquipe = function (nome, escudo) { return sb.from('equipes').upsert({ nome: nome, escudo: escudo }, { onConflict: 'nome' }).then(ok); };
   B.enviarEscudo = function (nome, arquivo) {

@@ -99,6 +99,7 @@ html { scroll-padding-top: 84px; }
 .eoj-dd-m a { padding: 10px 12px !important; border-radius: 6px; font-size: 14px; }
 .eoj-dd-m a:hover, .eoj-dd-m a:focus-visible { background: #2A2A2A; color: #FFFFFF !important; }
 #menu-principal .eoj-dd-m a.eoj-ativo { box-shadow: inset 3px 0 0 #A1C4E6; }
+@media (min-width: 1261px) { #menu-principal .eoj-dd:has(a.eoj-ativo) .eoj-dd-b { color: #FFFFFF !important; box-shadow: inset 0 -2px 0 #A1C4E6; } }
 @media (hover: hover) and (min-width: 1261px) { .eoj-dd:hover .eoj-dd-m { display: flex; } }
 @media (min-width: 1261px) { .eoj-dd[data-open="true"] .eoj-dd-m { display: flex; } }
 @media (max-width: 1260px) {
@@ -129,3 +130,9 @@ html { scroll-padding-top: 84px; }
   .eoj-mq-n { font-size: 11.5px !important; letter-spacing: 0.02em !important; }
   .eoj-mq-t { animation-duration: 26s; }
 }
+
+/* Páginas de curso: nome do curso fixo logo abaixo do cabeçalho; no desktop, as seções também ficam fixas */
+.eoj-curso-barra { position: sticky; top: var(--eoj-hdr, 72px); z-index: 55; }
+@media (min-width: 900px) { .eoj-curso-secoes { position: sticky; top: calc(var(--eoj-hdr, 72px) + 49px); z-index: 54; } }
+section[id] { scroll-margin-top: calc(var(--eoj-hdr, 72px) + 110px); }
+@media (max-width: 600px) { .eoj-curso-barra > div { padding: 6px 20px !important; } .eoj-curso-cta { padding: 7px 10px !important; } }

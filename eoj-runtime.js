@@ -126,7 +126,7 @@
       var n = byPath(fp);
       if (n && n.focus) { n.focus({ preventScroll: true }); if (sel && n.setSelectionRange) { try { n.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
     }
-    if (window.__eojDD && window.eojDD) window.eojDD(true);
+    if (window.__eojDD && window.eojDD) window.eojDD(window.__eojDD);
     if (instance && instance.componentDidUpdate) { try { instance.componentDidUpdate(); } catch (e) {} }
   }
   function schedule() { if (!pending && root) { pending = true; requestAnimationFrame(render); } }
@@ -142,12 +142,15 @@
   };
 })();
 
-// Menu "Conteúdos" (submenu do cabeçalho): abre/fecha no clique, fecha com Esc ou clique fora
+// Submenus do cabeçalho (Mentoria, Conteúdos): abre/fecha no clique, só um aberto por vez, fecha com Esc ou clique fora
 (function () {
-  function set(on) {
-    window.__eojDD = on;
+  function chave(dd) { return dd.getAttribute('data-dd') || 'x'; }
+  function set(qual) {
+    if (qual === true) qual = window.__eojDD;
+    window.__eojDD = qual || false;
     var dds = document.querySelectorAll('.eoj-dd');
     for (var i = 0; i < dds.length; i++) {
+      var on = !!qual && chave(dds[i]) === qual;
       dds[i].setAttribute('data-open', on ? 'true' : 'false');
       var b = dds[i].querySelector('.eoj-dd-b'); if (b) b.setAttribute('aria-expanded', on ? 'true' : 'false');
     }
@@ -155,10 +158,19 @@
   window.eojDD = set;
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('.eoj-dd-b');
-    if (b) { e.preventDefault(); set(b.parentNode.getAttribute('data-open') !== 'true'); return; }
+    if (b) { e.preventDefault(); var dd = b.parentNode; set(dd.getAttribute('data-open') === 'true' ? false : chave(dd)); return; }
     if (window.__eojDD && !(e.target.closest && e.target.closest('.eoj-dd'))) set(false);
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && window.__eojDD) { set(false); var b = document.querySelector('.eoj-dd-b'); if (b) b.focus(); }
+    if (e.key === 'Escape' && window.__eojDD) {
+      var dd = document.querySelector('.eoj-dd[data-open="true"]'); set(false);
+      var b = dd && dd.querySelector('.eoj-dd-b'); if (b) b.focus();
+    }
   });
+})();
+
+// Altura real do cabeçalho fixo (usada pelas barras fixas das páginas de curso)
+(function () {
+  function medir() { var h = document.querySelector('header'); if (h) document.documentElement.style.setProperty('--eoj-hdr', h.offsetHeight + 'px'); }
+  window.addEventListener('resize', medir); window.addEventListener('load', medir); document.addEventListener('DOMContentLoaded', medir); setTimeout(medir, 300);
 })();

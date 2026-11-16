@@ -167,22 +167,23 @@ a[aria-label="Fale com o suporte pelo WhatsApp"] svg{width:56px;height:56px}
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px">
 <sc-for list="{{clips}}" as="c" hint-placeholder-count="3">
 <article style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
-<a href="/biblioteca" style="text-decoration: none; color: #111111; display: flex; flex-direction: column">
+<a href="{{c.url}}" style="text-decoration: none; color: #111111; display: flex; flex-direction: column">
 <div style="position: relative; aspect-ratio: 16 / 10; background: #1C1C1C; overflow: hidden">
 <svg viewBox="0 0 160 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%" aria-hidden="true"><rect x="6" y="6" width="148" height="88" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></rect><line x1="80" y1="6" x2="80" y2="94" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></line><circle cx="80" cy="50" r="12" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></circle><rect x="6" y="28" width="20" height="44" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></rect><rect x="134" y="28" width="20" height="44" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="0.8"></rect></svg>
 <sc-for list="{{c.dots}}" as="d" hint-placeholder-count="9">
 <div style="position: absolute; left: {{d.x}}%; top: {{d.y}}%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: {{d.color}}"></div>
 </sc-for>
+<sc-if value="{{c.thumb}}" hint-placeholder-val="{{ false }}"><img src="{{c.thumb}}" alt="" loading="lazy" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></sc-if>
 <div style="position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: rgba(17,17,17,0.75); display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg></div>
 <span style="position: absolute; right: 10px; bottom: 10px; background: rgba(17,17,17,0.85); color: #FFFFFF; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px">{{c.dur}}</span>
 </div>
 <div style="padding: 16px 18px 6px; display: flex; flex-direction: column; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; color: #4A79A6; letter-spacing: 0.06em; text-transform: uppercase">{{c.m}} · {{c.f}}</span>
+<span style="font-size: 12px; font-weight: 600; color: #4A79A6; letter-spacing: 0.06em; text-transform: uppercase">{{c.linha}}</span>
 <h3 style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35">{{c.t}}</h3>
 </div>
 </a>
 <div style="padding: 6px 18px 16px; display: flex; flex-wrap: wrap; gap: 6px">
-<span style="font-size: 12px; background: #E6EFF8; color: #3A6894; padding: 4px 9px; border-radius: 99px">{{c.s}}</span>
+<sc-if value="{{c.s}}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; background: #E6EFF8; color: #3A6894; padding: 4px 9px; border-radius: 99px">{{c.s}}</span></sc-if>
 </div>
 </article>
 </sc-for>
@@ -364,7 +365,10 @@ a[aria-label="Fale com o suporte pelo WhatsApp"] svg{width:56px;height:56px}
 <script>
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { p: 0, menu: false }; }
-  componentDidMount() { var self = this; this.timer = setInterval(function () { var p = Math.min(1, self.state.p + 0.016); self.setState({ p: p }); if (p >= 1) clearInterval(self.timer); }, 40); }
+  componentDidMount() { var self = this;
+    // Clipes reais da Biblioteca (os mais recentes publicados), direto da API pública do Supabase
+    try { fetch('https://ragqlotjxwfdzggrhlez.supabase.co/rest/v1/clipes?select=id,titulo,momento,fase,subtema,duracao,thumb&publicado=eq.true&order=criado_em.desc&limit=3', { headers: { apikey: 'sb_publishable_-Rwplnf-81gMXQij5sOwGQ_wCH1QvmR' } }).then(function (r) { return r.ok ? r.json() : []; }).then(function (d) { if (d && d.length) self.setState({ reais: d }); }).catch(function () {}); } catch (e) {}
+    this.timer = setInterval(function () { var p = Math.min(1, self.state.p + 0.016); self.setState({ p: p }); if (p >= 1) clearInterval(self.timer); }, 40); }
   componentWillUnmount() { clearInterval(this.timer); }
   renderVals() {
     var selfM = this;
@@ -382,7 +386,11 @@ class Component extends DCLogic {
       { t: 'Saída de 3 com lateral por dentro', m: 'Org. ofensiva', f: 'Construção', p: 'Lateral', n: 'Profissional', s: 'Sistemas táticos', dur: '0:42' },
       { t: 'Pressão alta orientada para o corredor', m: 'Org. defensiva', f: 'Pressão alta', p: 'Ponta', n: 'Profissional', s: 'Sistemas táticos', dur: '0:35' },
       { t: 'Atração e liberação pelo volante', m: 'Org. ofensiva', f: 'Criação', p: 'Volante', n: 'Sub-17 / Sub-20', s: 'Tática individual', dur: '0:51' }
-    ].map(function (c, i) { c.dots = dots(i + 3); return c; });
+    ].map(function (c, i) { c.dots = dots(i + 3); c.linha = c.m + ' · ' + c.f; c.url = '/biblioteca/acervo'; c.thumb = ''; return c; });
+    var lg = (/^\/(es|en)(\/|$)/.exec(location.pathname) || [])[1], pre = lg ? '/' + lg : '';
+    if (this.state.reais) clips = this.state.reais.map(function (r, i) {
+      return { t: r.titulo, linha: [r.momento, r.fase].filter(Boolean).join(' · '), s: r.subtema || '', dur: r.duracao || '', thumb: r.thumb || '', dots: [], url: pre + '/biblioteca/clipe?id=' + r.id };
+    });
     return {
       menuOpen: this.state.menu ? "true" : "false", toggleMenu: function () { selfM.setState({ menu: !selfM.state.menu }); },
       alunos: fmt(3000 * ease),

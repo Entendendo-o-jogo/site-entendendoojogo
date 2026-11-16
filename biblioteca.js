@@ -170,6 +170,16 @@
     });
   };
   B.contas = function () { return sb.rpc('admin_contas').then(ok); };
+  // ---------- Pedidos de vídeo e avisos ----------
+  B.pedir = function (texto) { return sb.from('pedidos').insert({ texto: texto }).then(ok).then(function () { B.ev('bib_pedido'); }); };
+  B.meusPedidos = function () { return B.user ? sb.from('pedidos').select('id,texto,status,clipe_id,criado_em').eq('usuario_id', B.user.id).order('criado_em', { ascending: false }).then(ok) : Promise.resolve([]); };
+  B.apagarPedido = function (id) { return sb.from('pedidos').delete().eq('id', id).then(ok); };
+  B.pedidosAdmin = function () { return sb.rpc('admin_pedidos').then(ok); };
+  B.arquivarPedido = function (id, st) { return sb.from('pedidos').update({ status: st || 'arquivado' }).eq('id', id).then(ok); };
+  B.atenderPedidos = function (clipe, ids) { return ids && ids.length ? sb.rpc('atender_pedidos', { clipe: clipe, ids: ids }).then(ok) : Promise.resolve(0); };
+  B.avisos = function () { return B.user ? sb.from('avisos').select('*').eq('usuario_id', B.user.id).order('criado_em', { ascending: false }).limit(30).then(ok) : Promise.resolve([]); };
+  B.naoLidos = function () { return B.user ? sb.from('avisos').select('id', { count: 'exact', head: true }).eq('usuario_id', B.user.id).eq('lido', false).then(function (r) { return r.count || 0; }) : Promise.resolve(0); };
+  B.lerAvisos = function () { return B.user ? sb.from('avisos').update({ lido: true }).eq('usuario_id', B.user.id).eq('lido', false).then(ok) : Promise.resolve(); };
   B.inserirVarios = function (lista) { return sb.from('clipes').insert(lista).select('id').then(ok); };
   B.excluirClipe = function (id) { return sb.from('clipes').delete().eq('id', id).then(ok); };
 

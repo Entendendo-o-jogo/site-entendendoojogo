@@ -105,7 +105,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 <script>
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { loading: true, erro: '', aba: 'recentes', gate: 'entrar' }; }
-  componentDidMount() { var self = this; EOJB.ready.then(function () { if (!EOJB.user) return self.setState({ loading: false }); return self.carregar(); }); }
+  componentDidMount() { var self = this; EOJB.ready.then(function () { if (!EOJB.user) return self.setState({ loading: false }); var vt = EOJB.param('volta'); if (vt && /^\/hub\//.test(vt)) return location.replace(vt); return self.carregar(); }); }
   carregar() {
     var self = this; this.setState({ loading: true });
     return Promise.all([EOJH.cursos(), EOJH.matriculas(), EOJH.progresso(), EOJH.recentes(12), EOJH.ultimaAssistida()]).then(function (r) {
@@ -114,7 +114,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     var self = this, st = this.state, logged = !!EOJB.user;
-    var g = EOJB.gate(this, function () { self.carregar(); });
+    var g = EOJB.gate(this, function () { var vt = EOJB.param('volta'); if (vt && /^\/hub\//.test(vt)) return location.assign(vt); self.carregar(); });
     var nome = (EOJB.nome() || '').split(/[ @]/)[0];
     var v = { loading: st.loading, erro: st.erro, anon: !logged && !st.loading, pronto: logged && !st.loading && !!st.cursos,
       ola: logged && nome ? 'Olá, ' + nome : 'Área do aluno', aba: st.aba,

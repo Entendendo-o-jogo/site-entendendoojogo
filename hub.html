@@ -129,7 +129,7 @@ class Component extends DCLogic {
     v.rec = (st.rec || []).map(function (r) {
       var dias = (Date.now() - new Date(r.publicado_em).getTime()) / 86400000;
       return { url: '/hub/aula?id=' + r.aula_id, capa: r.capa || '', titulo: r.aula, linha: (TIPO[r.tipo] || 'Curso') + ' · ' + r.curso,
-        quando: 'Publicado ' + EOJH.quando(r.publicado_em), novo: dias < 14, bloq: !st.acc[r.curso_id] };
+        quando: dias < 60 ? 'Publicado ' + EOJH.quando(r.publicado_em) : r.curso, novo: dias < 14, bloq: !st.acc[r.curso_id] };
     });
     v.temRec = v.rec.length > 0; v.semRec = !v.temRec;
     function card(c) {

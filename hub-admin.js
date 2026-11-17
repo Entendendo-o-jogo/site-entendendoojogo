@@ -34,7 +34,8 @@
   // ---------- Cursos ----------
   function carregarCursos() { return sb.from('cursos').select('*').order('ordem').order('id').then(ok).then(function (d) { st.cursos = d; }); }
   function listaCursos(c) {
-    c.innerHTML = '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
+    c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div></div>' +
+      '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
       '<p style="margin:0;font-size:13px;color:#555555">Só aparecem para os alunos os cursos marcados como publicados. "Basic" = incluído no plano Basic. "Grátis" = aberto para qualquer conta.</p>' +
       '<table><thead><tr><th>Curso</th><th>Tipo</th><th>Publicado</th><th>Grátis</th><th>Basic</th><th></th></tr></thead><tbody>' +
       st.cursos.map(function (k) {
@@ -212,7 +213,24 @@
       return sb.from('acessos_email').insert(row).then(ok).then(function () { aviso('Acesso liberado'); raiz.querySelector('[data-a="busca"]').value = em; buscar(); }).catch(falha);
     }
     if (t.closest('[data-buscar]')) return buscar();
+    if ((x = t.closest('[data-liberar-vimeo]'))) return liberarVimeo(x);
     if ((x = t.closest('[data-ativo]'))) { return sb.from('acessos_email').update({ ativo: x.getAttribute('data-v') === 'true', atualizado_em: new Date().toISOString() }).eq('id', +x.getAttribute('data-ativo')).then(ok).then(buscar).catch(falha); }
+  }
+
+  // Acrescenta o domínio novo em lotes, respeitando o limite da API do Vimeo
+  function liberarVimeo(btn) {
+    var stt = raiz.querySelector('[data-vimeo-st]'), feitos = 0, falhas = 0;
+    btn.disabled = true;
+    function lote(off) {
+      return sb.functions.invoke('vimeo', { body: { acao: 'dominio', offset: off, limite: 50 } }).then(function (r) {
+        if (r.error) throw r.error;
+        var d = r.data || {}; feitos += d.feitos || 0; falhas += (d.falhas || []).length;
+        stt.textContent = feitos + ' de ' + d.total + ' vídeos liberados' + (falhas ? ' · ' + falhas + ' com erro' : '') + (d.limite ? ' · aguardando o limite do Vimeo…' : '');
+        if (d.proximo == null) { stt.textContent = 'Pronto: ' + feitos + ' vídeos liberados' + (falhas ? ' (' + falhas + ' com erro)' : '') + '.'; btn.disabled = false; return; }
+        return new Promise(function (ok) { setTimeout(ok, d.limite ? 60000 : 500); }).then(function () { return lote(d.proximo); });
+      });
+    }
+    lote(0).catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e); });
   }
 
   window.EOJHubAdmin = {

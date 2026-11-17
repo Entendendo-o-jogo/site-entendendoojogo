@@ -15,7 +15,7 @@ img, video { max-width: 100%; }
     border-top: 1px solid #2A2A2A; padding-top: 6px;
   }
   #menu-principal[data-open="true"] a { padding: 13px 0 !important; border-bottom: 1px solid #1F1F1F; }
-  header a[href^="https://hub.entendendoojogo"], header > div > div > a[href$="/biblioteca"] { display: none !important; }
+  header > div > div > a[href="Hub-inicio.dc.html"], header > div > div > a[href$="/biblioteca"] { display: none !important; }
   header > div > div { margin-left: auto; }
   .eoj-burger { display: flex !important; }
 

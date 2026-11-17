@@ -23,7 +23,7 @@ document.addEventListener('click', function (ev) {
   var fb = window.fbq || function () {};
   if (h.indexOf('pay.hotmart.com') >= 0) { gtag('event', 'begin_checkout', { link_url: h, link_text: txt }); fb('track', 'InitiateCheckout'); }
   else if (h.indexOf('wa.me') >= 0 || h.indexOf('whatsapp.com') >= 0) { gtag('event', 'contact', { method: 'whatsapp', link_text: txt }); fb('track', 'Contact'); }
-  else if (h.indexOf('hub.entendendoojogo.com.br') >= 0) gtag('event', 'eojhub_click', { link_url: h, link_text: txt });
+  else if ((h.indexOf('hub.entendendoojogo.com.br') >= 0 || /^\/hub(\/|$|\?)/.test(h))) gtag('event', 'eojhub_click', { link_url: h, link_text: txt });
   else if (a.hasAttribute('download')) { gtag('event', 'generate_lead', { method: 'ebook_download', link_text: txt }); fb('track', 'Lead'); }
 }, true);
 </script>
@@ -59,7 +59,7 @@ header > div{padding:12px 20px !important;gap:10px 14px !important}
 nav[aria-label="Principal"]{display:none !important}
 nav[aria-label="Principal"][data-open="true"]{display:flex !important;order:3;flex:1 1 100% !important;flex-direction:column;align-items:stretch !important;gap:0 !important;font-size:16px !important;border-top:1px solid #2A2A2A;padding-top:6px}
 nav[aria-label="Principal"][data-open="true"] a{padding:13px 0 !important;border-bottom:1px solid #1F1F1F}
-header a[href^="https://hub.entendendoojogo"], header > div > div > a[href="/biblioteca/acervo"]{display:none !important}
+header > div > div > a[href="/hub"], header > div > div > a[href="/biblioteca/acervo"]{display:none !important}
 header > div > div{margin-left:auto}
 .eoj-burger{display:flex !important}
 h1{font-size:40px !important;line-height:1 !important}
@@ -71,8 +71,10 @@ section > div[style*="max-width: 1240px"]{padding-left:20px !important;padding-r
 a[aria-label="Fale com o suporte pelo WhatsApp"]{width:64px !important;height:64px !important;right:12px !important;bottom:12px !important}
 a[aria-label="Fale com o suporte pelo WhatsApp"] svg{width:56px;height:56px}
 }
+/*hs*/@keyframes eoj-t-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}@keyframes eoj-t-bg{from{transform:scale(1.06);opacity:.6}to{transform:none;opacity:1}}.eoj-t-in{opacity:0;animation:eoj-t-in .6s ease-out forwards}.eoj-t-bg{animation:eoj-t-bg 1.8s ease-out both}.eoj-hs-track{display:flex;transition:transform .8s cubic-bezier(.65,0,.35,1);will-change:transform}.eoj-hs-slide{position:relative;flex:0 0 100%;min-height:calc(100vh - var(--eoj-hdr,68px));min-height:calc(100svh - var(--eoj-hdr,68px));overflow:hidden}.eoj-hs-in{position:relative;min-height:inherit;box-sizing:border-box;padding:64px 24px 104px}.eoj-hs-split{display:flex;align-items:center;justify-content:center;gap:56px;max-width:1320px;margin:0 auto;padding-left:48px;padding-right:48px}.eoj-hs-txt{flex:0 1 440px;display:flex;flex-direction:column;gap:18px}.eoj-hs-vid{position:relative;flex:1 1 720px;max-width:820px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.55)}.eoj-hs-vid video{width:100%;height:100%;display:block;object-fit:cover}.eoj-hs-som{position:absolute;right:14px;bottom:14px;display:flex;align-items:center;gap:8px;font:inherit;font-size:14px;font-weight:600;color:#FFFFFF;background:rgba(17,17,17,.72);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:9px 14px;cursor:pointer}.eoj-hs-som[aria-pressed="true"] .eoj-hs-x{display:none}.eoj-hs-nav{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;align-items:center;gap:10px;z-index:3}.eoj-hs-seta{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.45);background:rgba(14,17,20,.45);color:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}.eoj-hs-seta:hover,.eoj-hs-som:hover{background:rgba(255,255,255,.15)}.eoj-hs-play{display:none}.eoj-hs[data-parado="1"] .eoj-hs-play{display:block}.eoj-hs[data-parado="1"] .eoj-hs-p{display:none}.eoj-hs-dots{display:flex;gap:8px;margin:0 6px}.eoj-hs-dots button{width:56px;height:24px;background:none;border:0;padding:0;cursor:pointer;display:flex;align-items:center}.eoj-hs-dots i{position:relative;display:block;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden}.eoj-hs-dots i::after{content:"";position:absolute;inset:0;background:#FFFFFF;transform-origin:left;transform:scaleX(var(--p,0))}.eoj-hs-dots button:focus-visible,.eoj-hs-seta:focus-visible,.eoj-hs-som:focus-visible{outline:2px solid #A1C4E6;outline-offset:3px}@media (max-width: 900px){.eoj-hs-split{flex-direction:column;gap:26px;padding:40px 20px 96px}.eoj-hs-txt{flex:none;text-align:center;align-items:center}.eoj-hs-vid{flex:none;width:100%}}@media (prefers-reduced-motion: reduce){.eoj-t-in,.eoj-t-bg{animation:none;opacity:1}.eoj-hs-track{transition:none}}/*/hs*/
 </style>
-<link rel="stylesheet" href="/site.css?v=c0b9da31">
+<script src="/home-slider.js?v=bb112e13" defer></script>
+<link rel="stylesheet" href="/site.css?v=eca05a0d">
 <!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
 <link rel="alternate" hreflang="pt-BR" href="https://entendendoojogo.com.br/"><link rel="alternate" hreflang="es" href="https://entendendoojogo.com.br/es"><link rel="alternate" hreflang="en" href="https://entendendoojogo.com.br/en"><link rel="alternate" hreflang="x-default" href="https://entendendoojogo.com.br/">
 </head>
@@ -96,36 +98,69 @@ a[aria-label="Fale com o suporte pelo WhatsApp"] svg{width:56px;height:56px}
 <a href="/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quem somos</a>
 </nav>
 <div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto"><nav class="eoj-lang" aria-label="Idioma / Language" style="display: flex; align-items: center; gap: 4px; font-size: 12px; letter-spacing: 0.04em; margin-right: 6px"><a href="/" hreflang="pt-BR" aria-label="Português" lang="pt-BR" aria-current="true" style="color: #FFFFFF; font-weight: 800; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 1"><svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="20" height="14" fill="#009C3B"/><path d="M10 1.6 18.2 7 10 12.4 1.8 7z" fill="#FFDF00"/><circle cx="10" cy="7" r="3.1" fill="#002776"/><path d="M7 6.4c2-.5 4.1-.3 6 .6" stroke="#FFFFFF" stroke-width=".6" fill="none"/></svg><span class="eoj-lang-t">PT</span></a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/es" hreflang="es" aria-label="Español" lang="es" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 0.85"><svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="20" height="14" fill="#AA151B"/><rect y="3.5" width="20" height="7" fill="#F1BF00"/></svg><span class="eoj-lang-t">ES</span></a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/en" hreflang="en" aria-label="English" lang="en" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 0.85"><svg width="18" height="13" viewBox="0 0 60 42" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="60" height="42" fill="#012169"/><path d="M0 0l60 42M60 0L0 42" stroke="#FFFFFF" stroke-width="8"/><path d="M0 0l60 42M60 0L0 42" stroke="#C8102E" stroke-width="3"/><path d="M30 0v42M0 21h60" stroke="#FFFFFF" stroke-width="12"/><path d="M30 0v42M0 21h60" stroke="#C8102E" stroke-width="7"/></svg><span class="eoj-lang-t">EN</span></a></nav>
-<a href="https://hub.entendendoojogo.com.br/users/sign_in" style="background: {{accent}}; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar EOJHub</a>
+<a href="/hub" style="background: {{accent}}; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar EOJHub</a>
 <a href="/biblioteca/acervo" style="background: {{accent}}; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar Biblioteca EOJ</a>
 
 <button type="button" class="eoj-burger" aria-label="Abrir menu" aria-controls="menu-principal" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1.5px solid #4A4A4A; border-radius: 8px; background: none; color: #FFFFFF; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
 </div>
 </header>
 
-<section style="position: relative; background: #111111; color: #FFFFFF; overflow: hidden">
-<div aria-hidden="true" style="position: absolute; inset: 0; background: #111111 url(/assets/36d0b9fcd71d37c865fb7387f6a30cff.jpg) 70% 55% / cover no-repeat"></div>
-<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(17,17,17,0.92) 0%, rgba(17,17,17,0.78) 40%, rgba(17,17,17,0.45) 75%, rgba(17,17,17,0.35) 100%)"></div>
-<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; background: linear-gradient(0deg, rgba(17,17,17,0.85), rgba(17,17,17,0))"></div>
-<div style="position: relative; padding: 56px 64px 64px; min-height: clamp(660px, calc(100vh - 72px), 940px); box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 40px 48px">
-<div style="position: relative; z-index: 1; max-width: 980px; display: flex; flex-direction: column; gap: 24px">
-<p style="margin: 0; color: #A1C4E6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Formação tática para o futebol</p>
-<h1 class="eoj-hero-h1" style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 800; font-size: clamp(44px, 5.1vw, 68px); line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em"><span class="eoj-linha" style="display: block">Entenda o jogo<span style="color: #A1C4E6">.</span></span><span class="eoj-linha" style="display: block">Leve para o treino<span style="color: #A1C4E6">.</span></span></h1>
-<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #CFCFCF; max-width: 780px">Conteúdo teórico e prático de tática para treinadores, analistas, auxiliares e profissionais que pretendem melhorar o entendimento de jogo ou ingressar no mercado de trabalho do futebol — e a Biblioteca EOJ: gratuita, cheia de clipes para usar na sua realidade.</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px">
-<a href="/biblioteca/acervo" style="background: {{accent}}; color: #111111; text-decoration: none; font-weight: 600; font-size: 16px; padding: 15px 24px; border-radius: 8px; display: flex; align-items: center; gap: 10px">Conheça a Biblioteca EOJ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-<a href="#cursos" style="border: 1.5px solid #4A4A4A; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 16px; padding: 14px 22px; border-radius: 8px">Ver cursos</a>
-</div>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, auto)); justify-content: start; gap: 36px; margin-top: 22px" class="eoj-nums">
-<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span class="eoj-num" style="font-weight: 800; font-size: 44px; white-space: nowrap; line-height: 1; font-variant-numeric: tabular-nums">{{alunos}}</span><span style="font-size: 15px; color: #CFCFCF; white-space: nowrap">alunos formados</span></div>
-
-<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span class="eoj-num" style="font-weight: 800; font-size: 44px; white-space: nowrap; line-height: 1; font-variant-numeric: tabular-nums">{{seguidores}}</span><span style="font-size: 15px; color: #CFCFCF; white-space: nowrap">seguidores</span></div>
-<div style="display: flex; flex-direction: column; gap: 2px; border-top: 2px solid #A1C4E6; padding-top: 12px; min-width: 0"><span class="eoj-num" style="font-weight: 800; font-size: 44px; white-space: nowrap; line-height: 1">2018</span><span style="font-size: 15px; color: #CFCFCF; white-space: nowrap">nosso começo</span></div>
+<section data-keep="hero" data-pronto="1" class="eoj-hs" aria-roledescription="carrossel" aria-label="Destaques" style="position: relative; background: #0E1114; color: #FFFFFF; overflow: hidden">
+<div class="eoj-hs-track">
+<div class="eoj-hs-slide" data-slide="0" role="group" aria-roledescription="slide" aria-label="1 de 3: Entendendo o Jogo">
+<div aria-hidden="true" class="eoj-t-bg" style="position: absolute; inset: 0; background: #0E1114 url(/assets/36d0b9fcd71d37c865fb7387f6a30cff.jpg) 50% 50% / cover no-repeat"></div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,17,20,0.55) 0%, rgba(14,17,20,0.70) 55%, rgba(14,17,20,0.95) 100%)"></div>
+<div class="eoj-hs-in" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center">
+<div class="eoj-t-in" style="animation-delay: 0s; margin-bottom: 22px"><svg width="64" height="64" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#FFFFFF" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#FFFFFF"></rect><circle cx="20" cy="20" r="4" fill="#A1C4E6"></circle></svg></div>
+<p class="eoj-t-in" style="margin: 0 0 26px; font-size: 14px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: #F0F0F0; animation-delay: .15s">Entendendo o Jogo</p>
+<h1 style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 700; font-size: clamp(38px, 5vw, 68px); line-height: 1.12; letter-spacing: -0.015em; max-width: 1000px">
+<span class="eoj-t-in" style="display: block; animation-delay: .3s">Entenda o jogo<span style="color: #A1C4E6">.</span></span>
+<span class="eoj-t-in" style="display: block; animation-delay: .45s">Leve para o treino<span style="color: #A1C4E6">.</span></span></h1>
+<p class="eoj-t-in" style="margin: 26px 0 0; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.5; color: #A1C4E6; max-width: 720px; animation-delay: .7s">Formação tática para treinadores, analistas e profissionais do futebol</p>
+<div class="eoj-t-in" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 38px; animation-delay: .9s">
+<a href="/biblioteca/acervo" style="border: 1.5px solid rgba(255,255,255,0.75); color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px 28px; border-radius: 99px">Conheça a Biblioteca EOJ</a>
+<a href="#cursos" style="color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px 18px">Ver cursos →</a>
 </div>
 </div>
-
 </div>
-</section>
+<div class="eoj-hs-slide" data-slide="1" role="group" aria-roledescription="slide" aria-label="2 de 3: Biblioteca EOJ">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: #0E1114 url(/media/biblioteca.jpg) 50% 50% / cover no-repeat; filter: blur(28px) brightness(0.35); transform: scale(1.15)"></div>
+<div class="eoj-hs-in eoj-hs-split">
+<div class="eoj-hs-txt">
+<p style="margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #A1C4E6">Biblioteca EOJ · em breve</p>
+<h2 style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 700; font-size: clamp(32px, 3.6vw, 52px); line-height: 1.1; letter-spacing: -0.015em"><span style="display: block">Clipes táticos prontos</span><span style="display: block">para levar ao treino<span style="color: #A1C4E6">.</span></span></h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.55; color: #D0D4D9; max-width: 460px">Filtre por tema, baixe em 1080p, monte playlists e junte os clipes num vídeo só para a sua preleção.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px"><a href="/biblioteca/acervo" style="background: #A1C4E6; color: #111111; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 16px 28px; border-radius: 99px">Conheça a Biblioteca EOJ</a></div>
+</div>
+<div class="eoj-hs-vid"><video data-src="/media/biblioteca.mp4" poster="/media/biblioteca.jpg" muted playsinline preload="none" aria-label="Vídeo de apresentação: Biblioteca EOJ"></video>
+<button type="button" class="eoj-hs-som" data-som aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path class="eoj-hs-x" d="M17 9l5 6M22 9l-5 6"></path></svg><span>Ativar som</span></button></div>
+</div>
+</div>
+<div class="eoj-hs-slide" data-slide="2" role="group" aria-roledescription="slide" aria-label="3 de 3: EOJHub">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: #0E1114 url(/media/eojhub.jpg) 50% 50% / cover no-repeat; filter: blur(28px) brightness(0.35); transform: scale(1.15)"></div>
+<div class="eoj-hs-in eoj-hs-split">
+<div class="eoj-hs-txt">
+<p style="margin: 0; font-size: 14px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #A1C4E6">EOJHub · área do aluno</p>
+<h2 style="margin: 0; font-family: Montserrat, sans-serif; font-weight: 700; font-size: clamp(32px, 3.6vw, 52px); line-height: 1.1; letter-spacing: -0.015em"><span style="display: block">Todos os seus cursos</span><span style="display: block">num só lugar<span style="color: #A1C4E6">.</span></span></h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.55; color: #D0D4D9; max-width: 460px">Continue de onde parou, baixe os materiais de cada aula, faça anotações e converse com professores e colegas.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px"><a href="/hub" style="background: #A1C4E6; color: #111111; text-decoration: none; font-weight: 700; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 16px 28px; border-radius: 99px">Acessar EOJHub</a><a href="/eojhub" style="border: 1.5px solid rgba(255,255,255,0.75); color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px 28px; border-radius: 99px">Conheça o EOJHub</a></div>
+</div>
+<div class="eoj-hs-vid"><video data-src="/media/eojhub.mp4" poster="/media/eojhub.jpg" muted playsinline preload="none" aria-label="Vídeo de apresentação: EOJHub"></video>
+<button type="button" class="eoj-hs-som" data-som aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path class="eoj-hs-x" d="M17 9l5 6M22 9l-5 6"></path></svg><span>Ativar som</span></button></div>
+</div>
+</div>
+</div>
+<div class="eoj-hs-nav">
+<button type="button" class="eoj-hs-seta" data-ant aria-label="Destaque anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<div class="eoj-hs-dots" role="tablist" aria-label="Escolher destaque">
+<button type="button" role="tab" data-ir="0" aria-selected="true" aria-label="Entendendo o Jogo"><i></i></button>
+<button type="button" role="tab" data-ir="1" aria-selected="false" aria-label="Biblioteca EOJ"><i></i></button>
+<button type="button" role="tab" data-ir="2" aria-selected="false" aria-label="EOJHub"><i></i></button>
+</div>
+<button type="button" class="eoj-hs-seta" data-prox aria-label="Próximo destaque"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+<button type="button" class="eoj-hs-seta" data-pausa aria-label="Pausar a troca automática"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect class="eoj-hs-p" x="6" y="5" width="4" height="14"></rect><rect class="eoj-hs-p" x="14" y="5" width="4" height="14"></rect><path class="eoj-hs-play" d="M8 5l11 7-11 7z"></path></svg></button>
+</div>
+</section><!--/hero-->
 
 <section aria-labelledby="clubes-t" style="background: #FFFFFF; border-bottom: 1px solid #E2E2E2">
 <div style="max-width: 1240px; margin: 0 auto; padding: 32px 32px 36px; display: flex; flex-direction: column; align-items: center; gap: 22px">

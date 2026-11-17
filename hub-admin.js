@@ -20,7 +20,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -29,6 +29,7 @@
     if (st.aba === 'hotmart') return hotmart(c);
     if (st.aba === 'acessos') return acessos(c);
     if (st.aba === 'eventos') return eventos(c);
+    if (st.aba === 'sugestoes') return sugestoes(c);
   }
 
   // ---------- Cursos ----------
@@ -60,6 +61,7 @@
         '<label style="flex:0 1 220px">Endereço (slug)<br><input class="ha-in" data-f="slug" value="' + esc(k.slug) + '" style="width:100%"></label>' +
         '<label style="flex:0 1 120px">Carga horária<br><input class="ha-in" type="number" data-f="carga_horaria" value="' + esc(k.carga_horaria) + '" style="width:100%"></label>' +
         '<label style="flex:0 1 90px">Ordem<br><input class="ha-in" type="number" data-f="ordem" value="' + esc(k.ordem) + '" style="width:100%"></label></div>' +
+        '<label style="max-width:360px">Formato<br><select class="ha-in" data-f="formato" style="width:100%"><option value="curso"' + (k.formato !== 'colecao' ? ' selected' : '') + '>Curso (módulos em sequência)</option><option value="colecao"' + (k.formato === 'colecao' ? ' selected' : '') + '>Coleção (conteúdos soltos por tema)</option></select></label>' +
         '<label>Capa (URL da imagem)<br><input class="ha-in" data-f="capa" value="' + esc(k.capa) + '" style="width:100%"></label>' +
         '<label>Descrição<br><textarea class="ha-in" data-f="descricao" rows="3" style="width:100%">' + esc(k.descricao) + '</textarea></label>' +
         '<div class="ha-row"><label class="ha-chk"><input type="checkbox" data-f="publicado"' + (k.publicado ? ' checked' : '') + '>Publicado</label><label class="ha-chk"><input type="checkbox" data-f="gratuito"' + (k.gratuito ? ' checked' : '') + '>Grátis</label><label class="ha-chk"><input type="checkbox" data-f="plano_basic"' + (k.plano_basic ? ' checked' : '') + '>Incluído no Basic</label>' +
@@ -179,6 +181,20 @@
     }).catch(falha);
   }
 
+  // ---------- Sugestões dos alunos (EOJHub) ----------
+  function sugestoes(c) {
+    c.innerHTML = 'Carregando…';
+    sb.rpc('admin_sugestoes_hub').then(ok).then(function (rs) {
+      var ST = { aberto: 'Aberta', atendido: 'Publicada', arquivado: 'Arquivada' };
+      c.innerHTML = '<div class="ha-box"><b style="font-size:18px">Sugestões dos alunos (' + rs.filter(function (r) { return r.status === 'aberto'; }).length + ' abertas)</b>' +
+        '<p style="margin:0;font-size:14px;color:#555555">Quando publicar uma aula que atende a sugestão, informe o número da aula (aparece em /hub/aula?id=…) e clique em “Publicada”: o aluno recebe um aviso com o link.</p>' +
+        (rs.length ? '<table><thead><tr><th>Quando</th><th>Aluno</th><th>Sugestão</th><th>Situação</th><th></th></tr></thead><tbody>' + rs.map(function (r) {
+          return '<tr data-sug="' + r.id + '"><td style="white-space:nowrap">' + new Date(r.criado_em).toLocaleDateString('pt-BR') + '</td><td>' + esc(r.nome || '') + '<div style="font-size:12px;color:#777777">' + esc(r.email || '') + '</div></td><td>' + esc(r.texto) + '</td><td>' + (ST[r.status] || r.status) + (r.aula_id ? ' · <a href="/hub/aula?id=' + r.aula_id + '" target="_blank" rel="noopener">aula ' + r.aula_id + '</a>' : '') + '</td>' +
+            '<td style="white-space:nowrap">' + (r.status === 'aberto' ? '<input class="ha-in" data-sug-aula type="number" placeholder="Nº da aula" style="width:110px"> <button type="button" class="ha-p" data-atender="' + r.id + '">Publicada</button> <button type="button" class="ha-b" data-arquivar="' + r.id + '">Arquivar</button>' : '') + '</td></tr>';
+        }).join('') + '</tbody></table>' : '<span style="font-size:14px;color:#777777">Nenhuma sugestão ainda.</span>') + '</div>';
+    }).catch(falha);
+  }
+
   function cliques(e) {
     var t = e.target, x;
     if ((x = t.closest('[data-aba]'))) { st.aba = x.getAttribute('data-aba'); st.aberto = null; return desenhar(); }
@@ -213,6 +229,12 @@
       return sb.from('acessos_email').insert(row).then(ok).then(function () { aviso('Acesso liberado'); raiz.querySelector('[data-a="busca"]').value = em; buscar(); }).catch(falha);
     }
     if (t.closest('[data-buscar]')) return buscar();
+    if ((x = t.closest('[data-atender]'))) {
+      var au = +x.closest('tr').querySelector('[data-sug-aula]').value;
+      if (!au) return aviso('Informe o número da aula publicada.', true);
+      return sb.rpc('atender_sugestoes', { aula: au, ids: [+x.getAttribute('data-atender')] }).then(ok).then(function () { aviso('Aluno avisado'); sugestoes(raiz.querySelector('.ha-corpo')); }).catch(falha);
+    }
+    if ((x = t.closest('[data-arquivar]'))) return sb.from('pedidos').update({ status: 'arquivado' }).eq('id', +x.getAttribute('data-arquivar')).then(ok).then(function () { sugestoes(raiz.querySelector('.ha-corpo')); }).catch(falha);
     if ((x = t.closest('[data-liberar-vimeo]'))) return liberarVimeo(x);
     if ((x = t.closest('[data-ativo]'))) { return sb.from('acessos_email').update({ ativo: x.getAttribute('data-v') === 'true', atualizado_em: new Date().toISOString() }).eq('id', +x.getAttribute('data-ativo')).then(ok).then(buscar).catch(falha); }
   }
@@ -242,6 +264,7 @@
         if (!B.isAdmin()) { raiz.innerHTML = '<p style="margin:0">Esta página é só para administradores.</p>'; return; }
         raiz.innerHTML = '<style>' + CSS + '</style><div class="ha"><div class="ha-tabs-w"></div><div class="ha-corpo"></div></div><div class="ha-aviso" role="status"></div>';
         raiz.addEventListener('click', cliques);
+        if (/^#(sugestoes|eventos|acessos|hotmart)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

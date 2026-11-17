@@ -11,6 +11,22 @@
     var reduz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var parado = reduz, pausaHover = false, decorrido = 0;
     function marcarParado() { sec.setAttribute('data-parado', parado ? '1' : '0'); var b = sec.querySelector('[data-pausa]'); if (b) b.setAttribute('aria-label', parado ? 'Retomar a troca automática' : 'Pausar a troca automática'); }
+    // Som ligado por padrão. O navegador só deixa tocar com som depois de um clique/toque na página:
+    // até lá o vídeo toca mudo e o som liga sozinho no primeiro toque (a não ser que a pessoa tenha desligado).
+    var querSom = true, liberado = false;
+    function botaoSom(v) { var b = v.parentNode.querySelector('[data-som]'); if (!b) return; var on = !v.muted; b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.querySelector('span').textContent = on ? (b.getAttribute('data-l-off') || 'Desativar som') : (b.getAttribute('data-l-on') || 'Ativar som'); }
+    function tocar(v) {
+      v.muted = !querSom;
+      var pr = v.play();
+      if (pr && pr.then) pr.then(function () { botaoSom(v); }).catch(function () { v.muted = true; botaoSom(v); var p2 = v.play(); if (p2 && p2.catch) p2.catch(function () { }); });
+      else botaoSom(v);
+    }
+    function liberar() {
+      if (liberado) return; liberado = true;
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.removeEventListener(ev, liberar, true); });
+      var v = video(atual); if (v && querSom && v.muted) { v.muted = false; botaoSom(v); }
+    }
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, liberar, true); });
     function video(i) { return slides[i] && slides[i].querySelector('video'); }
     function ir(i, manual) {
       var n = slides.length; i = (i + n) % n;
@@ -22,7 +38,7 @@
       if (v) {
         if (!v.getAttribute('src')) { v.src = v.getAttribute('data-src'); v.preload = 'auto'; }
         try { v.currentTime = 0; } catch (e) { }
-        var pr = v.play(); if (pr && pr.catch) pr.catch(function () { });
+        tocar(v);
         dur = isFinite(v.duration) && v.duration ? v.duration * 1000 : TEMPO_MAX;
       }
       if (manual) { parado = true; marcarParado(); }
@@ -40,7 +56,7 @@
       }
       var bar = dots[atual] && dots[atual].querySelector('i'); if (bar) bar.style.setProperty('--p', p);
       if (!parado && !pausaHover && !v && p >= 1) ir(atual + 1);
-      if (v && !parado && !pausaHover && v.paused && t - ini > TEMPO_TXT + 1500) ir(atual + 1); // autoplay bloqueado
+      if (v && !parado && !pausaHover && v.paused && v.currentTime < 0.5 && t - ini > TEMPO_TXT + 1500) ir(atual + 1); // autoplay bloqueado
     }
     slides.forEach(function (s, k) {
       var v = s.querySelector('video'); if (!v) return;
@@ -53,9 +69,9 @@
       if (t.closest('[data-ant]')) return ir(atual - 1, true);
       if (t.closest('[data-pausa]')) { parado = !parado; marcarParado(); var v = video(atual); if (v) { if (parado) v.pause(); else v.play().catch(function () { }); } return; }
       if ((x = t.closest('[data-som]'))) {
-        var vv = x.parentNode.querySelector('video'), lig = vv.muted; vv.muted = !lig;
-        x.setAttribute('aria-pressed', lig ? 'true' : 'false'); x.querySelector('span').textContent = lig ? (x.getAttribute('data-l-off') || 'Desativar som') : (x.getAttribute('data-l-on') || 'Ativar som');
-        if (lig) { parado = true; marcarParado(); vv.play().catch(function () { }); }
+        var vv = x.parentNode.querySelector('video'); liberado = true;
+        querSom = vv.muted; vv.muted = !querSom; botaoSom(vv);
+        if (querSom) vv.play().catch(function () { });
       }
     });
     sec.addEventListener('keydown', function (e) {
@@ -72,6 +88,15 @@
     var lang = (document.documentElement.lang || 'pt').slice(0, 2);
     var L = { es: ['Activar sonido', 'Desactivar sonido'], en: ['Turn sound on', 'Turn sound off'] }[lang];
     if (L) sec.querySelectorAll('[data-som]').forEach(function (b) { b.setAttribute('data-l-on', L[0]); b.setAttribute('data-l-off', L[1]); b.querySelector('span').textContent = L[0]; });
+    sec.querySelectorAll('video').forEach(function (v) { v.removeAttribute('muted'); });
+    // Entrada do 1º slide com Web Animations: sobrevive às re-renderizações da página (animação CSS reiniciava e piscava)
+    sec.querySelectorAll('.eoj-t-in').forEach(function (el) {
+      var d = parseFloat(el.getAttribute('data-d')) || 0;
+      el.style.animation = 'none'; el.style.opacity = '1';
+      if (!reduz && el.animate) el.animate([{ opacity: 0, transform: 'translateY(20px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: d * 1000, easing: 'ease-out', fill: 'backwards' });
+    });
+    var bgi = sec.querySelector('.eoj-t-bg');
+    if (bgi && !reduz && bgi.animate) bgi.animate([{ transform: 'scale(1.06)', opacity: 0.6 }, { transform: 'none', opacity: 1 }], { duration: 1800, easing: 'ease-out', fill: 'backwards' });
     marcarParado(); ir(0); raf = requestAnimationFrame(tick);
   }
   function procurar() { var s = document.querySelector('section.eoj-hs'); if (s) iniciar(s); }

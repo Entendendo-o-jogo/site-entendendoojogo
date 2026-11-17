@@ -15,11 +15,11 @@
   // ---------- Catálogo ----------
   var AULA_COLS = 'id,titulo,duracao_seg,ordem,publicado_em';
   H.cursos = function () {
-    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,gratuito,ordem,modulos(id,aulas(id))')
+    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,aulas(id))')
       .order('ordem').order('titulo').then(ok);
   };
   H.curso = function (filtro) {
-    var q = sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,gratuito,modulos(id,titulo,ordem,aulas(' + AULA_COLS + '))');
+    var q = sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,modulos(id,titulo,ordem,aulas(' + AULA_COLS + '))');
     q = typeof filtro === 'number' ? q.eq('id', filtro) : q.eq('slug', filtro);
     return q.maybeSingle().then(ok).then(function (c) {
       if (!c) return null;
@@ -33,6 +33,14 @@
     return sb.from('aulas').select('id,titulo,descricao,duracao_seg,modulo_id,modulos(curso_id)').eq('id', id).maybeSingle().then(ok);
   };
   H.recentes = function (n) { return sb.rpc('conteudos_recentes', { lim: n || 12 }).then(ok); };
+
+  // ---------- Busca e sugestões ----------
+  H.buscar = function (q) { return sb.rpc('buscar_hub', { q: q, lim: 40 }).then(ok); };
+  H.sugerir = function (texto) { return sb.from('pedidos').insert({ texto: texto, area: 'hub' }).then(ok).then(function () { H.ev('hub_sugestao'); }); };
+  H.minhasSugestoes = function () { return B.user ? sb.from('pedidos').select('id,texto,status,aula_id,criado_em').eq('usuario_id', B.user.id).eq('area', 'hub').order('criado_em', { ascending: false }).limit(20).then(ok) : Promise.resolve([]); };
+  H.apagarSugestao = function (id) { return sb.from('pedidos').delete().eq('id', id).then(ok); };
+  H.avisos = function () { return B.avisos(); };
+  H.lerAvisos = function () { return B.lerAvisos(); };
 
   // ---------- Acesso ----------
   // Cursos inteiros e módulos liberados para a pessoa logada (MemberKit, Hotmart, assinatura, matrícula manual)

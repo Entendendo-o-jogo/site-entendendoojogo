@@ -136,3 +136,25 @@ html { scroll-padding-top: 84px; }
 @media (min-width: 900px) { .eoj-curso-secoes { position: sticky; top: calc(var(--eoj-hdr, 72px) + 49px); z-index: 54; } }
 section[id] { scroll-margin-top: calc(var(--eoj-hdr, 72px) + 110px); }
 @media (max-width: 600px) { .eoj-curso-barra > div { padding: 6px 20px !important; } .eoj-curso-cta { padding: 7px 10px !important; } }
+
+/* FAQ (Ajuda) */
+.eoj-faq{background:#FFFFFF;border:1px solid #E6E6E6;border-radius:16px;transition:border-color .2s,box-shadow .2s;interpolate-size:allow-keywords}
+.eoj-faq:hover{border-color:#CFCFCF}
+.eoj-faq[open]{border-color:#A1C4E6;box-shadow:0 10px 30px rgba(17,17,17,.06)}
+.eoj-faq summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 24px;cursor:pointer;font-size:17px;font-weight:700;line-height:1.35}
+.eoj-faq summary::-webkit-details-marker{display:none}
+.eoj-faq summary:focus-visible{outline:2px solid #4A79A6;outline-offset:2px;border-radius:16px}
+.eoj-faq summary i{position:relative;flex:0 0 34px;height:34px;border-radius:50%;background:#F0F4F8;transition:background .2s,transform .3s}
+.eoj-faq summary i::before,.eoj-faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:2px;margin:-1px 0 0 -7px;background:#3A6894;border-radius:2px}
+.eoj-faq summary i::after{transform:rotate(90deg)}
+.eoj-faq[open] summary i{background:#4A79A6;transform:rotate(45deg)}
+.eoj-faq[open] summary i::before,.eoj-faq[open] summary i::after{background:#FFFFFF}
+.eoj-faq p{margin:0;padding:0 24px 24px;font-size:16px;line-height:1.7;color:#444444;max-width:760px}
+.eoj-faq::details-content{block-size:0;overflow:hidden;transition:block-size .3s ease,content-visibility .3s allow-discrete}
+.eoj-faq[open]::details-content{block-size:auto}
+/* FAQ das páginas de curso */
+details:not(.eoj-faq)>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
+details:not(.eoj-faq)>summary::-webkit-details-marker{display:none}
+details:not(.eoj-faq)>summary::after{content:"";flex:0 0 10px;height:10px;border-right:2px solid #4A79A6;border-bottom:2px solid #4A79A6;transform:rotate(45deg) translate(-3px,-3px);transition:transform .25s}
+details:not(.eoj-faq)[open]>summary::after{transform:rotate(-135deg) translate(-3px,-3px)}
+@media (prefers-reduced-motion: reduce){.eoj-faq,.eoj-faq summary i,.eoj-faq::details-content{transition:none}}

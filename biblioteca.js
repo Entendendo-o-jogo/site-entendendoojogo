@@ -172,7 +172,7 @@
   B.contas = function () { return sb.rpc('admin_contas').then(ok); };
   // ---------- Pedidos de vídeo e avisos ----------
   B.pedir = function (texto) { return sb.from('pedidos').insert({ texto: texto }).then(ok).then(function () { B.ev('bib_pedido'); }); };
-  B.meusPedidos = function () { return B.user ? sb.from('pedidos').select('id,texto,status,clipe_id,criado_em').eq('usuario_id', B.user.id).order('criado_em', { ascending: false }).then(ok) : Promise.resolve([]); };
+  B.meusPedidos = function () { return B.user ? sb.from('pedidos').select('id,texto,status,clipe_id,criado_em').eq('usuario_id', B.user.id).eq('area', 'biblioteca').order('criado_em', { ascending: false }).then(ok) : Promise.resolve([]); };
   B.apagarPedido = function (id) { return sb.from('pedidos').delete().eq('id', id).then(ok); };
   B.pedidosAdmin = function () { return sb.rpc('admin_pedidos').then(ok); };
   B.arquivarPedido = function (id, st) { return sb.from('pedidos').update({ status: st || 'arquivado' }).eq('id', id).then(ok); };

@@ -21,7 +21,8 @@
     '#eoj-rod .r-dots{display:flex;gap:5px}#eoj-rod .r-dots i{width:6px;height:6px;border-radius:50%;background:#4A4A4A;display:block}#eoj-rod .r-dots i.on{background:#A1C4E6;width:16px;border-radius:3px}' +
     '#eoj-rod .r-x{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;border:0;background:#FFFFFF;color:#111111;font-size:16px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.25)}' +
     '#eoj-rod .r-anim{display:flex;align-items:center;gap:14px;flex:1 1 auto;min-width:0;transition:opacity .25s,transform .25s}#eoj-rod .r-anim.sai{opacity:0;transform:translateY(8px)}' +
-    '@media (max-width:640px){#eoj-rod{left:10px;right:10px;bottom:10px;gap:10px}#eoj-rod .r-img{width:56px;height:56px}#eoj-rod .r-d,#eoj-rod .r-nav{display:none}#eoj-rod .r-cta{padding:10px 12px;font-size:13px}}' +
+    '@media (max-width:1140px){#eoj-rod{right:88px}}' +
+    '@media (max-width:640px){#eoj-rod{left:10px;right:80px;bottom:12px;gap:10px}#eoj-rod .r-img{width:56px;height:56px}#eoj-rod .r-d,#eoj-rod .r-nav{display:none}#eoj-rod .r-cta{padding:10px 12px;font-size:13px}}' +
     '@media (prefers-reduced-motion:reduce){#eoj-rod,#eoj-rod .r-anim{transition:none}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   var el = document.createElement('aside'); el.id = 'eoj-rod'; el.setAttribute('aria-label', 'Produtos do Entendendo o Jogo');

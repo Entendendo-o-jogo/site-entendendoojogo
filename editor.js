@@ -30,9 +30,15 @@
     '.ed-it .ed-tx span{font-size:12px;color:#555555;font-variant-numeric:tabular-nums}' +
     '.ed-mv{display:flex;flex-direction:column;gap:4px}.ed-mv button{font:inherit;width:30px;height:26px;border:1px solid #CCCCCC;background:#FFFFFF;border-radius:6px;cursor:pointer;font-size:13px}' +
     '.ed-bar{height:10px;background:#EEEEEE;border-radius:5px;overflow:hidden}.ed-bar i{display:block;height:100%;width:0;background:#4A79A6}' +
-    '.ed-tl{position:relative;height:34px;background:#F0F0F0;border-radius:8px;overflow:hidden;cursor:pointer}' +
-    '.ed-tl .sel{position:absolute;top:0;bottom:0;background:rgba(74,121,166,.28);border-left:3px solid #4A79A6;border-right:3px solid #4A79A6}' +
-    '.ed-tl .pos{position:absolute;top:0;bottom:0;width:2px;background:#111111}' +
+    '.ed-tl{position:relative;height:58px;background:repeating-linear-gradient(90deg,#E9E9E9 0 1px,#F4F4F4 1px 10%);border-radius:10px;cursor:pointer;touch-action:none;user-select:none;margin:6px 0 18px}' +
+    '.ed-tl .sel{position:absolute;top:0;bottom:0;background:rgba(74,121,166,.22);border-top:3px solid #4A79A6;border-bottom:3px solid #4A79A6;box-sizing:border-box;cursor:grab}' +
+    '.ed-tl .sel:active{cursor:grabbing}' +
+    '.ed-tl .pos{position:absolute;top:-4px;bottom:-4px;width:2px;background:#111111;pointer-events:none}' +
+    '.ed-tl .hd{position:absolute;top:-3px;bottom:-3px;width:18px;margin-left:-9px;background:#4A79A6;border-radius:6px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25);outline:none}' +
+    '.ed-tl .hd::before{content:"";width:2px;height:20px;border-left:2px solid rgba(255,255,255,.85);border-right:2px solid rgba(255,255,255,.85);box-sizing:content-box;width:2px}' +
+    '.ed-tl .hd:focus-visible{box-shadow:0 0 0 3px #A1C4E6}' +
+    '.ed-tl .hd span{position:absolute;top:100%;margin-top:4px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:#3A6894;white-space:nowrap}' +
+    '.ed-dica{font-size:13px;color:#555555;margin:0}' +
     '@media (max-width:900px){.ed-side{max-width:none}}';
 
   function render() {
@@ -57,9 +63,13 @@
   }
   function timeline() {
     var it = st.itens[st.sel], v = raiz.querySelector('.ed-video'); if (!it || !it.dur) return;
-    var s = raiz.querySelector('.ed-tl .sel'), p = raiz.querySelector('.ed-tl .pos');
+    var s = raiz.querySelector('.ed-tl .sel'), p = raiz.querySelector('.ed-tl .pos'), hi = raiz.querySelector('.ed-tl .h-ini'), hf = raiz.querySelector('.ed-tl .h-fim');
     s.style.left = (it.ini / it.dur * 100) + '%'; s.style.width = ((it.fim - it.ini) / it.dur * 100) + '%';
     p.style.left = ((v.currentTime || 0) / it.dur * 100) + '%';
+    hi.style.left = (it.ini / it.dur * 100) + '%'; hf.style.left = (it.fim / it.dur * 100) + '%';
+    hi.querySelector('span').textContent = tm(it.ini); hf.querySelector('span').textContent = tm(it.fim);
+    hi.setAttribute('aria-valuenow', it.ini); hi.setAttribute('aria-valuetext', tm(it.ini)); hi.setAttribute('aria-valuemax', it.dur);
+    hf.setAttribute('aria-valuenow', it.fim); hf.setAttribute('aria-valuetext', tm(it.fim)); hf.setAttribute('aria-valuemax', it.dur);
   }
   function selecionar(i) {
     st.sel = i; var it = st.itens[i], v = raiz.querySelector('.ed-video');
@@ -83,13 +93,14 @@
       '<video class="ed-video" controls playsinline crossorigin="anonymous" preload="auto"></video>' +
       '<div class="ed-box"><div class="ed-row" style="justify-content:space-between"><b class="ed-nome" style="font-size:17px"></b>' +
       '<button type="button" class="ed-b ed-trecho">▶ ' + esc(L('Assistir o trecho')) + '</button></div>' +
-      '<div class="ed-tl" title="' + esc(L('Clique para ir a esse ponto')) + '"><span class="sel"></span><span class="pos"></span></div>' +
-      '<div class="ed-row"><span class="ed-lbl">' + esc(L('Início')) + '</span><span class="ed-t ed-ini">0:00.0</span>' +
-      '<button type="button" class="ed-b" data-aj="ini" data-d="-1">−1 s</button><button type="button" class="ed-b" data-aj="ini" data-d="1">+1 s</button>' +
-      '<button type="button" class="ed-b" data-marca="ini">' + esc(L('Marcar no ponto atual')) + '</button></div>' +
+      '<p class="ed-dica">' + esc(L('Arraste as alças azuis para marcar onde o trecho começa e termina. Arraste a faixa para mover o trecho inteiro.')) + '</p>' +
+      '<div class="ed-tl"><span class="sel"></span><span class="pos"></span>' +
+      '<span class="hd h-ini" tabindex="0" role="slider" aria-label="' + esc(L('Início')) + '" aria-valuemin="0"><span></span></span>' +
+      '<span class="hd h-fim" tabindex="0" role="slider" aria-label="' + esc(L('Fim')) + '" aria-valuemin="0"><span></span></span></div>' +
+      '<div class="ed-row" style="justify-content:space-between"><div class="ed-row"><span class="ed-lbl">' + esc(L('Início')) + '</span><span class="ed-t ed-ini">0:00.0</span>' +
+      '<button type="button" class="ed-b" data-aj="ini" data-d="-1">−1 s</button><button type="button" class="ed-b" data-aj="ini" data-d="1">+1 s</button></div>' +
       '<div class="ed-row"><span class="ed-lbl">' + esc(L('Fim')) + '</span><span class="ed-t ed-fim">0:00.0</span>' +
-      '<button type="button" class="ed-b" data-aj="fim" data-d="-1">−1 s</button><button type="button" class="ed-b" data-aj="fim" data-d="1">+1 s</button>' +
-      '<button type="button" class="ed-b" data-marca="fim">' + esc(L('Marcar no ponto atual')) + '</button></div></div>' +
+      '<button type="button" class="ed-b" data-aj="fim" data-d="-1">−1 s</button><button type="button" class="ed-b" data-aj="fim" data-d="1">+1 s</button></div></div></div>' +
       '<div class="ed-box ed-res" style="display:none"></div>' +
       '</div>' +
       '<div class="ed-side"><div class="ed-list" style="display:flex;flex-direction:column;gap:8px"></div>' +
@@ -105,9 +116,32 @@
       var it = st.itens[st.sel];
       if (st.tocandoTrecho && it && v.currentTime >= it.fim) { v.pause(); st.tocandoTrecho = false; }
     });
-    raiz.querySelector('.ed-tl').addEventListener('click', function (e) {
-      var it = st.itens[st.sel]; if (!it || !it.dur) return; var r = e.currentTarget.getBoundingClientRect();
-      v.currentTime = Math.max(0, Math.min(it.dur, (e.clientX - r.left) / r.width * it.dur)); timeline();
+    // Linha do tempo: arrastar as alças (início/fim), arrastar a faixa (move o trecho) ou clicar para ir ao ponto
+    var tl = raiz.querySelector('.ed-tl'), arr = null;
+    function seg(e) { var it = st.itens[st.sel], r = tl.getBoundingClientRect(); return Math.max(0, Math.min(it.dur, (e.clientX - r.left) / r.width * it.dur)); }
+    tl.addEventListener('pointerdown', function (e) {
+      var it = st.itens[st.sel]; if (!it || !it.dur) return;
+      var t = e.target, modo = t.closest('.h-ini') ? 'ini' : t.closest('.h-fim') ? 'fim' : t.closest('.sel') ? 'mover' : 'ir';
+      arr = { modo: modo, x0: seg(e), ini0: it.ini, fim0: it.fim, moveu: false };
+      tl.setPointerCapture(e.pointerId); e.preventDefault();
+      if (modo === 'ir') { v.currentTime = arr.x0; timeline(); }
+    });
+    tl.addEventListener('pointermove', function (e) {
+      if (!arr) return; var it = st.itens[st.sel], x = seg(e); arr.moveu = true;
+      if (arr.modo === 'ini') { it.ini = Math.round(Math.max(0, Math.min(x, it.fim - 0.5)) * 10) / 10; v.currentTime = it.ini; }
+      else if (arr.modo === 'fim') { it.fim = Math.round(Math.min(it.dur, Math.max(x, it.ini + 0.5)) * 10) / 10; v.currentTime = it.fim; }
+      else if (arr.modo === 'mover') { var d = x - arr.x0, len = arr.fim0 - arr.ini0, ni = Math.max(0, Math.min(it.dur - len, arr.ini0 + d)); it.ini = Math.round(ni * 10) / 10; it.fim = Math.round((ni + len) * 10) / 10; v.currentTime = it.ini; }
+      else { v.currentTime = x; }
+      if (!v.paused) v.pause();
+      timeline(); raiz.querySelector('.ed-ini').textContent = tm(it.ini); raiz.querySelector('.ed-fim').textContent = tm(it.fim);
+    });
+    function soltar() { if (!arr) return; var m = arr.modo; arr = null; if (m !== 'ir') render(); }
+    tl.addEventListener('pointerup', soltar); tl.addEventListener('pointercancel', soltar);
+    tl.addEventListener('keydown', function (e) {
+      var h = e.target.closest && e.target.closest('.hd'); if (!h) return; var it = st.itens[st.sel]; if (!it || !it.dur) return;
+      var d = e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -0.5 : e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 0.5 : 0; if (!d) return;
+      e.preventDefault(); var c = h.classList.contains('h-ini') ? 'ini' : 'fim'; ajustar(c, it[c] + d * (e.shiftKey ? 4 : 1)); v.currentTime = it[c];
+      var nh = raiz.querySelector('.ed-tl .h-' + c); if (nh) nh.focus();
     });
     raiz.addEventListener('click', function (e) {
       var t = e.target, it = st.itens[st.sel];

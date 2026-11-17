@@ -177,6 +177,20 @@
   B.pedidosAdmin = function () { return sb.rpc('admin_pedidos').then(ok); };
   B.arquivarPedido = function (id, st) { return sb.from('pedidos').update({ status: st || 'arquivado' }).eq('id', id).then(ok); };
   B.atenderPedidos = function (clipe, ids) { return ids && ids.length ? sb.rpc('atender_pedidos', { clipe: clipe, ids: ids }).then(ok) : Promise.resolve(0); };
+  // Tutorial em vídeo numa janela por cima da página (fica fora da árvore re-renderizada)
+  B.tutorial = function (src, poster, titulo) {
+    var f = document.createElement('div');
+    f.setAttribute('role', 'dialog'); f.setAttribute('aria-modal', 'true'); f.setAttribute('aria-label', titulo || 'Tutorial');
+    f.style.cssText = 'position:fixed;inset:0;background:rgba(17,17,17,.88);z-index:70;display:flex;align-items:center;justify-content:center;padding:24px';
+    f.innerHTML = '<div style="position:relative;width:100%;max-width:1100px"><button type="button" aria-label="Fechar" style="position:absolute;right:0;top:-52px;width:44px;height:44px;border:0;border-radius:8px;background:#FFFFFF;color:#111111;font-size:24px;cursor:pointer">×</button>' +
+      '<video controls autoplay playsinline poster="' + poster + '" style="width:100%;display:block;border-radius:12px;background:#000"><source src="' + src + '" type="video/mp4"></video></div>';
+    function fechar() { f.remove(); document.removeEventListener('keydown', tecla); }
+    function tecla(e) { if (e.key === 'Escape') fechar(); }
+    f.addEventListener('click', function (e) { if (e.target === f) fechar(); });
+    f.querySelector('button').addEventListener('click', fechar);
+    document.addEventListener('keydown', tecla); document.body.appendChild(f); f.querySelector('button').focus();
+    B.ev('bib_tutorial');
+  };
   B.avisos = function () { return B.user ? sb.from('avisos').select('*').eq('usuario_id', B.user.id).order('criado_em', { ascending: false }).limit(30).then(ok) : Promise.resolve([]); };
   B.naoLidos = function () { return B.user ? sb.from('avisos').select('id', { count: 'exact', head: true }).eq('usuario_id', B.user.id).eq('lido', false).then(function (r) { return r.count || 0; }) : Promise.resolve(0); };
   B.lerAvisos = function () { return B.user ? sb.from('avisos').update({ lido: true }).eq('usuario_id', B.user.id).eq('lido', false).then(ok) : Promise.resolve(); };

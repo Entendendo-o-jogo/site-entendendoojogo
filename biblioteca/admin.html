@@ -52,7 +52,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 .bib-in{font:inherit;font-weight:400;font-size:15px;padding:12px;border:1.5px solid #CCCCCC;border-radius:8px;background:#FFFFFF;color:#111111;width:100%;box-sizing:border-box}.bib-in:focus{outline:2px solid #A1C4E6;outline-offset:1px}.bib-lb{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="/biblioteca.js?v=29ae2534"></script>
+<script src="/biblioteca.js?v=be054cf8"></script>
 <link rel="stylesheet" href="/site.css?v=c2184a4c">
 <!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
 </head>
@@ -158,7 +158,7 @@ class Component extends DCLogic {
         var vm = EOJB.lerVimeo(f.link); if (!vm) return self.setState({ ferr: 'Não reconheci o link. Cole o endereço do vídeo, ex.: https://vimeo.com/123456789' });
         self.setState({ ferr: '' });
         EOJB.oembed(vm.id, vm.hash).then(function (d) {
-          if (!f.titulo && d.title) f.titulo = d.title;
+          if (!f.titulo && d.title) { var ln = EOJB.lerNome(d.title); f.titulo = ln.titulo; ['equipe', 'momento', 'subtema', 'posicao', 'camera', 'resultado', 'tipo', 'genero'].forEach(function (k) { if (!f[k] && ln[k]) f[k] = ln[k]; }); }
           if (d.duration) f.duracao = EOJB.dur(d.duration);
           if (d.thumbnail_url) f.thumb = d.thumbnail_url.replace(/_\d+x\d+/, '_640x400');
           self.setState({ v: st.v + 1 }); self.aviso('Dados do Vimeo carregados');
@@ -215,7 +215,7 @@ class Component extends DCLogic {
         document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
       },
       times: (function () {
-        var esc = st.esc || {}, nomes = Object.keys(esc).concat(uniq('equipe')).filter(function (x, i, a) { return x && a.indexOf(x) === i; }).sort();
+        var esc = st.esc || {}, nomes = Object.keys(esc).concat([].concat.apply([], uniq('equipe').map(function (x) { return EOJB.times(x); }))).filter(function (x, i, a) { return x && a.indexOf(x) === i; }).sort();
         return nomes.map(function (nome) { var url = esc[nome] || '';
           return { nome: nome, escudo: url, sem: !url, acao: url ? 'Trocar escudo' : 'Enviar escudo',
             enviar: function (e) { var arq = e.target.files && e.target.files[0]; if (!arq) return;

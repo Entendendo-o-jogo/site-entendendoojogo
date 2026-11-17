@@ -200,7 +200,7 @@ a[aria-label="Fale com o suporte pelo WhatsApp"] svg{width:56px;height:56px}
 </div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px">
-<sc-for list="{{clips}}" as="c" hint-placeholder-count="3">
+<sc-for list="{{clips}}" as="c" hint-placeholder-count="4">
 <article style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column">
 <a href="{{c.url}}" style="text-decoration: none; color: #111111; display: flex; flex-direction: column">
 <div style="position: relative; aspect-ratio: 16 / 10; background: #1C1C1C; overflow: hidden">
@@ -402,7 +402,7 @@ class Component extends DCLogic {
   constructor(props) { super(props); this.state = { p: 0, menu: false }; }
   componentDidMount() { var self = this;
     // Clipes reais da Biblioteca (os mais recentes publicados), direto da API pública do Supabase
-    try { fetch('https://ragqlotjxwfdzggrhlez.supabase.co/rest/v1/clipes?select=id,titulo,momento,fase,subtema,duracao,thumb&publicado=eq.true&order=criado_em.desc&limit=3', { headers: { apikey: 'sb_publishable_-Rwplnf-81gMXQij5sOwGQ_wCH1QvmR' } }).then(function (r) { return r.ok ? r.json() : []; }).then(function (d) { if (d && d.length) self.setState({ reais: d }); }).catch(function () {}); } catch (e) {}
+    try { fetch('https://ragqlotjxwfdzggrhlez.supabase.co/rest/v1/clipes?select=id,titulo,momento,fase,subtema,duracao,thumb&publicado=eq.true&order=criado_em.desc&limit=4', { headers: { apikey: 'sb_publishable_-Rwplnf-81gMXQij5sOwGQ_wCH1QvmR' } }).then(function (r) { return r.ok ? r.json() : []; }).then(function (d) { if (d && d.length) self.setState({ reais: d }); }).catch(function () {}); } catch (e) {}
     this.timer = setInterval(function () { var p = Math.min(1, self.state.p + 0.016); self.setState({ p: p }); if (p >= 1) clearInterval(self.timer); }, 40); }
   componentWillUnmount() { clearInterval(this.timer); }
   renderVals() {
@@ -420,7 +420,8 @@ class Component extends DCLogic {
     var clips = [
       { t: 'Salida de 3 con lateral por dentro', m: 'Org. ofensiva', f: 'Construcción', p: 'Lateral', n: 'Profesional', s: 'Sistemas tácticos', dur: '0:42' },
       { t: 'Presión alta orientada a la banda', m: 'Org. defensiva', f: 'Presión alta', p: 'Extremo', n: 'Profesional', s: 'Sistemas tácticos', dur: '0:35' },
-      { t: 'Atracción y liberación por el pivote', m: 'Org. ofensiva', f: 'Creación', p: 'Pivote', n: 'Sub-17 / Sub-20', s: 'Táctica individual', dur: '0:51' }
+      { t: 'Atracción y liberación por el pivote', m: 'Org. ofensiva', f: 'Creación', p: 'Pivote', n: 'Sub-17 / Sub-20', s: 'Táctica individual', dur: '0:51' },
+      { t: 'Escanteio defensivo com marcação mista', m: 'Balón parado', f: 'Balón parado', p: 'Zagueiro', n: 'Profesional', s: 'Balón parado', dur: '0:38' }
     ].map(function (c, i) { c.dots = dots(i + 3); c.linha = c.m + ' · ' + c.f; c.url = '/biblioteca/acervo'; c.thumb = ''; return c; });
     var lg = (/^\/(es|en)(\/|$)/.exec(location.pathname) || [])[1], pre = lg ? '/' + lg : '';
     if (this.state.reais) clips = this.state.reais.map(function (r, i) {

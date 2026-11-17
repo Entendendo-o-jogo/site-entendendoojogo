@@ -159,6 +159,9 @@
       return typeof Proxy === 'function' ? new Proxy(m, { get: function (t, k) { return typeof k === 'string' ? (t[k] || B.bandeira(k)) : t[k]; } }) : m;
     });
   };
+  // Um clipe pode ter mais de uma equipe: "Flamengo vs. Santos", "Elche/Hull City", "Brasil x Argentina"
+  B.times = function (eq) { return String(eq || '').split(/\s+vs\.?\s+|\s+x\s+|\s*\/\s*/i).map(function (t) { return t.trim(); }).filter(Boolean); };
+  B.escudoDe = function (esc, eq) { var ts = B.times(eq); for (var i = 0; i < ts.length; i++) { var u = esc && esc[ts[i]]; if (u) return u; } return ''; };
   B.salvarEquipe = function (nome, escudo) { return sb.from('equipes').upsert({ nome: nome, escudo: escudo }, { onConflict: 'nome' }).then(ok); };
   B.enviarEscudo = function (nome, arquivo) {
     var ext = (String(arquivo.name || '').match(/\.(png|svg|webp|jpe?g)$/i) || ['', 'png'])[1].toLowerCase();

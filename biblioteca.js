@@ -4,7 +4,8 @@
   'use strict';
   var URL = 'https://ragqlotjxwfdzggrhlez.supabase.co';
   var KEY = 'sb_publishable_-Rwplnf-81gMXQij5sOwGQ_wCH1QvmR';
-  var sb = window.supabase.createClient(URL, KEY);
+  // lock simples: o padrão (Navigator Locks) às vezes trava a sessão quando há várias abas do site abertas
+  var sb = window.supabase.createClient(URL, KEY, { auth: { lock: function (nome, espera, fn) { return fn(); } } });
   var B = window.EOJB = { sb: sb, user: null, perfil: null };
 
   // ---------- Idioma (pt / es / en, pelo endereço da página) ----------
@@ -74,10 +75,14 @@
     return sb.from('perfis').select('*').eq('id', B.user.id).maybeSingle()
       .then(function (r) { B.perfil = r.data || null; return B.user; });
   }
-  B.ready = sb.auth.getSession().then(function (r) {
-    B.user = r.data && r.data.session ? r.data.session.user : null;
-    return carregarPerfil();
-  }).catch(function () { return null; });
+  // Se a sessão demorar demais (rede ruim, aba antiga), a página segue sem travar em "Carregando…"
+  B.ready = Promise.race([
+    sb.auth.getSession().then(function (r) {
+      B.user = r.data && r.data.session ? r.data.session.user : null;
+      return carregarPerfil();
+    }),
+    new Promise(function (ok) { setTimeout(function () { ok(null); }, 9000); })
+  ]).catch(function () { return null; });
 
   B.isAdmin = function () { return !!(B.perfil && B.perfil.papel === 'admin'); };
   B.nome = function () { return (B.perfil && B.perfil.nome) || (B.user && B.user.email) || ''; };

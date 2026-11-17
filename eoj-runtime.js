@@ -129,7 +129,7 @@
     if (window.__eojDD && window.eojDD) window.eojDD(window.__eojDD);
     if (instance && instance.componentDidUpdate) { try { instance.componentDidUpdate(); } catch (e) {} }
   }
-  function schedule() { if (!pending && root) { pending = true; requestAnimationFrame(render); } }
+  function schedule() { if (!pending && root) { pending = true; requestAnimationFrame(function () { if (pending) render(); }); setTimeout(function () { if (pending) render(); }, 120); } }
 
   window.EOJ = {
     mount: function (Component) {

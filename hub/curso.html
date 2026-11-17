@@ -53,7 +53,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 .hub-tab{font:inherit;font-size:15px;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:14px 4px;margin-right:22px;cursor:pointer;color:#555555}.hub-tab[aria-selected="true"]{color:#111111;border-bottom-color:#4A79A6}.hub-card{text-decoration:none;color:#111111;background:#FFFFFF;border:1px solid #E2E2E2;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.hub-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.08);color:#111111}.hub-aula{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;text-decoration:none;color:#111111;font-size:15px}.hub-aula:hover{background:#F0F4F8;color:#111111}.hub-aula[aria-current="page"]{background:#E6EFF8;font-weight:600}.hub-star{font:inherit;font-size:30px;line-height:1;background:none;border:0;padding:4px 2px;cursor:pointer;color:#CCCCCC}.hub-star[aria-pressed="true"]{color:#E2A93B}@media (max-width:900px){.hub-lado{max-width:none!important}}</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="/biblioteca.js?v=30886777"></script>
-<script src="/hub.js?v=c311009c"></script>
+<script src="/hub.js?v=8bdd6671"></script>
 <link rel="stylesheet" href="/site.css?v=c0b9da31">
 <!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
 </head>
@@ -122,13 +122,14 @@ class Component extends DCLogic {
     v.c = c; v.titulo = c.titulo; v.descricao = c.descricao || ''; v.acesso = tem; v.semAcesso = !tem; v.vendas = '/cursos/' + c.slug;
     v.linha = [TIPO[c.tipo] || 'Curso', c.aulas.length + (c.aulas.length === 1 ? ' aula' : ' aulas'), c.carga_horaria ? c.carga_horaria + ' horas' : ''].filter(Boolean).join(' · ');
     v.pct = pct; v.pctTxt = pct === 100 ? 'Curso concluído' : pct ? pct + '% concluído' : 'Você ainda não começou este curso';
-    var prox = c.aulas.filter(function (a) { return !(prog[a.id] && prog[a.id].concluida_em); })[0] || c.aulas[0];
+    var livres = c.aulas.filter(function (a) { return EOJH.temModulo(st.acc, c.id, a.modulo.id); });
+    var prox = livres.filter(function (a) { return !(prog[a.id] && prog[a.id].concluida_em); })[0] || livres[0];
     v.seguir = prox ? { url: '/hub/aula?id=' + prox.id, txt: pct ? (pct === 100 ? 'Rever o curso' : 'Continuar de onde parou') : 'Começar o curso' } : { url: '#', txt: 'Em breve' };
     v.modulos = c.modulos.map(function (m, i) {
       var feitas = m.aulas.filter(function (a) { return prog[a.id] && prog[a.id].concluida_em; }).length;
       return { titulo: 'Módulo ' + (i + 1) + ' · ' + m.titulo, resumo: feitas + ' de ' + m.aulas.length + ' concluídas',
         aulas: m.aulas.map(function (a, j) {
-          var p = prog[a.id], feita = p && p.concluida_em, andamento = p && !feita && p.segundos > 5;
+          var tem = EOJH.temModulo(st.acc, c.id, m.id), p = prog[a.id], feita = p && p.concluida_em, andamento = p && !feita && p.segundos > 5;
           return { url: '/hub/aula?id=' + a.id, titulo: a.titulo, dur: a.duracao_seg ? EOJB.dur(a.duracao_seg) : '',
             icone: !tem ? '•' : feita ? '✓' : String(j + 1), bg: feita ? '#4A79A6' : andamento ? '#E6EFF8' : '#F0F0F0', fg: feita ? '#FFFFFF' : andamento ? '#3A6894' : '#555555',
             estado: !tem ? ' (bloqueada)' : feita ? ' (concluída)' : andamento ? ' (em andamento)' : '' };

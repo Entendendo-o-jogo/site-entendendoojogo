@@ -1,0 +1,231 @@
+/* Painel da Área do aluno (/hub/admin): cursos, módulos, aulas, materiais (com envio de arquivo), produtos da Hotmart,
+   acessos manuais e notificações recebidas. Só funciona para admin (as regras do banco bloqueiam os demais). */
+(function () {
+  'use strict';
+  var B = window.EOJB, sb = B.sb, raiz, st = { cursos: [], aberto: null, aba: 'cursos' };
+  function ok(r) { if (r.error) throw r.error; return r.data; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function aviso(t, erro) { var a = raiz.querySelector('.ha-aviso'); a.textContent = t; a.style.background = erro ? '#8C1D18' : '#111111'; a.style.display = 'block'; clearTimeout(aviso.t); aviso.t = setTimeout(function () { a.style.display = 'none'; }, 3500); }
+  function falha(e) { aviso(B.msg ? B.msg(e) : String(e && e.message || e), true); }
+  var CSS = '.ha{display:flex;flex-direction:column;gap:18px}.ha-tabs{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E2E2E2}' +
+    '.ha-tab{font:inherit;font-size:15px;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:12px 10px;cursor:pointer;color:#555555}.ha-tab[aria-selected="true"]{color:#111111;border-bottom-color:#4A79A6}' +
+    '.ha-box{background:#FFFFFF;border:1px solid #E2E2E2;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px}' +
+    '.ha-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.ha-in{font:inherit;font-size:14px;padding:8px 10px;border:1.5px solid #CCCCCC;border-radius:8px;background:#FFFFFF;min-width:0}' +
+    '.ha-b{font:inherit;font-size:14px;font-weight:600;background:#FFFFFF;border:1.5px solid #CCCCCC;border-radius:8px;padding:8px 12px;cursor:pointer;color:#111111}.ha-b:hover{border-color:#4A79A6}' +
+    '.ha-p{font:inherit;font-size:14px;font-weight:700;background:#A1C4E6;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;color:#111111}.ha-x{color:#8C1D18}' +
+    '.ha-chk{display:inline-flex;gap:6px;align-items:center;font-size:14px}.ha-chk input{width:17px;height:17px;margin:0;accent-color:#4A79A6}' +
+    '.ha table{width:100%;border-collapse:collapse;font-size:14px}.ha th{text-align:left;font-size:12px;color:#555555;text-transform:uppercase;letter-spacing:.05em;padding:6px;border-bottom:1px solid #E2E2E2}.ha td{padding:6px;border-bottom:1px solid #F0F0F0;vertical-align:top}' +
+    '.ha-mod{border:1px solid #E2E2E2;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}' +
+    '.ha-aula{background:#FFFFFF;border:1px solid #E8E8E8;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}' +
+    '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
+
+  function tabs() {
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart']];
+    return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
+  }
+  function desenhar() {
+    var c = raiz.querySelector('.ha-corpo'); raiz.querySelector('.ha-tabs-w').innerHTML = tabs();
+    if (st.aba === 'cursos') return st.aberto ? cursoAberto(c) : listaCursos(c);
+    if (st.aba === 'hotmart') return hotmart(c);
+    if (st.aba === 'acessos') return acessos(c);
+    if (st.aba === 'eventos') return eventos(c);
+  }
+
+  // ---------- Cursos ----------
+  function carregarCursos() { return sb.from('cursos').select('*').order('ordem').order('id').then(ok).then(function (d) { st.cursos = d; }); }
+  function listaCursos(c) {
+    c.innerHTML = '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
+      '<p style="margin:0;font-size:13px;color:#555555">Só aparecem para os alunos os cursos marcados como publicados. "Basic" = incluído no plano Basic. "Grátis" = aberto para qualquer conta.</p>' +
+      '<table><thead><tr><th>Curso</th><th>Tipo</th><th>Publicado</th><th>Grátis</th><th>Basic</th><th></th></tr></thead><tbody>' +
+      st.cursos.map(function (k) {
+        return '<tr data-curso="' + k.id + '"><td><input class="ha-in" data-f="titulo" value="' + esc(k.titulo) + '" style="width:100%"><div style="font-size:12px;color:#777777;margin-top:3px">/hub/curso?c=' + esc(k.slug) + (k.memberkit_cat ? ' · do MemberKit' : '') + '</div></td>' +
+          '<td><select class="ha-in" data-f="tipo">' + ['curso', 'aula_avulsa', 'live', 'podcast'].map(function (t) { return '<option' + (k.tipo === t ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></td>' +
+          '<td><input type="checkbox" data-f="publicado"' + (k.publicado ? ' checked' : '') + '></td><td><input type="checkbox" data-f="gratuito"' + (k.gratuito ? ' checked' : '') + '></td><td><input type="checkbox" data-f="plano_basic"' + (k.plano_basic ? ' checked' : '') + '></td>' +
+          '<td style="white-space:nowrap"><button type="button" class="ha-b" data-salvar-curso="' + k.id + '">Salvar</button> <button type="button" class="ha-p" data-abrir="' + k.id + '">Abrir</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function linhaCurso(tr) {
+    var d = {}; tr.querySelectorAll('[data-f]').forEach(function (i) { d[i.getAttribute('data-f')] = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); });
+    if (d.carga_horaria != null) d.carga_horaria = +d.carga_horaria; if (d.ordem != null) d.ordem = +d.ordem; return d;
+  }
+  function cursoAberto(c) {
+    var k = st.cursos.filter(function (x) { return x.id === st.aberto; })[0];
+    c.innerHTML = '<p style="margin:0">Carregando…</p>';
+    Promise.all([sb.from('modulos').select('*').eq('curso_id', k.id).order('ordem').order('id').then(ok), sb.rpc('admin_aulas', { c: k.id }).then(ok)]).then(function (r) {
+      var mods = r[0], aulas = r[1];
+      var html = '<div class="ha-row"><button type="button" class="ha-b" data-voltar>← Todos os cursos</button><a class="ha-b" style="text-decoration:none" href="/hub/curso?c=' + encodeURIComponent(k.slug) + '" target="_blank" rel="noopener">Ver como aluno ↗</a></div>' +
+        '<div class="ha-box" data-curso="' + k.id + '"><b style="font-size:18px">' + esc(k.titulo) + '</b>' +
+        '<div class="ha-row"><label style="flex:1 1 260px">Título<br><input class="ha-in" data-f="titulo" value="' + esc(k.titulo) + '" style="width:100%"></label>' +
+        '<label style="flex:0 1 220px">Endereço (slug)<br><input class="ha-in" data-f="slug" value="' + esc(k.slug) + '" style="width:100%"></label>' +
+        '<label style="flex:0 1 120px">Carga horária<br><input class="ha-in" type="number" data-f="carga_horaria" value="' + esc(k.carga_horaria) + '" style="width:100%"></label>' +
+        '<label style="flex:0 1 90px">Ordem<br><input class="ha-in" type="number" data-f="ordem" value="' + esc(k.ordem) + '" style="width:100%"></label></div>' +
+        '<label>Capa (URL da imagem)<br><input class="ha-in" data-f="capa" value="' + esc(k.capa) + '" style="width:100%"></label>' +
+        '<label>Descrição<br><textarea class="ha-in" data-f="descricao" rows="3" style="width:100%">' + esc(k.descricao) + '</textarea></label>' +
+        '<div class="ha-row"><label class="ha-chk"><input type="checkbox" data-f="publicado"' + (k.publicado ? ' checked' : '') + '>Publicado</label><label class="ha-chk"><input type="checkbox" data-f="gratuito"' + (k.gratuito ? ' checked' : '') + '>Grátis</label><label class="ha-chk"><input type="checkbox" data-f="plano_basic"' + (k.plano_basic ? ' checked' : '') + '>Incluído no Basic</label>' +
+        '<button type="button" class="ha-p" data-salvar-curso="' + k.id + '">Salvar curso</button></div></div>' +
+        '<div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Módulos e aulas</b><button type="button" class="ha-p" data-novo-mod="' + k.id + '">+ Novo módulo</button></div>';
+      html += mods.map(function (m) {
+        var as = aulas.filter(function (a) { return a.modulo_id === m.id; });
+        return '<div class="ha-mod" data-mod="' + m.id + '"><div class="ha-row"><input class="ha-in" data-f="ordem" type="number" value="' + m.ordem + '" style="width:64px" aria-label="Ordem"><input class="ha-in" data-f="titulo" value="' + esc(m.titulo) + '" style="flex:1 1 260px" aria-label="Título do módulo">' +
+          '<button type="button" class="ha-b" data-salvar-mod="' + m.id + '">Salvar</button><button type="button" class="ha-b" data-nova-aula="' + m.id + '">+ Aula</button><button type="button" class="ha-b ha-x" data-apagar-mod="' + m.id + '">Apagar</button></div>' +
+          as.map(aulaHtml).join('') + '</div>';
+      }).join('');
+      c.innerHTML = html;
+    }).catch(falha);
+  }
+  function aulaHtml(a) {
+    return '<div class="ha-aula" data-aula="' + a.id + '"><div class="ha-row"><input class="ha-in" data-f="ordem" type="number" value="' + a.ordem + '" style="width:64px" aria-label="Ordem">' +
+      '<input class="ha-in" data-f="titulo" value="' + esc(a.titulo) + '" style="flex:1 1 260px" aria-label="Título da aula">' +
+      '<input class="ha-in" data-f="vimeo_id" value="' + esc(a.vimeo_id) + '" placeholder="ID do Vimeo" style="width:120px" aria-label="ID do Vimeo">' +
+      '<input class="ha-in" data-f="duracao_seg" type="number" value="' + esc(a.duracao_seg) + '" placeholder="seg" style="width:80px" aria-label="Duração em segundos">' +
+      '<label class="ha-chk"><input type="checkbox" data-f="publicado"' + (a.publicado ? ' checked' : '') + '>Publicada</label></div>' +
+      '<textarea class="ha-in" data-f="descricao" rows="2" placeholder="Descrição da aula" aria-label="Descrição">' + esc(a.descricao) + '</textarea>' +
+      '<div class="ha-row"><button type="button" class="ha-b" data-salvar-aula="' + a.id + '">Salvar aula</button><button type="button" class="ha-b" data-materiais="' + a.id + '">Materiais</button><button type="button" class="ha-b ha-x" data-apagar-aula="' + a.id + '">Apagar</button></div>' +
+      '<div class="ha-mats" data-mats="' + a.id + '" style="display:none"></div></div>';
+  }
+  function vals(box) {
+    var d = {}; box.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f], :scope > label [data-f], :scope > .ha-row label [data-f]').forEach(function (i) {
+      var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value);
+      if (i.type === 'number' && v != null) v = +v; d[i.getAttribute('data-f')] = v;
+    }); return d;
+  }
+  function materiais(aulaId) {
+    var box = raiz.querySelector('[data-mats="' + aulaId + '"]');
+    box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '8px'; box.innerHTML = 'Carregando…';
+    sb.from('materiais').select('*').eq('aula_id', aulaId).order('ordem').order('id').then(ok).then(function (ms) {
+      box.innerHTML = (ms.length ? '<ul style="margin:0;padding-left:18px;font-size:14px">' + ms.map(function (m) {
+        return '<li>' + esc(m.titulo) + ' <span style="color:#777777">(' + esc(m.tipo) + (m.arquivo ? ' · arquivo' : m.vimeo_id ? ' · Vimeo ' + esc(m.vimeo_id) : m.url ? ' · link' : '') + ')</span> <button type="button" class="ha-b ha-x" style="padding:2px 8px" data-apagar-mat="' + m.id + '" data-da-aula="' + aulaId + '">Apagar</button></li>';
+      }).join('') + '</ul>' : '<span style="font-size:14px;color:#777777">Nenhum material.</span>') +
+        '<div class="ha-row" style="border-top:1px dashed #DDDDDD;padding-top:8px"><input class="ha-in" data-m="titulo" placeholder="Título do material" style="flex:1 1 200px">' +
+        '<select class="ha-in" data-m="tipo"><option value="pdf">PDF da aula</option><option value="video">Vídeo de apoio</option><option value="relatorio_coletivo">Relatório coletivo</option><option value="relatorio_individual">Relatório individual</option><option value="artigo">Artigo científico</option><option value="outro">Outro</option></select></div>' +
+        '<div class="ha-row"><input type="file" data-m="arquivo" class="ha-in" style="flex:1 1 220px"><span style="font-size:13px;color:#777777">ou</span><input class="ha-in" data-m="vimeo" placeholder="ID do Vimeo" style="width:120px"><span style="font-size:13px;color:#777777">ou</span><input class="ha-in" data-m="url" placeholder="Link" style="flex:1 1 180px">' +
+        '<button type="button" class="ha-p" data-add-mat="' + aulaId + '">Adicionar material</button></div>';
+    }).catch(falha);
+  }
+  function addMaterial(aulaId) {
+    var box = raiz.querySelector('[data-mats="' + aulaId + '"]'), g = function (k) { return box.querySelector('[data-m="' + k + '"]'); };
+    var titulo = g('titulo').value.trim(), tipo = g('tipo').value, file = g('arquivo').files[0], vimeo = g('vimeo').value.trim(), url = g('url').value.trim();
+    if (!titulo) return aviso('Dê um título ao material.', true);
+    if (!file && !vimeo && !url) return aviso('Escolha um arquivo, um ID do Vimeo ou um link.', true);
+    var p = Promise.resolve(null);
+    if (file) {
+      var nome = file.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-');
+      var caminho = st.aberto + '/' + aulaId + '/' + Date.now() + '-' + nome;
+      aviso('Enviando arquivo…');
+      p = sb.storage.from('materiais').upload(caminho, file, { upsert: false, contentType: file.type || undefined }).then(ok).then(function () { return caminho; });
+    }
+    p.then(function (caminho) {
+      return sb.from('materiais').insert({ aula_id: aulaId, titulo: titulo, tipo: tipo, arquivo: caminho, vimeo_id: vimeo || null, url: caminho || vimeo ? null : url, tamanho_kb: file ? Math.round(file.size / 1024) : null }).then(ok);
+    }).then(function () { aviso('Material adicionado'); materiais(aulaId); }).catch(falha);
+  }
+
+  // ---------- Hotmart ----------
+  function hotmart(c) {
+    c.innerHTML = 'Carregando…';
+    Promise.all([sb.from('produtos_hotmart').select('*').order('nome').then(ok), sb.from('modulos').select('id,titulo,curso_id').order('curso_id').order('ordem').then(ok)]).then(function (r) {
+      var ps = r[0], mods = r[1];
+      function destinoSel(p) {
+        var o = '<option value="">— escolha —</option><option value="plano:premium"' + (p && p.plano === 'premium' ? ' selected' : '') + '>Plano Premium (tudo)</option><option value="plano:basic"' + (p && p.plano === 'basic' ? ' selected' : '') + '>Plano Basic</option>';
+        o += st.cursos.map(function (k) { return '<option value="curso:' + k.id + '"' + (p && p.curso_id === k.id ? ' selected' : '') + '>Curso: ' + esc(k.titulo) + '</option>'; }).join('');
+        o += mods.map(function (m) { var k = st.cursos.filter(function (x) { return x.id === m.curso_id; })[0]; return '<option value="modulo:' + m.id + '"' + (p && p.modulo_id === m.id ? ' selected' : '') + '>Módulo: ' + esc((k ? k.titulo + ' › ' : '') + m.titulo) + '</option>'; }).join('');
+        return '<select class="ha-in" data-p="destino" style="max-width:360px">' + o + '</select>';
+      }
+      c.innerHTML = '<div class="ha-box"><b style="font-size:18px">O que cada produto da Hotmart libera</b>' +
+        '<p style="margin:0;font-size:13px;color:#555555;line-height:1.5">Produto = ID do produto na Hotmart. Para diferenciar ofertas do mesmo produto (ex.: mensal e anual), use "ID:código da oferta". Meses = duração do acesso; vazio = vitalício ou enquanto a assinatura estiver ativa.</p>' +
+        '<table><thead><tr><th>Produto</th><th>Nome</th><th>Libera</th><th>Meses</th><th></th></tr></thead><tbody>' +
+        ps.concat([{ produto: '', nome: '', novo: true }]).map(function (p) {
+          return '<tr data-prod="' + esc(p.produto) + '"><td><input class="ha-in" data-p="produto" value="' + esc(p.produto) + '" style="width:130px"' + (p.novo ? '' : ' readonly') + '></td><td><input class="ha-in" data-p="nome" value="' + esc(p.nome) + '" style="width:100%"></td><td>' + destinoSel(p.novo ? null : p) + '</td>' +
+            '<td><input class="ha-in" type="number" data-p="meses" value="' + esc(p.meses) + '" style="width:70px"></td><td style="white-space:nowrap"><button type="button" class="ha-p" data-salvar-prod>' + (p.novo ? 'Adicionar' : 'Salvar') + '</button>' + (p.novo ? '' : ' <button type="button" class="ha-b ha-x" data-apagar-prod>Apagar</button>') + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }).catch(falha);
+  }
+  function salvarProduto(tr) {
+    var g = function (k) { return tr.querySelector('[data-p="' + k + '"]').value.trim(); }, dest = g('destino').split(':');
+    var d = { produto: g('produto'), nome: g('nome') || null, meses: g('meses') ? +g('meses') : null, curso_id: null, modulo_id: null, plano: null };
+    if (!d.produto) return aviso('Informe o ID do produto.', true);
+    if (dest[0] === 'curso') d.curso_id = +dest[1]; else if (dest[0] === 'modulo') d.modulo_id = +dest[1]; else if (dest[0] === 'plano') d.plano = dest[1]; else return aviso('Escolha o que o produto libera.', true);
+    sb.from('produtos_hotmart').upsert(d).then(ok).then(function () { aviso('Produto salvo'); hotmart(raiz.querySelector('.ha-corpo')); }).catch(falha);
+  }
+
+  // ---------- Acessos ----------
+  function acessos(c) {
+    c.innerHTML = '<div class="ha-box"><b style="font-size:18px">Dar acesso a um e-mail</b>' +
+      '<p style="margin:0;font-size:13px;color:#555555">O acesso vale assim que a pessoa entrar (ou criar a conta) com este e-mail.</p>' +
+      '<div class="ha-row"><input class="ha-in" data-a="email" type="email" placeholder="email@exemplo.com" style="flex:1 1 240px"><select class="ha-in" data-a="destino"><option value="plano:premium">Plano Premium (tudo)</option><option value="plano:basic">Plano Basic</option>' +
+      st.cursos.map(function (k) { return '<option value="curso:' + k.id + '">Curso: ' + esc(k.titulo) + '</option>'; }).join('') + '</select>' +
+      '<label style="font-size:13px">Até <input class="ha-in" data-a="ate" type="date"></label><button type="button" class="ha-p" data-dar-acesso>Dar acesso</button></div></div>' +
+      '<div class="ha-box"><b style="font-size:18px">Consultar um e-mail</b><div class="ha-row"><input class="ha-in" data-a="busca" type="email" placeholder="email@exemplo.com" style="flex:1 1 240px"><button type="button" class="ha-b" data-buscar>Consultar</button></div><div class="ha-res"></div></div>';
+  }
+  function buscar() {
+    var e = raiz.querySelector('[data-a="busca"]').value.trim().toLowerCase(), res = raiz.querySelector('.ha-res');
+    if (!e) return;
+    sb.from('acessos_email').select('*').eq('email', e).order('criado_em', { ascending: false }).then(ok).then(function (rs) {
+      var nomeC = function (id) { var k = st.cursos.filter(function (x) { return x.id === id; })[0]; return k ? k.titulo : id; };
+      res.innerHTML = rs.length ? '<table><thead><tr><th>Libera</th><th>Origem</th><th>Até</th><th>Ativo</th><th></th></tr></thead><tbody>' + rs.map(function (r) {
+        return '<tr><td>' + esc(r.plano ? 'Plano ' + r.plano : r.curso_id ? 'Curso: ' + nomeC(r.curso_id) : 'Módulo ' + r.modulo_id) + '</td><td>' + esc(r.origem) + '</td><td>' + (r.acesso_ate ? new Date(r.acesso_ate).toLocaleDateString('pt-BR') : '—') + '</td><td>' + (r.ativo ? 'sim' : 'não') + '</td>' +
+          '<td><button type="button" class="ha-b' + (r.ativo ? ' ha-x' : '') + '" data-ativo="' + r.id + '" data-v="' + (!r.ativo) + '">' + (r.ativo ? 'Retirar' : 'Reativar') + '</button></td></tr>';
+      }).join('') + '</tbody></table>' : '<span style="font-size:14px;color:#777777">Nenhum acesso para este e-mail.</span>';
+    }).catch(falha);
+  }
+
+  // ---------- Notificações ----------
+  function eventos(c) {
+    c.innerHTML = 'Carregando…';
+    sb.from('hotmart_eventos').select('*').order('recebido_em', { ascending: false }).limit(80).then(ok).then(function (ev) {
+      c.innerHTML = '<div class="ha-box"><b style="font-size:18px">Últimas notificações da Hotmart</b>' + (ev.length ? '<table><thead><tr><th>Quando</th><th>Evento</th><th>Produto</th><th>E-mail</th><th>Resultado</th></tr></thead><tbody>' + ev.map(function (e) {
+        return '<tr><td>' + new Date(e.recebido_em).toLocaleString('pt-BR') + '</td><td>' + esc(e.evento) + '</td><td>' + esc(e.produto) + '</td><td>' + esc(e.email) + '</td><td>' + esc(e.resultado) + '</td></tr>';
+      }).join('') + '</tbody></table>' : '<span style="font-size:14px;color:#777777">Nenhuma notificação recebida ainda.</span>') + '</div>';
+    }).catch(falha);
+  }
+
+  function cliques(e) {
+    var t = e.target, x;
+    if ((x = t.closest('[data-aba]'))) { st.aba = x.getAttribute('data-aba'); st.aberto = null; return desenhar(); }
+    if ((x = t.closest('[data-abrir]'))) { st.aberto = +x.getAttribute('data-abrir'); return desenhar(); }
+    if (t.closest('[data-voltar]')) { st.aberto = null; return carregarCursos().then(desenhar); }
+    if ((x = t.closest('[data-salvar-curso]'))) {
+      var box = x.closest('[data-curso]'), d = box.tagName === 'TR' ? linhaCurso(box) : (function () { var o = {}; box.querySelectorAll('[data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; o[i.getAttribute('data-f')] = v; }); return o; })();
+      return sb.from('cursos').update(d).eq('id', +x.getAttribute('data-salvar-curso')).then(ok).then(function () { aviso('Curso salvo'); return carregarCursos(); }).catch(falha);
+    }
+    if (t.closest('[data-novo-curso]')) {
+      var tt = prompt('Nome do novo curso:'); if (!tt) return;
+      var slug = tt.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      return sb.from('cursos').insert({ titulo: tt, slug: slug, publicado: false }).select().single().then(ok).then(function (k) { return carregarCursos().then(function () { st.aberto = k.id; desenhar(); }); }).catch(falha);
+    }
+    if ((x = t.closest('[data-novo-mod]'))) { var tm = prompt('Nome do módulo:'); if (!tm) return; return sb.from('modulos').insert({ curso_id: +x.getAttribute('data-novo-mod'), titulo: tm, ordem: 99 }).then(ok).then(desenhar).catch(falha); }
+    if ((x = t.closest('[data-salvar-mod]'))) { var mb = x.closest('[data-mod]'); return sb.from('modulos').update({ titulo: mb.querySelector(':scope > .ha-row [data-f="titulo"]').value, ordem: +mb.querySelector(':scope > .ha-row [data-f="ordem"]').value }).eq('id', +x.getAttribute('data-salvar-mod')).then(ok).then(function () { aviso('Módulo salvo'); }).catch(falha); }
+    if ((x = t.closest('[data-apagar-mod]'))) { if (!confirm('Apagar este módulo e todas as aulas dele? Não dá para desfazer.')) return; return sb.from('modulos').delete().eq('id', +x.getAttribute('data-apagar-mod')).then(ok).then(desenhar).catch(falha); }
+    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; return sb.from('aulas').insert({ modulo_id: +x.getAttribute('data-nova-aula'), titulo: ta, ordem: 99, publicado: false }).then(ok).then(desenhar).catch(falha); }
+    if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; da[i.getAttribute('data-f')] = v; });
+      return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva'); }).catch(falha); }
+    if ((x = t.closest('[data-apagar-aula]'))) { if (!confirm('Apagar esta aula? Não dá para desfazer.')) return; return sb.from('aulas').delete().eq('id', +x.getAttribute('data-apagar-aula')).then(ok).then(desenhar).catch(falha); }
+    if ((x = t.closest('[data-materiais]'))) { return materiais(+x.getAttribute('data-materiais')); }
+    if ((x = t.closest('[data-add-mat]'))) { return addMaterial(+x.getAttribute('data-add-mat')); }
+    if ((x = t.closest('[data-apagar-mat]'))) { if (!confirm('Apagar este material?')) return; var aid = +x.getAttribute('data-da-aula'); return sb.from('materiais').delete().eq('id', +x.getAttribute('data-apagar-mat')).then(ok).then(function () { materiais(aid); }).catch(falha); }
+    if ((x = t.closest('[data-salvar-prod]'))) { return salvarProduto(x.closest('tr')); }
+    if ((x = t.closest('[data-apagar-prod]'))) { if (!confirm('Apagar este produto?')) return; return sb.from('produtos_hotmart').delete().eq('produto', x.closest('tr').getAttribute('data-prod')).then(ok).then(function () { hotmart(raiz.querySelector('.ha-corpo')); }).catch(falha); }
+    if (t.closest('[data-dar-acesso]')) {
+      var g = function (k) { return raiz.querySelector('[data-a="' + k + '"]').value.trim(); }, em = g('email').toLowerCase(), ds = g('destino').split(':');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return aviso('Informe um e-mail válido.', true);
+      var row = { email: em, origem: 'manual', acesso_ate: g('ate') ? new Date(g('ate') + 'T23:59:59').toISOString() : null };
+      if (ds[0] === 'plano') row.plano = ds[1]; else row.curso_id = +ds[1];
+      return sb.from('acessos_email').insert(row).then(ok).then(function () { aviso('Acesso liberado'); raiz.querySelector('[data-a="busca"]').value = em; buscar(); }).catch(falha);
+    }
+    if (t.closest('[data-buscar]')) return buscar();
+    if ((x = t.closest('[data-ativo]'))) { return sb.from('acessos_email').update({ ativo: x.getAttribute('data-v') === 'true', atualizado_em: new Date().toISOString() }).eq('id', +x.getAttribute('data-ativo')).then(ok).then(buscar).catch(falha); }
+  }
+
+  window.EOJHubAdmin = {
+    iniciar: function (alvo) {
+      raiz = alvo; raiz.setAttribute('data-pronto', '1');
+      raiz.innerHTML = '<p style="margin:0">Carregando…</p>';
+      B.ready.then(function () {
+        if (!B.user) { raiz.innerHTML = '<p style="margin:0">Entre com a conta de administrador. <a href="/hub?volta=' + encodeURIComponent('/hub/admin') + '">Entrar</a></p>'; return; }
+        if (!B.isAdmin()) { raiz.innerHTML = '<p style="margin:0">Esta página é só para administradores.</p>'; return; }
+        raiz.innerHTML = '<style>' + CSS + '</style><div class="ha"><div class="ha-tabs-w"></div><div class="ha-corpo"></div></div><div class="ha-aviso" role="status"></div>';
+        raiz.addEventListener('click', cliques);
+        return carregarCursos().then(desenhar);
+      }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
+    }
+  };
+})();

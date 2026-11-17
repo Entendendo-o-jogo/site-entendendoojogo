@@ -35,18 +35,21 @@
   H.recentes = function (n) { return sb.rpc('conteudos_recentes', { lim: n || 12 }).then(ok); };
 
   // ---------- Acesso ----------
+  // Cursos inteiros e módulos liberados para a pessoa logada (MemberKit, Hotmart, assinatura, matrícula manual)
   H.matriculas = function () {
     if (!B.user) return Promise.resolve([]);
-    return sb.from('matriculas').select('curso_id,acesso_ate').eq('usuario_id', B.user.id).then(ok);
+    return sb.rpc('meus_acessos').then(ok);
   };
   H.premium = function () { return !!(B.perfil && (B.perfil.papel === 'admin' || (B.perfil.acesso_ate && new Date(B.perfil.acesso_ate) > new Date()))); };
-  // Mapa curso_id -> true para os cursos que a pessoa pode assistir
-  H.acessos = function (cursos, mats) {
-    var m = {}, agora = new Date(), prem = H.premium();
-    (mats || []).forEach(function (x) { if (!x.acesso_ate || new Date(x.acesso_ate) > agora) m[x.curso_id] = true; });
-    (cursos || []).forEach(function (c) { if (c.gratuito || prem) m[c.id] = true; });
+  // acc[curso_id] = tem algum acesso; acc.full[curso_id] = curso inteiro; acc.mod[modulo_id] = módulo avulso
+  H.acessos = function (cursos, linhas) {
+    var m = { full: {}, mod: {} };
+    (linhas || []).forEach(function (r) { m[r.curso_id] = true; if (r.modulo_id) m.mod[r.modulo_id] = true; else m.full[r.curso_id] = true; });
+    (cursos || []).forEach(function (c) { if (c.gratuito) { m[c.id] = true; m.full[c.id] = true; } });
     return m;
   };
+  H.temModulo = function (acc, cursoId, moduloId) { return !!(acc.full[cursoId] || acc.mod[moduloId]); };
+  H.podeAula = function (id) { return sb.rpc('pode_ver_aula', { a: id }).then(ok); };
   H.video = function (aulaId) { return sb.rpc('aula_video', { a: aulaId }).then(ok).then(function (r) { return (r && r[0]) || null; }); };
 
   // ---------- Progresso ----------

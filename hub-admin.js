@@ -20,7 +20,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['engajamento', 'Engajamento']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -30,12 +30,15 @@
     if (st.aba === 'acessos') return acessos(c);
     if (st.aba === 'eventos') return eventos(c);
     if (st.aba === 'sugestoes') return sugestoes(c);
+    if (st.aba === 'trilhas') return trilhas(c);
+    if (st.aba === 'engajamento') return engajamento(c);
   }
 
   // ---------- Cursos ----------
   function carregarCursos() { return sb.from('cursos').select('*').order('ordem').order('id').then(ok).then(function (d) { st.cursos = d; }); }
   function listaCursos(c) {
-    c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div></div>' +
+    c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div>' +
+      '<div class="ha-row"><button type="button" class="ha-b" data-duracoes>Buscar a duração das aulas no Vimeo</button><span data-dur-st style="font-size:14px"></span></div></div>' +
       '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
       '<p style="margin:0;font-size:13px;color:#555555">Só aparecem para os alunos os cursos marcados como publicados. "Basic" = incluído no plano Basic. "Grátis" = aberto para qualquer conta.</p>' +
       '<table><thead><tr><th>Curso</th><th>Tipo</th><th>Publicado</th><th>Grátis</th><th>Basic</th><th></th></tr></thead><tbody>' +
@@ -83,8 +86,8 @@
       '<input class="ha-in" data-f="duracao_seg" type="number" value="' + esc(a.duracao_seg) + '" placeholder="seg" style="width:80px" aria-label="Duração em segundos">' +
       '<label class="ha-chk"><input type="checkbox" data-f="publicado"' + (a.publicado ? ' checked' : '') + '>Publicada</label></div>' +
       '<textarea class="ha-in" data-f="descricao" rows="2" placeholder="Descrição da aula" aria-label="Descrição">' + esc(a.descricao) + '</textarea>' +
-      '<div class="ha-row"><button type="button" class="ha-b" data-salvar-aula="' + a.id + '">Salvar aula</button><button type="button" class="ha-b" data-materiais="' + a.id + '">Materiais</button><button type="button" class="ha-b ha-x" data-apagar-aula="' + a.id + '">Apagar</button></div>' +
-      '<div class="ha-mats" data-mats="' + a.id + '" style="display:none"></div></div>';
+      '<div class="ha-row"><button type="button" class="ha-b" data-salvar-aula="' + a.id + '">Salvar aula</button><button type="button" class="ha-b" data-materiais="' + a.id + '">Materiais</button><button type="button" class="ha-b" data-marcs="' + a.id + '">Índice (marcadores)</button><button type="button" class="ha-b ha-x" data-apagar-aula="' + a.id + '">Apagar</button></div>' +
+      '<div class="ha-mats" data-mats="' + a.id + '" style="display:none"></div><div data-marcbox="' + a.id + '" style="display:none"></div></div>';
   }
   function vals(box) {
     var d = {}; box.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f], :scope > label [data-f], :scope > .ha-row label [data-f]').forEach(function (i) {
@@ -181,6 +184,83 @@
     }).catch(falha);
   }
 
+  // ---------- Índice (marcadores) da aula: uma linha por marcador, "mm:ss Título" ----------
+  function marcadores(aulaId) {
+    var box = raiz.querySelector('[data-marcbox="' + aulaId + '"]');
+    box.style.display = 'flex'; box.style.flexDirection = 'column'; box.style.gap = '8px'; box.innerHTML = 'Carregando…';
+    sb.from('aula_marcadores').select('segundo,titulo').eq('aula_id', aulaId).order('segundo').then(ok).then(function (ms) {
+      var txt = ms.map(function (m) { var mm = Math.floor(m.segundo / 60), ss = m.segundo % 60; return mm + ':' + (ss < 10 ? '0' : '') + ss + ' ' + m.titulo; }).join('\n');
+      box.innerHTML = '<span style="font-size:13px;color:#555555">Uma linha por marcador, no formato <b>mm:ss Título</b> (ex.: 2:10 Saída de 3 com o volante). Aparece para o aluno como “Índice da aula”.</span>' +
+        '<textarea class="ha-in" data-marc-txt rows="5">' + esc(txt) + '</textarea><div class="ha-row"><button type="button" class="ha-p" data-salvar-marcs="' + aulaId + '">Salvar índice</button></div>';
+    }).catch(falha);
+  }
+  function salvarMarcadores(aulaId) {
+    var box = raiz.querySelector('[data-marcbox="' + aulaId + '"]'), linhas = box.querySelector('[data-marc-txt]').value.split('\n'), novos = [], ruins = [];
+    linhas.forEach(function (l) { l = l.trim(); if (!l) return; var m = l.match(/^(?:(\d+):)?(\d{1,2}):(\d{2})\s+(.+)$/); if (!m) { ruins.push(l); return; }
+      novos.push({ aula_id: aulaId, segundo: (+(m[1] || 0)) * 3600 + (+m[2]) * 60 + (+m[3]), titulo: m[4].slice(0, 200) }); });
+    if (ruins.length) return aviso('Confira o formato: ' + ruins[0], true);
+    sb.from('aula_marcadores').delete().eq('aula_id', aulaId).then(ok).then(function () { return novos.length ? sb.from('aula_marcadores').insert(novos).then(ok) : null; })
+      .then(function () { aviso('Índice salvo (' + novos.length + ')'); }).catch(falha);
+  }
+
+  // ---------- Duração das aulas (Vimeo) ----------
+  function buscarDuracoes(btn) {
+    var stt = raiz.querySelector('[data-dur-st]'), total = 0; btn.disabled = true;
+    function lote() {
+      return sb.functions.invoke('vimeo', { body: { acao: 'duracoes' } }).then(function (r) {
+        if (r.error) throw r.error; var d = r.data || {}; total += d.feitos || 0;
+        stt.textContent = total + ' aulas atualizadas · faltam ' + (d.faltam || 0) + (d.limite ? ' · aguardando o limite do Vimeo…' : '');
+        if (!d.faltam || (!d.feitos && !d.limite)) { stt.textContent = 'Pronto: ' + total + ' aulas com duração.'; btn.disabled = false; return; }
+        return new Promise(function (ok2) { setTimeout(ok2, d.limite ? 60000 : 400); }).then(lote);
+      });
+    }
+    lote().catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e); });
+  }
+
+  // ---------- Trilhas ----------
+  function trilhas(c) {
+    c.innerHTML = 'Carregando…';
+    sb.from('trilhas').select('*, trilha_itens(aula_id, ordem)').order('ordem').order('id').then(ok).then(function (ts) {
+      c.innerHTML = '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Trilhas (' + ts.length + ')</b><button type="button" class="ha-p" data-nova-trilha>+ Nova trilha</button></div>' +
+        '<p style="margin:0;font-size:14px;color:#555555">Sequências sugeridas de aulas por perfil (ex.: Analista, Treinador, Auxiliar). Informe os números das aulas na ordem, separados por vírgula ou um por linha (o número aparece em /hub/aula?id=…). Só aparecem para os alunos as trilhas publicadas.</p></div>' +
+        ts.map(function (t) {
+          var ids = (t.trilha_itens || []).slice().sort(function (a, b) { return a.ordem - b.ordem; }).map(function (x) { return x.aula_id; }).join(', ');
+          return '<div class="ha-box" data-trilha="' + t.id + '"><div class="ha-row"><label style="flex:1 1 260px">Título<br><input class="ha-in" data-f="titulo" value="' + esc(t.titulo) + '" style="width:100%"></label>' +
+            '<label style="flex:0 1 200px">Perfil<br><input class="ha-in" data-f="perfil" value="' + esc(t.perfil) + '" style="width:100%"></label>' +
+            '<label style="flex:0 1 90px">Ordem<br><input class="ha-in" type="number" data-f="ordem" value="' + esc(t.ordem) + '" style="width:100%"></label></div>' +
+            '<label>Descrição<br><textarea class="ha-in" data-f="descricao" rows="2" style="width:100%">' + esc(t.descricao) + '</textarea></label>' +
+            '<label>Aulas (números, na ordem)<br><textarea class="ha-in" data-trilha-ids rows="2" style="width:100%">' + esc(ids) + '</textarea></label>' +
+            '<div class="ha-row"><label class="ha-chk"><input type="checkbox" data-f="publicado"' + (t.publicado ? ' checked' : '') + '>Publicada</label>' +
+            '<button type="button" class="ha-p" data-salvar-trilha="' + t.id + '">Salvar trilha</button><button type="button" class="ha-b ha-x" data-apagar-trilha="' + t.id + '">Apagar</button></div></div>';
+        }).join('');
+    }).catch(falha);
+  }
+  function salvarTrilha(id) {
+    var box = raiz.querySelector('[data-trilha="' + id + '"]'), d = {};
+    box.querySelectorAll('[data-f]').forEach(function (i) { d[i.getAttribute('data-f')] = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); });
+    if (d.ordem != null) d.ordem = +d.ordem;
+    var ids = box.querySelector('[data-trilha-ids]').value.split(/[^0-9]+/).filter(Boolean).map(Number);
+    sb.from('trilhas').update(d).eq('id', id).then(ok)
+      .then(function () { return sb.from('trilha_itens').delete().eq('trilha_id', id).then(ok); })
+      .then(function () { return ids.length ? sb.from('trilha_itens').insert(ids.map(function (a, k) { return { trilha_id: id, aula_id: a, ordem: k }; })).then(ok) : null; })
+      .then(function () { aviso('Trilha salva (' + ids.length + ' aulas)'); trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha);
+  }
+
+  // ---------- Engajamento ----------
+  function engajamento(c) {
+    c.innerHTML = 'Carregando…';
+    sb.rpc('admin_engajamento').then(ok).then(function (d) {
+      function num(v, l) { return '<div class="ha-box" style="flex:1 1 160px;gap:4px"><b style="font-size:30px">' + (v || 0) + '</b><span style="font-size:13px;color:#555555">' + l + '</span></div>'; }
+      function tab(t, cols, rows) { return '<div class="ha-box"><b style="font-size:17px">' + t + '</b>' + (rows.length ? '<table><thead><tr>' + cols.map(function (x) { return '<th>' + x[0] + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        rows.map(function (r) { return '<tr>' + cols.map(function (x) { var v = r[x[1]]; return '<td>' + (x[1] === 'titulo' && r.id ? '<a href="/hub/aula?id=' + r.id + '" target="_blank" rel="noopener">' + esc(v) + '</a>' : esc(v)) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>' : '<span style="font-size:14px;color:#777777">Ainda sem dados suficientes.</span>') + '</div>'; }
+      c.innerHTML = '<div class="ha-row" style="align-items:stretch">' + num(d.ativos7, 'alunos ativos nos últimos 7 dias') + num(d.ativos30, 'alunos ativos nos últimos 30 dias') + num(d.alunos, 'e-mails com acesso') + num(d.concluidas30, 'aulas concluídas em 30 dias') + num(d.certificados, 'certificados emitidos') + num(d.sugestoesAbertas, 'sugestões abertas') + '</div>' +
+        tab('Aulas mais vistas (30 dias)', [['Aula', 'titulo'], ['Curso', 'curso'], ['Alunos', 'alunos'], ['Concluíram', 'concluiram']], d.maisVistas || []) +
+        tab('Onde os alunos param (mín. 5 que começaram)', [['Aula', 'titulo'], ['Curso', 'curso'], ['Começaram', 'comecaram'], ['% sem concluir', 'pct_abandono']], d.abandono || []) +
+        tab('Notas mais baixas (mín. 3 votos)', [['Aula', 'titulo'], ['Curso', 'curso'], ['Média', 'media'], ['Votos', 'votos']], d.piorNota || []) +
+        tab('Cursos com mais alunos ativos (30 dias)', [['Curso', 'titulo'], ['Alunos', 'alunos']], d.cursos || []);
+    }).catch(falha);
+  }
+
   // ---------- Sugestões dos alunos (EOJHub) ----------
   function sugestoes(c) {
     c.innerHTML = 'Carregando…';
@@ -236,6 +316,12 @@
     }
     if ((x = t.closest('[data-arquivar]'))) return sb.from('pedidos').update({ status: 'arquivado' }).eq('id', +x.getAttribute('data-arquivar')).then(ok).then(function () { sugestoes(raiz.querySelector('.ha-corpo')); }).catch(falha);
     if ((x = t.closest('[data-liberar-vimeo]'))) return liberarVimeo(x);
+    if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
+    if ((x = t.closest('[data-marcs]'))) return marcadores(+x.getAttribute('data-marcs'));
+    if ((x = t.closest('[data-salvar-marcs]'))) return salvarMarcadores(+x.getAttribute('data-salvar-marcs'));
+    if (t.closest('[data-nova-trilha]')) { var tn = prompt('Nome da trilha (ex.: Começando como analista):'); if (!tn) return; return sb.from('trilhas').insert({ titulo: tn }).then(ok).then(function () { trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha); }
+    if ((x = t.closest('[data-salvar-trilha]'))) return salvarTrilha(+x.getAttribute('data-salvar-trilha'));
+    if ((x = t.closest('[data-apagar-trilha]'))) { if (!confirm('Apagar esta trilha?')) return; return sb.from('trilhas').delete().eq('id', +x.getAttribute('data-apagar-trilha')).then(ok).then(function () { trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha); }
     if ((x = t.closest('[data-ativo]'))) { return sb.from('acessos_email').update({ ativo: x.getAttribute('data-v') === 'true', atualizado_em: new Date().toISOString() }).eq('id', +x.getAttribute('data-ativo')).then(ok).then(buscar).catch(falha); }
   }
 
@@ -264,7 +350,7 @@
         if (!B.isAdmin()) { raiz.innerHTML = '<p style="margin:0">Esta página é só para administradores.</p>'; return; }
         raiz.innerHTML = '<style>' + CSS + '</style><div class="ha"><div class="ha-tabs-w"></div><div class="ha-corpo"></div></div><div class="ha-aviso" role="status"></div>';
         raiz.addEventListener('click', cliques);
-        if (/^#(sugestoes|eventos|acessos|hotmart)$/.test(location.hash)) st.aba = location.hash.slice(1);
+        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

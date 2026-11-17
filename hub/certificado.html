@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<script id="eoj-consent-ga">
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+window.eojLoadGA = function () {
+  if (window.__eojGA) return; window.__eojGA = true;
+  var s = document.createElement('script'); s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9Y9W2X7RP5';
+  document.head.appendChild(s);
+  gtag('js', new Date()); gtag('config', 'G-9Y9W2X7RP5');
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '249992227113113'); fbq('track', 'PageView');
+};
+(function () { try { if (localStorage.getItem('eoj-cookies') === 'aceito') window.eojLoadGA(); } catch (e) {} })();
+document.addEventListener('click', function (ev) {
+  if (!window.__eojGA) return;
+  var a = ev.target.closest && ev.target.closest('a[href]');
+  if (!a) return;
+  var h = a.getAttribute('href') || '';
+  var txt = (a.textContent || '').trim().slice(0, 80);
+  var fb = window.fbq || function () {};
+  if (h.indexOf('pay.hotmart.com') >= 0) { gtag('event', 'begin_checkout', { link_url: h, link_text: txt }); fb('track', 'InitiateCheckout'); }
+  else if (h.indexOf('wa.me') >= 0 || h.indexOf('whatsapp.com') >= 0) { gtag('event', 'contact', { method: 'whatsapp', link_text: txt }); fb('track', 'Contact'); }
+  else if ((h.indexOf('hub.entendendoojogo.com.br') >= 0 || /^\/hub(\/|$|\?)/.test(h))) gtag('event', 'eojhub_click', { link_url: h, link_text: txt });
+  else if (a.hasAttribute('download')) { gtag('event', 'generate_lead', { method: 'ebook_download', link_text: txt }); fb('track', 'Lead'); }
+}, true);
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificado — Entendendo o Jogo</title>
+<meta name="description" content="Certificado de conclusão emitido pelo EOJHub, do Entendendo o Jogo.">
+<link rel="canonical" href="https://entendendoojogo.com.br/hub/certificado">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Entendendo o Jogo">
+<meta property="og:title" content="Certificado — Entendendo o Jogo">
+<meta property="og:description" content="Certificado de conclusão emitido pelo EOJHub, do Entendendo o Jogo.">
+<meta property="og:url" content="https://entendendoojogo.com.br/hub/certificado">
+<meta property="og:image" content="https://entendendoojogo.com.br/assets/og.jpg?v=227a2f0f">
+<meta property="og:image:alt" content="Entendendo o Jogo — formação tática para o futebol">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F5F5}
+a{color:#4A79A6}a:hover{color:#3A6894}
+.bib-in{font:inherit;font-weight:400;font-size:15px;padding:12px;border:1.5px solid #CCCCCC;border-radius:8px;background:#FFFFFF;color:#111111;width:100%;box-sizing:border-box}.bib-in:focus{outline:2px solid #A1C4E6;outline-offset:1px}.bib-lb{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.hub-tab{font:inherit;font-size:15px;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:14px 4px;margin-right:22px;cursor:pointer;color:#555555}.hub-tab[aria-selected="true"]{color:#111111;border-bottom-color:#4A79A6}.hub-card{text-decoration:none;color:#111111;background:#FFFFFF;border:1px solid #E2E2E2;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}.hub-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.08);color:#111111}.hub-aula{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;text-decoration:none;color:#111111;font-size:15px}.hub-aula:hover{background:#F0F4F8;color:#111111}.hub-aula[aria-current="page"]{background:#E6EFF8;font-weight:600}.hub-star{font:inherit;font-size:30px;line-height:1;background:none;border:0;padding:4px 2px;cursor:pointer;color:#CCCCCC}.hub-star[aria-pressed="true"]{color:#E2A93B}@media (max-width:900px){.hub-lado{max-width:none!important}}.hub-capa{overflow:hidden;isolation:isolate}.hub-capa img{transform-origin:50% 40%;animation:hubKB 18s ease-in-out infinite alternate;will-change:transform}.hub-card:nth-child(3n+2) .hub-capa img{animation-delay:-6s;transform-origin:30% 60%}.hub-card:nth-child(3n) .hub-capa img{animation-delay:-12s;transform-origin:70% 45%}@keyframes hubKB{from{transform:scale(1)}to{transform:scale(1.13)}}.hub-capa::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.20) 50%,transparent 62%);transform:translateX(-130%);animation:hubShine 8s ease-in-out infinite}.hub-card:nth-child(2n) .hub-capa::after{animation-delay:-3s}.hub-card:nth-child(3n) .hub-capa::after{animation-delay:-5.5s}@keyframes hubShine{0%,72%{transform:translateX(-130%)}100%{transform:translateX(130%)}}.hub-tat{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.55;transition:opacity .3s}.hub-card:hover .hub-tat{opacity:1}.hub-card:hover .hub-capa img{animation-duration:6s}.hub-tat .l{stroke-dasharray:100;stroke-dashoffset:100;animation:hubDraw 7s ease-in-out infinite}.hub-tat .d{transform-box:fill-box;transform-origin:center}.hub-tat .l2{animation-delay:.9s}.hub-tat .d{opacity:0;animation:hubDot 7s ease-in-out infinite}.hub-tat .d2{animation-delay:.9s}.hub-card:nth-child(2n) .hub-tat *{animation-delay:-2.5s}.hub-card:nth-child(3n) .hub-tat *{animation-delay:-4.5s}@keyframes hubDraw{0%,8%{stroke-dashoffset:100}38%,78%{stroke-dashoffset:0}92%,100%{stroke-dashoffset:0;opacity:0}}@keyframes hubDot{0%,30%{opacity:0;transform:scale(.4)}40%,80%{opacity:1;transform:none}95%,100%{opacity:0}}.hub-art{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 95% at 25% 15%,var(--a,#1E3A56) 0%,#0E1114 72%)}.hub-art-1{--a:#1F4D3A}.hub-art-2{--a:#4D3420}.hub-art-3{--a:#3B2A58}.hub-art-4{--a:#1E4B58}.hub-art-5{--a:#4A1F2E}.hub-art>svg:first-child{opacity:.55}.hub-pl{position:absolute;inset:0;width:100%;height:100%}.hub-pl .j{transform-box:fill-box;transform-origin:center;animation:hubJ 9s ease-in-out infinite alternate}.hub-pl .j1{animation-delay:-1.5s}.hub-pl .j2{animation-name:hubJ2;animation-delay:-3s}.hub-pl .j3{animation-delay:-4.5s}.hub-pl .j4{animation-name:hubJ2}.hub-pl .j5{animation-delay:-2s}.hub-pl .j6{animation-name:hubJ2;animation-delay:-5s}.hub-pl .j7{animation-delay:-6s}.hub-pl .bola{animation:hubB 6s ease-in-out infinite}.hub-art-1 .j{animation-duration:11s}.hub-art-2 .j{animation-duration:8s}.hub-art-3 .j{animation-direction:alternate-reverse}.hub-art-4 .j{animation-duration:12s}@keyframes hubJ{0%{transform:translate(0,0)}50%{transform:translate(9px,-5px)}100%{transform:translate(-6px,6px)}}@keyframes hubJ2{0%{transform:translate(0,0)}50%{transform:translate(-8px,4px)}100%{transform:translate(7px,-7px)}}@keyframes hubB{0%,10%{transform:translate(0,0)}35%{transform:translate(42px,-8px)}60%{transform:translate(54px,16px)}85%,100%{transform:translate(0,0)}}.hub-art-t{position:absolute;left:16px;right:16px;bottom:14px;z-index:3;color:#FFFFFF;font-weight:800;text-transform:uppercase;font-size:clamp(16px,1.7vw,22px);line-height:1.05;letter-spacing:.01em;text-shadow:0 2px 12px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:6px}.hub-art-t small{font-size:11px;letter-spacing:.2em;color:#A1C4E6;font-weight:700}.hub-res .hub-art-t{display:none}.hub-q{font:inherit;font-size:17px;width:100%;box-sizing:border-box;padding:16px 16px 16px 50px;border:1.5px solid #CCCCCC;border-radius:12px;background:#FFFFFF}.hub-q:focus{outline:none;border-color:#4A79A6;box-shadow:0 0 0 4px rgba(74,121,166,.15)}.hub-res{display:flex;gap:14px;align-items:center;text-decoration:none;color:#111111;background:#FFFFFF;border:1px solid #E2E2E2;border-radius:12px;padding:10px;transition:box-shadow .15s}.hub-res:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);color:#111111}.hub-chip{font:inherit;font-size:14px;font-weight:600;padding:8px 14px;border:1.5px solid #CCCCCC;border-radius:99px;background:#FFFFFF;color:#111111;cursor:pointer}.hub-chip[aria-pressed="true"]{background:#111111;border-color:#111111;color:#FFFFFF}.hub-in{font:inherit;font-size:15px;line-height:1.5;padding:12px;border:1.5px solid #CCCCCC;border-radius:10px;width:100%;box-sizing:border-box;background:#FFFFFF}@media (prefers-reduced-motion: reduce){.hub-capa img,.hub-capa::after,.hub-tat *,.hub-pl *{animation:none!important}.hub-tat .l{stroke-dashoffset:0}.hub-tat .d{opacity:1}}</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="/biblioteca.js?v=29ae2534"></script>
+<script src="/hub.js?v=1417b38a"></script>
+<link rel="stylesheet" href="/site.css?v=c2184a4c">
+<!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
+</head>
+<body>
+<div id="eoj-root"></div>
+<template id="eoj-tpl">
+<div style="font-family: Montserrat, system-ui, sans-serif; color: #111111; background: #F5F5F5; min-height: 100vh">
+<header style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1376px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: nowrap; align-items: center; gap: 14px 24px">
+<a href="/" style="display: flex; flex: 0 0 auto; align-items: center; gap: 10px; text-decoration: none; color: #FFFFFF">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#FFFFFF" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#FFFFFF"></rect><circle cx="20" cy="20" r="4" fill="#A1C4E6"></circle></svg>
+<span style="display: flex; flex-direction: column; font-family: Montserrat, sans-serif; text-transform: uppercase; line-height: 1"><span style="font-weight: 500; font-size: 11px; letter-spacing: 0.06em">Entendendo</span><span style="font-weight: 800; font-size: 19px; letter-spacing: 0.01em">O Jogo</span></span>
+</a>
+<nav aria-label="Principal" id="menu-principal" data-open="{{menuOpen}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 500; white-space: nowrap">
+<a href="/biblioteca/acervo" style="color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 10px 0">Biblioteca EOJ <span style="background: #A1C4E6; color: #111111; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.04em">NOVO</span></a>
+<a href="/eojhub" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">EOJHub</a>
+<a href="/cursos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Cursos</a>
+<div class="eoj-dd" data-dd="mentoria"><button type="button" class="eoj-dd-b" aria-expanded="false" aria-haspopup="true" style="font: inherit; color: #D9D9D9; background: none; border: 0; padding: 10px 0; cursor: pointer; display: flex; align-items: center; gap: 5px">Mentoria<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="eoj-dd-m"><a href="/mentoria" style="color: #D9D9D9; text-decoration: none">Para profissionais</a><a href="/mentoria/clubes" style="color: #D9D9D9; text-decoration: none">Para clubes</a></div></div>
+<div class="eoj-dd" data-dd="conteudos"><button type="button" class="eoj-dd-b" aria-expanded="false" aria-haspopup="true" style="font: inherit; color: #D9D9D9; background: none; border: 0; padding: 10px 0; cursor: pointer; display: flex; align-items: center; gap: 5px">Conteúdos<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="eoj-dd-m"><a href="/blog" style="color: #D9D9D9; text-decoration: none">Blog</a><a href="/conteudos#lives" style="color: #D9D9D9; text-decoration: none">Lives</a><a href="/conteudos#podcasts" style="color: #D9D9D9; text-decoration: none">Podcasts</a><a href="/livros" style="color: #D9D9D9; text-decoration: none">Livros</a></div></div>
+<a href="/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quem somos</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto"><nav class="eoj-lang" aria-label="Idioma / Language" style="display: flex; align-items: center; gap: 4px; font-size: 12px; letter-spacing: 0.04em; margin-right: 6px"><a href="/hub/certificado" hreflang="pt-BR" aria-label="Português" lang="pt-BR" aria-current="true" style="color: #FFFFFF; font-weight: 800; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 1"><svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="20" height="14" fill="#009C3B"/><path d="M10 1.6 18.2 7 10 12.4 1.8 7z" fill="#FFDF00"/><circle cx="10" cy="7" r="3.1" fill="#002776"/><path d="M7 6.4c2-.5 4.1-.3 6 .6" stroke="#FFFFFF" stroke-width=".6" fill="none"/></svg><span class="eoj-lang-t">PT</span></a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/hub/certificado" hreflang="es" aria-label="Español" lang="es" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 0.85"><svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="20" height="14" fill="#AA151B"/><rect y="3.5" width="20" height="7" fill="#F1BF00"/></svg><span class="eoj-lang-t">ES</span></a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/hub/certificado" hreflang="en" aria-label="English" lang="en" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 0.85"><svg width="18" height="13" viewBox="0 0 60 42" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="60" height="42" fill="#012169"/><path d="M0 0l60 42M60 0L0 42" stroke="#FFFFFF" stroke-width="8"/><path d="M0 0l60 42M60 0L0 42" stroke="#C8102E" stroke-width="3"/><path d="M30 0v42M0 21h60" stroke="#FFFFFF" stroke-width="12"/><path d="M30 0v42M0 21h60" stroke="#C8102E" stroke-width="7"/></svg><span class="eoj-lang-t">EN</span></a></nav>
+<a href="/hub" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar EOJHub</a>
+<a href="/biblioteca/acervo" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar Biblioteca EOJ</a>
+
+<button type="button" class="eoj-burger" aria-label="Abrir menu" aria-controls="menu-principal" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1.5px solid #4A4A4A; border-radius: 8px; background: none; color: #FFFFFF; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
+</div>
+</header>
+<style>@media print{header,footer,.no-print,a[aria-label*="WhatsApp"],[role="dialog"]{display:none!important}body,html{background:#FFFFFF!important}.cert-wrap{padding:0!important}.cert{box-shadow:none!important;border:0!important}@page{size:A4 landscape;margin:12mm}}</style><div class="cert-wrap" style="max-width: 1100px; margin: 0 auto; padding: 32px 24px 72px; display: flex; flex-direction: column; gap: 20px"><sc-if value="{{loading}}" hint-placeholder-val="{{ false }}"><p role="status" style="margin: 0; padding: 40px 0; color: #555555; font-size: 15px">Carregando…</p></sc-if><sc-if value="{{erro}}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; background: #FCEDEC; color: #8C1D18; border-radius: 10px; padding: 14px 16px; font-size: 15px">{{erro}}</p></sc-if><sc-if value="{{tem}}" hint-placeholder-val="{{ true }}"><article class="cert" style="position: relative; background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 18px; box-shadow: 0 30px 80px rgba(17,17,17,0.10); padding: 56px 64px; display: flex; flex-direction: column; gap: 22px; overflow: hidden; aspect-ratio: 1.414 / 1; box-sizing: border-box"><div aria-hidden="true" style="position: absolute; inset: 14px; border: 2px solid #A1C4E6; border-radius: 12px; pointer-events: none"></div><div aria-hidden="true" style="position: absolute; right: -80px; bottom: -80px; width: 320px; height: 320px; border-radius: 50%; border: 28px solid #E6EFF8"></div><div style="display: flex; align-items: center; gap: 14px"><svg width="56" height="56" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#111111" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#111111"></rect><circle cx="20" cy="20" r="4" fill="#4A79A6"></circle></svg><span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #555555">Entendendo</span><b style="font-size: 22px; text-transform: uppercase">o Jogo</b></span></div><p style="margin: 18px 0 0; font-size: 15px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #4A79A6">Certificado de conclusão</p><p style="margin: 0; font-size: 18px; color: #555555">Certificamos que</p><h1 style="margin: 0; font-size: clamp(30px, 4.4vw, 52px); line-height: 1.05; font-weight: 800">{{nome}}</h1><p style="margin: 0; font-size: 19px; line-height: 1.6; color: #333333; max-width: 820px">concluiu o curso <b style="color: #111111">{{curso}}</b>{{detalhe}}, na área do aluno EOJHub do Entendendo o Jogo.</p><div style="margin-top: auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 18px; position: relative"><div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; color: #777777; text-transform: uppercase; letter-spacing: 0.1em">Emitido em</span><b style="font-size: 18px">{{data}}</b></div><div style="display: flex; flex-direction: column; gap: 4px; text-align: right"><span style="font-size: 13px; color: #777777; text-transform: uppercase; letter-spacing: 0.1em">Código de verificação</span><b style="font-size: 18px; letter-spacing: 0.08em">{{codigo}}</b><span style="font-size: 12px; color: #777777">entendendoojogo.com.br/hub/certificado?c={{codigo}}</span></div></div></article><div class="no-print" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center"><button type="button" onClick="{{imprimir}}" style="font: inherit; font-size: 15px; font-weight: 700; background: #A1C4E6; color: #111111; border: 0; border-radius: 8px; padding: 13px 20px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px">Imprimir ou salvar em PDF</button><a href="{{linkedin}}" target="_blank" rel="noopener" style="font: inherit; font-size: 15px; font-weight: 600; background: #FFFFFF; color: #111111; border: 1.5px solid #CCCCCC; border-radius: 8px; padding: 12px 18px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px">Adicionar ao LinkedIn</a><button type="button" onClick="{{copiar}}" style="font: inherit; font-size: 15px; font-weight: 600; background: #FFFFFF; color: #111111; border: 1.5px solid #CCCCCC; border-radius: 8px; padding: 12px 18px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px">{{copiarTxt}}</button></div><p class="no-print" style="margin: 0; text-align: center; font-size: 14px; color: #555555">Qualquer pessoa com este link pode confirmar a autenticidade do certificado.</p></sc-if></div>
+<footer style="background: #111111; color: #CFCFCF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 40px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 320px">
+<span style="font-family: Montserrat, sans-serif; font-weight: 800; font-size: 24px; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.04em">Entendendo o Jogo</span>
+<span style="font-size: 15px; line-height: 1.6">Formação tática e análise de jogo para treinadores, analistas e profissionais do futebol.</span>
+<a href="mailto:entendendoojogo@gmail.com" style="color: #A1C4E6; text-decoration: none; font-size: 15px">entendendoojogo@gmail.com</a>
+</div>
+<nav aria-label="Rodapé" style="display: flex; flex-wrap: wrap; gap: 48px; font-size: 15px">
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Conteúdo</span><a href="/biblioteca/acervo" style="color: #CFCFCF; text-decoration: none">Biblioteca EOJ</a><a href="/blog" style="color: #CFCFCF; text-decoration: none">Blog</a><a href="/conteudos" style="color: #CFCFCF; text-decoration: none">Lives e podcasts</a><a href="/livros" style="color: #CFCFCF; text-decoration: none">Livros EOJ</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Comunidade</span><a href="https://chat.whatsapp.com/IfDikJxXWKVJVp5pad7DaE" style="color: #CFCFCF; text-decoration: none">Grupo sobre tática (WhatsApp)</a><a href="https://chat.whatsapp.com/Lk3CEDf12ZQ3IQRd9Y34Xi" style="color: #CFCFCF; text-decoration: none">Grupo sobre treino (WhatsApp)</a><a href="https://www.instagram.com/entendendoojogo/" style="color: #CFCFCF; text-decoration: none">Instagram</a><a href="https://www.youtube.com/channel/UCXC2Uxw9CoJHGAN_FC06LYQ" style="color: #CFCFCF; text-decoration: none">YouTube</a><a href="https://x.com/italobresende" style="color: #CFCFCF; text-decoration: none">X</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Ajuda</span><a href="/ajuda" style="color: #CFCFCF; text-decoration: none">Perguntas frequentes</a><a href="https://api.whatsapp.com/send?phone=6281385430917" style="color: #CFCFCF; text-decoration: none">WhatsApp</a><a href="/termos" style="color: #CFCFCF; text-decoration: none">Termo de uso</a><a href="/privacidade" style="color: #CFCFCF; text-decoration: none">Política de privacidade</a></div>
+</nav>
+</div>
+<div style="max-width: 1240px; margin: 0 auto; padding: 20px 32px 32px; border-top: 1px solid #2A2A2A; font-size: 13px; color: #A6A6A6">© 2026 Entendendo o Jogo. Todos os direitos reservados. · <a href="#" onclick="window.eojCookies && window.eojCookies(); return false;" style="color: #A6A6A6">Preferências de cookies</a></div>
+</footer>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" aria-label="Fale com o suporte pelo WhatsApp" title="Suporte pelo WhatsApp" style="position: fixed; right: 20px; bottom: 20px; z-index: 20; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: transparent; color: #25D366; text-decoration: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25))"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"></path><path d="M9 9.5c.3 1.8 1.7 3.6 3.6 4.4l1.2-1.1 2 .8-.4 1.6c-3.4.2-7-3.2-7.2-6.6l1.6-.5.8 2z"></path></svg></a>
+</div>
+</template>
+<script src="/eoj-runtime.js?v=1b08645f"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { loading: true, erro: '', copiado: false }; }
+  componentDidMount() {
+    var self = this, cod = EOJB.param('c');
+    if (!cod) return this.setState({ loading: false, erro: 'Certificado não encontrado.' });
+    EOJB.ready.then(function () { return EOJH.verCertificado(cod); }).then(function (ct) {
+      if (!ct) return self.setState({ loading: false, erro: 'Não encontramos um certificado com este código.' });
+      document.title = 'Certificado — ' + ct.curso + ' — ' + ct.nome;
+      self.setState({ loading: false, ct: ct });
+    }).catch(function (e) { self.setState({ loading: false, erro: EOJB.msg(e) }); });
+  }
+  renderVals() {
+    var self = this, st = this.state, ct = st.ct, v = { loading: st.loading, erro: st.erro, tem: !!ct };
+    if (!ct) return v;
+    var d = new Date(ct.emitido_em), url = 'https://entendendoojogo.com.br/hub/certificado?c=' + ct.codigo;
+    v.nome = ct.nome; v.curso = ct.curso; v.codigo = ct.codigo;
+    v.detalhe = [ct.aulas ? ' (' + ct.aulas + ' aulas' : '', ct.carga_horaria ? (ct.aulas ? ', ' : ' (') + ct.carga_horaria + ' horas' : ''].join('') + (ct.aulas || ct.carga_horaria ? ')' : '');
+    v.data = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+    v.imprimir = function () { window.print(); };
+    v.linkedin = 'https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=' + encodeURIComponent(ct.curso) + '&organizationName=' + encodeURIComponent('Entendendo o Jogo') +
+      '&issueYear=' + d.getFullYear() + '&issueMonth=' + (d.getMonth() + 1) + '&certUrl=' + encodeURIComponent(url) + '&certId=' + ct.codigo;
+    v.copiarTxt = st.copiado ? 'Link copiado' : 'Copiar link';
+    v.copiar = function () { (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { self.setState({ copiado: true }); }).catch(function () { prompt('Copie o link:', url); }); };
+    return v;
+  }
+}
+EOJ.mount(typeof Component !== 'undefined' ? Component : null);
+</script>
+<div id="eoj-consent" role="dialog" aria-live="polite" aria-label="Aviso de cookies" hidden style="position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 90; max-width: 760px; margin: 0 auto; background: #111111; color: #FFFFFF; border: 1px solid #2A2A2A; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 18px 20px; display: none; flex-wrap: wrap; align-items: center; gap: 14px 20px; font-size: 14px; line-height: 1.5; font-family: Montserrat, system-ui, sans-serif">
+<p style="margin: 0; flex: 1 1 320px">Usamos cookies de análise e de marketing (Google Analytics e Meta) para entender como o site é usado, melhorar o conteúdo e mostrar anúncios relevantes. Você pode aceitar ou recusar. <a href="/privacidade" style="color: #A1C4E6">Política de privacidade</a></p>
+<div style="display: flex; gap: 10px; flex: 0 0 auto">
+<button type="button" data-eoj-cookies="recusado" style="font: inherit; font-weight: 600; background: transparent; color: #FFFFFF; border: 1px solid #555555; border-radius: 8px; padding: 10px 16px; cursor: pointer">Recusar</button>
+<button type="button" data-eoj-cookies="aceito" style="font: inherit; font-weight: 700; background: #A1C4E6; color: #111111; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer">Aceitar</button>
+</div>
+</div>
+<script>
+(function () {
+  var box = document.getElementById('eoj-consent');
+  var v = null; try { v = localStorage.getItem('eoj-cookies'); } catch (e) {}
+  if (!v) { box.hidden = false; box.style.display = 'flex'; }
+  window.eojCookies = function () { box.hidden = false; box.style.display = 'flex'; };
+  box.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-eoj-cookies]'); if (!b) return;
+    var c = b.getAttribute('data-eoj-cookies');
+    try { localStorage.setItem('eoj-cookies', c); } catch (e) {}
+    box.hidden = true; box.style.display = 'none';
+    if (c === 'aceito') window.eojLoadGA();
+    else if (window.__eojGA) { try { location.reload(); } catch (e) {} }
+  });
+})();
+</script>
+</body>
+</html>

@@ -262,14 +262,15 @@
   window.EOJEditor = {
     iniciar: function (alvo, onTitulo) {
       raiz = alvo; raiz.setAttribute('data-pronto', '1');
-      var pl = B.param('pl');
+      var pl = B.param('pl'), clipe = B.param('clipe');
       raiz.innerHTML = '<p style="margin:0;color:#555555">' + esc(L('Carregando…')) + '</p>';
       B.ready.then(function () {
         if (!B.user) { raiz.innerHTML = '<p style="margin:0;font-size:16px">' + esc(L('Entre na sua conta para usar o editor.')) + ' <a href="' + B.u('/biblioteca/entrar') + '?volta=' + encodeURIComponent(location.pathname + location.search) + '">' + esc(L('Entrar')) + '</a></p>'; return; }
-        return Promise.all([B.clipes(), pl === 'fav' ? B.favIds() : B.playlists()]).then(function (r) {
+        return Promise.all([B.clipes(), clipe ? Promise.resolve([]) : pl === 'fav' ? B.favIds() : B.playlists()]).then(function (r) {
           var M = {}; r[0].forEach(function (c) { M[c.id] = c; });
           var ids;
-          if (pl === 'fav') { ids = r[1]; st.nome = L('Favoritos'); }
+          if (clipe) { if (!M[clipe]) { raiz.innerHTML = '<p style="margin:0">' + esc(L('Clipe não encontrado.')) + '</p>'; return; } ids = [M[clipe].id]; st.nome = M[clipe].titulo; }
+          else if (pl === 'fav') { ids = r[1]; st.nome = L('Favoritos'); }
           else {
             var p = r[1].filter(function (x) { return String(x.id) === String(pl); })[0];
             if (!p) { raiz.innerHTML = '<p style="margin:0">' + esc(L('Playlist não encontrada.')) + ' <a href="' + B.u('/biblioteca/minha-area') + '#playlists">' + esc(L('Voltar para Minha área')) + '</a></p>'; return; }

@@ -15,11 +15,11 @@
   // ---------- Catálogo ----------
   var AULA_COLS = 'id,titulo,duracao_seg,ordem,publicado_em,momento,escopo';
   H.cursos = function () {
-    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,titulo,ordem,oculto,aulas(id))')
+    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,titulo,ordem,oculto,capa,aulas(id))')
       .order('ordem').order('titulo').then(ok).then(function (cs) { (cs || []).forEach(function (c) { c.modulos = (c.modulos || []).filter(function (m) { return !m.oculto; }); }); return cs; });
   };
   H.curso = function (filtro) {
-    var q = sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,modulos(id,titulo,ordem,oculto,aulas(' + AULA_COLS + '))');
+    var q = sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,modulos(id,titulo,ordem,oculto,capa,aulas(' + AULA_COLS + '))');
     q = typeof filtro === 'number' ? q.eq('id', filtro) : q.eq('slug', filtro);
     return q.maybeSingle().then(ok).then(function (c) {
       if (!c) return null;

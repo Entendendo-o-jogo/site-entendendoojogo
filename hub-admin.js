@@ -20,7 +20,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['emails', 'E-mails'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -34,6 +34,7 @@
     if (st.aba === 'engajamento') return engajamento(c);
     if (st.aba === 'almanaque') return almanaque(c);
     if (st.aba === 'filtros') return filtrosMc(c);
+    if (st.aba === 'emails') return emails(c);
   }
 
   // ---------- Cursos ----------
@@ -364,6 +365,44 @@
     sb.from('aulas').update(d).eq('id', id).then(ok).then(function () { aviso('Filtro salvo'); if (campo === 'momento') el.closest('tr').setAttribute('data-vazio', el.value ? '0' : '1'); }).catch(falha);
   }
 
+  // ---------- E-mails (textos e listas para o serviço de e-mail do EOJ) ----------
+  var SITE = 'https://entendendoojogo.com.br';
+  var BOAS = [
+    { dia: 'Logo após o cadastro', assunto: 'Bem-vindo ao EOJHub: comece por aqui', corpo: 'Olá, {nome}!\n\nSeu acesso ao EOJHub, a área de aulas do Entendendo o Jogo, está pronto. Para começar bem:\n\n1. Escolha a trilha do seu perfil (Analista, Treinador ou Auxiliar técnico): uma sequência de aulas na ordem certa.\n2. Assista às aulas gratuitas: lives, informes táticos e masterclasses especiais da Copa do Mundo.\n3. Use a busca: digite um tema (ex.: “bloco baixo”) e vá direto ao minuto em que ele é explicado.\n\nAcesse: ' + SITE + '/hub\n\nBons estudos!\nÍtalo, Entendendo o Jogo' },
+    { dia: '2 dias depois', assunto: 'Qual é o seu perfil? Uma trilha pronta para você', corpo: 'Olá, {nome}!\n\nPara não se perder entre tantas aulas, montamos trilhas por perfil:\n\n• Do jogo ao relatório (Analista de desempenho): olhar o jogo além da bola, analisar equipes e jogadores e montar relatórios.\n• Modelo de jogo na prática (Treinador): do modelo de jogo aos problemas de cada momento e como levar para o treino.\n• Montar e conduzir treinos (Auxiliar técnico): etapas do treino, indicadores, rondos e treinos criados do zero.\n\nCada trilha começa com uma aula gratuita e, ao concluir, você ganha um certificado para o LinkedIn.\n\nEscolha a sua: ' + SITE + '/hub\n\nÍtalo, Entendendo o Jogo' },
+    { dia: '5 dias depois', assunto: 'Encontre qualquer tema das aulas em segundos', corpo: 'Olá, {nome}!\n\nDuas ferramentas para estudar mais rápido no EOJHub:\n\n• Busca dentro das aulas: digite um tema e veja em quais aulas e em que minuto ele é falado.\n• Pergunte ao EOJ: escreva sua dúvida e receba uma resposta com base nas aulas, com o link para o trecho certo.\n\nE na Biblioteca EOJ você encontra clipes táticos com filtros por momento do jogo, para montar playlists e usar no seu dia a dia.\n\nExperimente: ' + SITE + '/hub\n\nÍtalo, Entendendo o Jogo' },
+    { dia: '9 dias depois', assunto: 'Quer ir além das aulas gratuitas?', corpo: 'Olá, {nome}!\n\nSe as aulas gratuitas ajudaram, você pode liberar muito mais conteúdo:\n\n• Basic (R$ 19,99/mês): todas as masterclasses, organizadas por tema, e novas todo mês.\n• Premium (R$ 111,90/mês no plano anual): todos os cursos, masterclasses e conteúdos novos.\n• Ou compre só o curso que você precisa, com acesso por 12 meses e certificado.\n\nCompare os planos: ' + SITE + '/eojhub\n\nQualquer dúvida, é só responder este e-mail ou falar com a gente no WhatsApp.\n\nÍtalo, Entendendo o Jogo' }
+  ];
+  function csv(rs, nomeArq) {
+    var q = function (v) { v = v == null ? '' : String(v); return /[",;\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var linhas = [['email', 'nome', 'cadastro']].concat(rs.map(function (r) { return [r.email, r.nome, r.criado_em ? new Date(r.criado_em).toLocaleDateString('pt-BR') : '']; }));
+    var blob = new Blob(['﻿' + linhas.map(function (l) { return l.map(q).join(';'); }).join('\n')], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nomeArq; document.body.appendChild(a); a.click(); a.remove();
+  }
+  function emails(c) {
+    c.innerHTML = 'Carregando…';
+    sb.rpc('conteudos_recentes', { lim: 40 }).then(ok).then(function (rec) {
+      var desde = Date.now() - 7 * 86400000;
+      var novas = rec.filter(function (r) { return new Date(r.publicado_em).getTime() >= desde; });
+      var base = novas.length ? novas : rec.slice(0, 6);
+      var itensHtml = base.map(function (r) { return '<li style="margin:0 0 10px"><a href="' + SITE + '/hub/aula?id=' + r.aula_id + '" style="color:#3A6894;font-weight:700;text-decoration:none">' + esc(r.aula) + '</a><br><span style="color:#555555;font-size:13px">' + esc(r.curso) + '</span></li>'; }).join('');
+      var html = '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#111111"><p style="font-size:12px;letter-spacing:2px;color:#4A79A6;font-weight:700;text-transform:uppercase">EOJHub · Resumo da semana</p>' +
+        '<h1 style="font-size:24px;margin:0 0 12px">' + (novas.length ? 'Novos conteúdos da semana' : 'Conteúdos recentes no EOJHub') + '</h1><ul style="padding-left:18px">' + itensHtml + '</ul>' +
+        '<p><a href="' + SITE + '/hub" style="display:inline-block;background:#111111;color:#FFFFFF;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700">Abrir a área do aluno</a></p>' +
+        '<p style="font-size:12px;color:#777777">Você recebe este e-mail porque marcou “Receber por e-mail um resumo semanal” na área do aluno. Para parar, desmarque a opção em ' + SITE + '/hub</p></div>';
+      var texto = (novas.length ? 'Novos conteúdos da semana no EOJHub:' : 'Conteúdos recentes no EOJHub:') + '\n\n' + base.map(function (r) { return '• ' + r.aula + ' (' + r.curso + ')\n  ' + SITE + '/hub/aula?id=' + r.aula_id; }).join('\n') + '\n\nAbrir a área do aluno: ' + SITE + '/hub';
+      c.innerHTML = '<div class="ha-box"><b style="font-size:18px">Resumo semanal</b>' +
+        '<p style="margin:0;font-size:14px;color:#555555">' + (novas.length ? novas.length + ' conteúdos publicados nos últimos 7 dias.' : 'Nenhum conteúdo novo nos últimos 7 dias; o texto usa os 6 mais recentes.') + ' Copie o texto (ou o HTML) para o seu serviço de e-mail e baixe a lista de quem marcou que quer receber.</p>' +
+        '<div class="ha-row"><button type="button" class="ha-p" data-copiar="tx-resumo">Copiar texto</button><button type="button" class="ha-b" data-copiar="html-resumo">Copiar HTML</button><button type="button" class="ha-b" data-lista="resumo">Baixar lista (CSV)</button><span data-em-st style="font-size:14px"></span></div>' +
+        '<label>Texto<br><textarea class="ha-in" id="tx-resumo" rows="8" style="width:100%">' + esc(texto) + '</textarea></label>' +
+        '<details><summary style="cursor:pointer;font-weight:600">HTML e prévia</summary><textarea class="ha-in" id="html-resumo" rows="6" style="width:100%">' + esc(html) + '</textarea><div style="border:1px solid #E2E2E2;border-radius:8px;padding:12px;margin-top:8px;background:#FFFFFF">' + html + '</div></details></div>' +
+        '<div class="ha-box"><b style="font-size:18px">Sequência de boas-vindas</b><p style="margin:0;font-size:14px;color:#555555">4 e-mails para configurar como automação no seu serviço de e-mail, a partir do cadastro. Troque {nome} pelo campo de nome do seu serviço. Baixe também a lista de quem se cadastrou nos últimos 7 dias.</p>' +
+        '<div class="ha-row"><button type="button" class="ha-b" data-lista="novos">Baixar cadastros dos últimos 7 dias (CSV)</button></div>' +
+        BOAS.map(function (m, i) { return '<div class="ha-mod"><div class="ha-row" style="justify-content:space-between"><b>' + (i + 1) + '. ' + esc(m.assunto) + '</b><span style="font-size:13px;color:#555555">' + esc(m.dia) + '</span></div>' +
+          '<textarea class="ha-in" id="boas-' + i + '" rows="9" style="width:100%">' + esc('Assunto: ' + m.assunto + '\n\n' + m.corpo) + '</textarea><div><button type="button" class="ha-b" data-copiar="boas-' + i + '">Copiar</button></div></div>'; }).join('') + '</div>';
+    }).catch(falha);
+  }
+
   // ---------- Almanaque de artigos (PDF; aberto a qualquer aluno com conta) ----------
   function almanaque(c) {
     c.innerHTML = 'Carregando…';
@@ -492,6 +531,8 @@
     if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
     if ((x = t.closest('[data-transcricoes-todas]'))) return transcreverTodas(x);
     if ((x = t.closest('[data-sumidos]'))) return baixarSumidos(x);
+    if ((x = t.closest('[data-copiar]'))) { var ta = document.getElementById(x.getAttribute('data-copiar')); ta.select(); (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { aviso('Copiado'); }).catch(function () { document.execCommand('copy'); aviso('Copiado'); }); return; }
+    if ((x = t.closest('[data-lista]'))) { var tp = x.getAttribute('data-lista'); return sb.rpc('admin_lista_emails', { tipo: tp, dias: 7 }).then(ok).then(function (rs) { csv(rs, (tp === 'resumo' ? 'lista-resumo-semanal-' : 'cadastros-7-dias-') + new Date().toISOString().slice(0, 10) + '.csv'); aviso(rs.length + ' e-mails na lista'); }).catch(falha); }
     if ((x = t.closest('[data-indices-todos]'))) return indicesTodos(x);
     if ((x = t.closest('[data-preparar]'))) return prepararAula(+x.getAttribute('data-preparar'), x);
     if ((x = t.closest('[data-transcricoes]'))) return prepararTranscricoes(x);
@@ -533,7 +574,7 @@
           if (t.matches('[data-f-mom],[data-f-esc],[data-f-mod-mom],[data-f-mod-esc]')) return salvarFiltro(t);
           if (t.matches('[data-f-sem]')) raiz.querySelectorAll('[data-f-aula]').forEach(function (tr) { tr.style.display = t.checked && tr.getAttribute('data-vazio') === '0' ? 'none' : ''; });
         });
-        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros)$/.test(location.hash)) st.aba = location.hash.slice(1);
+        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros|emails)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

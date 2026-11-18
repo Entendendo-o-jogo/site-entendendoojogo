@@ -42,6 +42,7 @@
     c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div>' +
       '<div class="ha-row"><button type="button" class="ha-b" data-duracoes>Buscar a duração das aulas no Vimeo</button><span data-dur-st style="font-size:14px"></span></div>' +
       '<div class="ha-row"><button type="button" class="ha-b" data-transcricoes>Preparar o índice das aulas (legendas do Vimeo)</button><span data-tr-st style="font-size:14px"></span></div>' +
+      '<div class="ha-row"><button type="button" class="ha-p" data-transcricoes-todas>Ler a legenda de TODAS as aulas (as que faltam)</button><span data-trt-st style="font-size:14px"></span></div>' +
       '<p style="margin:0;font-size:13px;color:#555555">Lê a legenda automática do Vimeo das aulas das trilhas e das aulas gratuitas e guarda um resumo para o Claude sugerir os marcadores de minuto. Não muda nada para os alunos.</p></div>' +
       '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
       '<p style="margin:0;font-size:13px;color:#555555">Só aparecem para os alunos os cursos marcados como publicados. "Basic" = incluído no plano Basic. "Grátis" = aberto para qualquer conta.</p>' +
@@ -242,6 +243,22 @@
     }).catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e); });
   }
 
+  function transcreverTodas(btn) {
+    var stt = raiz.querySelector('[data-trt-st]'); btn.disabled = true; var feitas = 0, sem = 0, vazias = 0;
+    function lote() {
+      return sb.functions.invoke('vimeo', { body: { acao: 'legendas', pendentes: true, lote: 4, intervalo: 60, salvar: true } }).then(function (r) {
+        if (r.error) throw r.error; var d = r.data || {}, ok1 = 0;
+        (d.aulas || []).forEach(function (a) { if (!a.erro) { feitas++; ok1++; } else if (a.erro === 'sem_legenda') { sem++; ok1++; } });
+        stt.textContent = feitas + ' aulas lidas, ' + sem + ' sem legenda · faltam ' + (d.restantes || 0) + (d.limite ? ' · aguardando o limite do Vimeo (1 min)…' : '');
+        if (!d.restantes && !d.limite) { stt.textContent = 'Pronto: ' + feitas + ' aulas lidas, ' + sem + ' sem legenda. Pode avisar o Claude.'; btn.disabled = false; return; }
+        vazias = ok1 || d.limite ? 0 : vazias + 1;
+        if (vazias >= 3) { stt.textContent += ' · parei: algumas aulas deram erro. Pode avisar o Claude.'; btn.disabled = false; return; }
+        return new Promise(function (ok2) { setTimeout(ok2, d.limite ? 60000 : 300); }).then(lote);
+      });
+    }
+    lote().catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e) + ' — clique de novo para continuar de onde parou.'; });
+  }
+
   // ---------- Trilhas ----------
   function trilhas(c) {
     c.innerHTML = 'Carregando…';
@@ -422,6 +439,7 @@
     if ((x = t.closest('[data-arquivar]'))) return sb.from('pedidos').update({ status: 'arquivado' }).eq('id', +x.getAttribute('data-arquivar')).then(ok).then(function () { sugestoes(raiz.querySelector('.ha-corpo')); }).catch(falha);
     if ((x = t.closest('[data-liberar-vimeo]'))) return liberarVimeo(x);
     if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
+    if ((x = t.closest('[data-transcricoes-todas]'))) return transcreverTodas(x);
     if ((x = t.closest('[data-transcricoes]'))) return prepararTranscricoes(x);
     if ((x = t.closest('[data-marcs]'))) return marcadores(+x.getAttribute('data-marcs'));
     if ((x = t.closest('[data-salvar-marcs]'))) return salvarMarcadores(+x.getAttribute('data-salvar-marcs'));

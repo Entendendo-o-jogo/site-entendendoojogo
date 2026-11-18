@@ -43,18 +43,27 @@
 
   function render() {
     var it = st.itens[st.sel];
-    var total = st.itens.reduce(function (a, x) { return a + (x.on && x.dur ? x.fim - x.ini : 0); }, 0);
+    var total = st.itens.reduce(function (a, x) { return a + (x.on && x.dur ? (x.tipo === 'img' ? x.dur : x.fim - x.ini) : 0); }, 0);
     var nOn = st.itens.filter(function (x) { return x.on; }).length;
     raiz.querySelector('.ed-list').innerHTML = st.itens.map(function (x, i) {
       return '<div class="ed-it' + (x.on ? '' : ' off') + '" data-i="' + i + '" aria-current="' + (i === st.sel) + '" role="button" tabindex="0">' +
         '<input type="checkbox" data-on="' + i + '" ' + (x.on ? 'checked' : '') + ' aria-label="' + esc(L('Incluir no vídeo')) + '" style="width:18px;height:18px;margin:0;flex:0 0 auto;accent-color:#4A79A6">' +
         (x.thumb ? '<img src="' + esc(x.thumb) + '" alt="">' : '<span class="ed-ph"></span>') +
-        '<span class="ed-tx"><b>' + (i + 1) + '. ' + esc(x.titulo) + '</b><span>' + (x.dur ? tm(x.ini) + ' → ' + tm(x.fim) + ' · ' + Math.round(x.fim - x.ini) + ' s' : (x.erro ? esc(L('Não foi possível carregar')) : esc(L('Carregando…')))) + '</span></span>' +
+        '<span class="ed-tx"><b>' + (i + 1) + '. ' + esc(x.titulo) + '</b><span>' + (x.tipo === 'img' ? '🖼 ' + esc(L('Imagem')) + ' · ' + x.dur + ' s' : x.dur ? tm(x.ini) + ' → ' + tm(x.fim) + ' · ' + Math.round(x.fim - x.ini) + ' s' : (x.erro ? esc(L('Não foi possível carregar')) : esc(L('Carregando…')))) + '</span></span>' +
         '<span class="ed-mv"><button type="button" data-up="' + i + '" aria-label="' + esc(L('Subir')) + '"' + (i === 0 ? ' disabled' : '') + '>↑</button><button type="button" data-down="' + i + '" aria-label="' + esc(L('Descer')) + '"' + (i === st.itens.length - 1 ? ' disabled' : '') + '>↓</button></span></div>';
     }).join('');
     raiz.querySelector('.ed-total').textContent = nOn + ' ' + (nOn === 1 ? L('clipe') : L('clipes')) + ' · ' + L('duração') + ' ' + B.dur(total);
     raiz.querySelector('.ed-gerar').disabled = st.gerando || !nOn || st.itens.some(function (x) { return x.on && !x.dur; });
-    if (it) {
+    var ehImg = it && it.tipo === 'img';
+    raiz.querySelector('.ed-video').style.display = ehImg ? 'none' : '';
+    raiz.querySelector('.ed-imgprev').style.display = ehImg ? '' : 'none';
+    raiz.querySelector('.ed-corte').style.display = ehImg ? 'none' : '';
+    raiz.querySelector('.ed-imgbox').style.display = ehImg ? '' : 'none';
+    if (ehImg) {
+      raiz.querySelector('.ed-imgprev').src = it.src;
+      raiz.querySelector('.ed-imgnome').textContent = (st.sel + 1) + '. ' + it.titulo;
+      raiz.querySelector('.ed-imgdur').textContent = it.dur + ' s';
+    } else if (it) {
       raiz.querySelector('.ed-nome').textContent = (st.sel + 1) + '. ' + it.titulo;
       raiz.querySelector('.ed-ini').textContent = tm(it.ini);
       raiz.querySelector('.ed-fim').textContent = tm(it.fim);
@@ -62,7 +71,7 @@
     }
   }
   function timeline() {
-    var it = st.itens[st.sel], v = raiz.querySelector('.ed-video'); if (!it || !it.dur) return;
+    var it = st.itens[st.sel], v = raiz.querySelector('.ed-video'); if (!it || !it.dur || it.tipo === 'img') return;
     var s = raiz.querySelector('.ed-tl .sel'), p = raiz.querySelector('.ed-tl .pos'), hi = raiz.querySelector('.ed-tl .h-ini'), hf = raiz.querySelector('.ed-tl .h-fim');
     s.style.left = (it.ini / it.dur * 100) + '%'; s.style.width = ((it.fim - it.ini) / it.dur * 100) + '%';
     p.style.left = ((v.currentTime || 0) / it.dur * 100) + '%';
@@ -73,11 +82,12 @@
   }
   function selecionar(i) {
     st.sel = i; var it = st.itens[i], v = raiz.querySelector('.ed-video');
-    if (it && it.link && v.getAttribute('data-src') !== it.link) { v.setAttribute('data-src', it.link); v.src = it.link; v.currentTime = 0; }
+    if (it && it.tipo === 'img') v.pause();
+    else if (it && it.link && v.getAttribute('data-src') !== it.link) { v.setAttribute('data-src', it.link); v.src = it.link; v.currentTime = 0; }
     render();
   }
   function ajustar(campo, valor) {
-    var it = st.itens[st.sel]; if (!it || !it.dur) return;
+    var it = st.itens[st.sel]; if (!it || !it.dur || it.tipo === 'img') return;
     if (campo === 'ini') it.ini = Math.max(0, Math.min(valor, it.fim - 0.5));
     else it.fim = Math.min(it.dur, Math.max(valor, it.ini + 0.5));
     it.ini = Math.round(it.ini * 10) / 10; it.fim = Math.round(it.fim * 10) / 10;
@@ -91,7 +101,13 @@
     ed.innerHTML =
       '<div class="ed-main">' +
       '<video class="ed-video" controls playsinline crossorigin="anonymous" preload="auto"></video>' +
-      '<div class="ed-box"><div class="ed-row" style="justify-content:space-between"><b class="ed-nome" style="font-size:17px"></b>' +
+      '<img class="ed-imgprev" alt="" style="display:none;width:100%;aspect-ratio:16/9;object-fit:contain;background:#111111;border-radius:12px">' +
+      '<div class="ed-box ed-imgbox" style="display:none"><b class="ed-imgnome" style="font-size:17px"></b>' +
+      '<div class="ed-row"><span class="ed-lbl">' + esc(L('Duração')) + '</span><span class="ed-t ed-imgdur">4 s</span>' +
+      '<button type="button" class="ed-b" data-dimg="-1">−1 s</button><button type="button" class="ed-b" data-dimg="1">+1 s</button>' +
+      '<button type="button" class="ed-b" data-rm style="margin-left:auto">✕ ' + esc(L('Tirar da lista')) + '</button></div>' +
+      '<p class="ed-dica">' + esc(L('A imagem fica parada na tela pelo tempo escolhido. Use ↑ e ↓ na lista para mudar a posição (no topo ela vira a capa de abertura).')) + '</p></div>' +
+      '<div class="ed-box ed-corte"><div class="ed-row" style="justify-content:space-between"><b class="ed-nome" style="font-size:17px"></b>' +
       '<button type="button" class="ed-b ed-trecho">▶ ' + esc(L('Assistir o trecho')) + '</button></div>' +
       '<p class="ed-dica">' + esc(L('Arraste as alças azuis para marcar onde o trecho começa e termina. Arraste a faixa para mover o trecho inteiro.')) + '</p>' +
       '<div class="ed-tl"><span class="sel"></span><span class="pos"></span>' +
@@ -103,7 +119,9 @@
       '<button type="button" class="ed-b" data-aj="fim" data-d="-1">−1 s</button><button type="button" class="ed-b" data-aj="fim" data-d="1">+1 s</button></div></div></div>' +
       '<div class="ed-box ed-res" style="display:none"></div>' +
       '</div>' +
-      '<div class="ed-side"><div class="ed-list" style="display:flex;flex-direction:column;gap:8px"></div>' +
+      '<div class="ed-side"><div class="ed-row"><button type="button" class="ed-b ed-addimg">🖼 ' + esc(L('Adicionar imagem')) + '</button><button type="button" class="ed-b ed-addpr">📋 ' + esc(L('Adicionar prancheta')) + '</button>' +
+      '<input type="file" accept="image/*" class="ed-file" hidden></div>' +
+      '<div class="ed-list" style="display:flex;flex-direction:column;gap:8px"></div>' +
       '<div class="ed-box"><span class="ed-total" style="font-weight:700"></span>' +
       '<label style="display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer"><input type="checkbox" class="ed-tit" checked style="width:18px;height:18px;margin:0;accent-color:#4A79A6">' + esc(L('Mostrar o título de cada clipe no vídeo')) + '</label>' +
       '<button type="button" class="ed-p ed-gerar">' + esc(L('Gerar vídeo')) + '</button>' +
@@ -153,9 +171,47 @@
       if (t.hasAttribute('data-marca')) { ajustar(t.getAttribute('data-marca'), v.currentTime || 0); return; }
       if (t.closest('.ed-trecho') && it && it.dur) { v.currentTime = it.ini; st.tocandoTrecho = true; v.play().catch(function () {}); return; }
       if (t.closest('.ed-gerar')) { gerar(); return; }
+      if (t.hasAttribute('data-dimg') && it && it.tipo === 'img') { it.dur = Math.max(1, Math.min(15, it.dur + (+t.getAttribute('data-dimg')))); it.fim = it.dur; render(); return; }
+      if (t.hasAttribute('data-rm') && it && it.tipo === 'img') { st.itens.splice(st.sel, 1); st.sel = Math.max(0, Math.min(st.sel, st.itens.length - 1)); selecionar(st.sel); return; }
+      if (t.closest('.ed-addimg')) { raiz.querySelector('.ed-file').click(); return; }
+      if (t.closest('.ed-addpr')) { escolherPrancheta(); return; }
     });
     raiz.addEventListener('keydown', function (e) { var it = e.target.closest && e.target.closest('.ed-it'); if (it && (e.key === 'Enter' || e.key === ' ') && e.target === it) { e.preventDefault(); selecionar(+it.getAttribute('data-i')); } });
     raiz.querySelector('.ed-tit').addEventListener('change', function (e) { st.titulos = e.target.checked; });
+    raiz.querySelector('.ed-file').addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f || !/^image\//.test(f.type)) return;
+      var r = new FileReader(); r.onload = function () { addImagem(r.result, f.name.replace(/\.[a-z0-9]+$/i, ''), st.sel + 1); }; r.readAsDataURL(f);
+    });
+  }
+  function addImagem(src, titulo, onde) {
+    var x = { tipo: 'img', titulo: titulo || L('Imagem'), src: src, thumb: src, on: true, dur: 4, ini: 0, fim: 4 };
+    onde = Math.max(0, Math.min(onde == null ? st.itens.length : onde, st.itens.length));
+    st.itens.splice(onde, 0, x); selecionar(onde);
+    B.ev && B.ev('bib_editor_imagem');
+  }
+  function escolherPrancheta() {
+    var box = el('div', { role: 'dialog', 'aria-modal': 'true', 'aria-label': L('Adicionar prancheta') });
+    box.style.cssText = 'position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.7);display:flex;align-items:center;justify-content:center;padding:20px';
+    var card = el('div'); card.style.cssText = 'background:#FFFFFF;border-radius:14px;max-width:640px;width:100%;padding:22px;display:flex;flex-direction:column;gap:10px;max-height:85vh;overflow:auto';
+    card.innerHTML = '<b style="font-size:18px">' + esc(L('Adicionar prancheta')) + '</b><p class="ed-dica">' + esc(L('Carregando…')) + '</p>'; box.appendChild(card);
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('[data-x]')) box.remove(); });
+    document.body.appendChild(box);
+    B.sb.from('pranchetas').select('id,titulo,dados').order('atualizado_em', { ascending: false }).limit(30).then(function (r) {
+      var L2 = r.data || [];
+      if (!L2.length) { card.innerHTML = '<b style="font-size:18px">' + esc(L('Adicionar prancheta')) + '</b><p class="ed-dica">' + esc(L('Você ainda não tem pranchetas salvas.')) + ' <a href="' + B.u('/biblioteca/prancheta') + '">' + esc(L('Criar uma prancheta')) + '</a></p><button type="button" class="ed-b" data-x>' + esc(L('Fechar')) + '</button>'; return; }
+      function lista() {
+        card.innerHTML = '<b style="font-size:18px">' + esc(L('Adicionar prancheta')) + '</b>' + L2.map(function (p, i) { return '<button type="button" class="ed-b" data-p="' + i + '" style="text-align:left">' + esc(p.titulo) + ' · ' + p.dados.quadros.length + ' ' + esc(p.dados.quadros.length === 1 ? L('quadro') : L('quadros')) + '</button>'; }).join('') + '<button type="button" class="ed-b" data-x>' + esc(L('Cancelar')) + '</button>';
+      }
+      lista();
+      card.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-p]'), qb = e.target.closest('[data-qd]');
+        if (b) { var p = L2[+b.getAttribute('data-p')];
+          card.innerHTML = '<b style="font-size:18px">' + esc(p.titulo) + '</b><p class="ed-dica">' + esc(L('Escolha o quadro que vira imagem no vídeo.')) + '</p><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">' +
+            p.dados.quadros.map(function (Q, i) { return '<button type="button" data-qd="' + i + '" data-pi="' + b.getAttribute('data-p') + '" style="border:1.5px solid #CCCCCC;border-radius:10px;padding:6px;background:#FFFFFF;cursor:pointer;display:flex;flex-direction:column;gap:4px;font:inherit;font-size:13px;font-weight:600"><img alt="" src="' + window.EOJPrancheta.imagem(p.dados, i) + '" style="width:100%;border-radius:6px">' + esc(L('Quadro')) + ' ' + (i + 1) + '</button>'; }).join('') +
+            '</div><button type="button" class="ed-b" data-x>' + esc(L('Cancelar')) + '</button>'; return; }
+        if (qb) { var pp = L2[+qb.getAttribute('data-pi')], qi = +qb.getAttribute('data-qd'); addImagem(window.EOJPrancheta.imagem(pp.dados, qi), pp.titulo + (pp.dados.quadros.length > 1 ? ' · ' + L('quadro') + ' ' + (qi + 1) : ''), st.sel + 1); box.remove(); }
+      });
+    });
   }
 
   function carregarDuracao(x) {
@@ -192,10 +248,15 @@
     var stream = cv.captureStream(30); if (audioTrack) stream.addTrack(audioTrack);
     var rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 }), partes = [];
     rec.ondataavailable = function (e) { if (e.data && e.data.size) partes.push(e.data); };
-    var total = lista.reduce(function (a, x) { return a + x.fim - x.ini; }, 0), feito = 0, atual = null, tituloAte = 0, desenhando = true;
+    var total = lista.reduce(function (a, x) { return a + (x.tipo === 'img' ? x.dur : x.fim - x.ini); }, 0), feito = 0, atual = null, tituloAte = 0, desenhando = true;
+    var imgAtual = null, imgT0 = 0;
     function desenhar() {
       if (!desenhando) return;
-      if (vid.readyState >= 2) {
+      if (imgAtual) {
+        var iw = imgAtual.naturalWidth || W, ih = imgAtual.naturalHeight || H, k2 = Math.min(W / iw, H / ih);
+        cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H); cx.drawImage(imgAtual, (W - iw * k2) / 2, (H - ih * k2) / 2, iw * k2, ih * k2);
+        var fi = feito + Math.min(atual.dur, (performance.now() - imgT0) / 1000); bar.style.width = Math.min(100, fi / total * 100) + '%'; ptx.textContent = L('Gerando') + ' ' + B.dur(fi) + ' / ' + B.dur(total);
+      } else if (vid.readyState >= 2) {
         var vw = vid.videoWidth || W, vh = vid.videoHeight || H, k = Math.min(W / vw, H / vh), dw = vw * k, dh = vh * k;
         cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H); cx.drawImage(vid, (W - dw) / 2, (H - dh) / 2, dw, dh);
         if (st.titulos && atual && vid.currentTime < tituloAte) {
@@ -210,6 +271,15 @@
       requestAnimationFrame(desenhar);
     }
     function tocar(x) {
+      if (x.tipo === 'img') return new Promise(function (res, rej) {
+        var im = new Image(); im.onerror = function () { rej(new Error('imagem')); };
+        im.onload = function () {
+          atual = x; imgAtual = im; imgT0 = performance.now();
+          if (rec.state === 'inactive') rec.start(1000); else if (rec.state === 'paused') rec.resume();
+          setTimeout(function () { if (rec.state === 'recording') rec.pause(); imgAtual = null; feito += x.dur; res(); }, x.dur * 1000);
+        };
+        im.src = x.src;
+      });
       return new Promise(function (res, rej) {
         atual = x;
         vid.onerror = function () { rej(new Error('video')); };
@@ -280,8 +350,10 @@
           if (onTitulo) onTitulo(st.nome);
           if (!ids.length) { raiz.innerHTML = '<p style="margin:0">' + esc(L('Esta playlist ainda não tem clipes.')) + '</p>'; return; }
           st.itens = ids.map(function (id) { var c = M[id]; return { id: id, titulo: c.titulo, thumb: c.thumb || '', on: true, dur: 0, ini: 0, fim: 0 }; });
-          montar(); render();
           var fila = st.itens.slice(), ativos = 0;
+          try { var capa = JSON.parse(sessionStorage.getItem('eojCapaEditor') || 'null'); sessionStorage.removeItem('eojCapaEditor');
+            if (capa && capa.img) st.itens.unshift({ tipo: 'img', titulo: capa.titulo || L('Capa'), src: capa.img, thumb: capa.img, on: true, dur: 4, ini: 0, fim: 4 }); } catch (e) {}
+          montar(); render();
           function proximo() {
             if (!fila.length) return;
             var x = fila.shift(); ativos++;

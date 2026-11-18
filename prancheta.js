@@ -19,7 +19,7 @@
     '5-3-2': [[5, 50], [22, 8], [19, 30], [18, 50], [19, 70], [22, 92], [32, 30], [31, 50], [32, 70], [44, 40], [44, 60]]
   };
   var LG = (/^\/(es|en)\//.exec(location.pathname) || [])[1] || 'pt', PF = LG === 'pt' ? '' : '/' + LG;
-  var DIC = {"✋ Mover":["✋ Mover", "✋ Move"],"Time A":["Equipo A", "Team A"],"Time B":["Equipo B", "Team B"],"⚽ Bola":["⚽ Balón", "⚽ Ball"],"▲ Cone":["▲ Cono", "▲ Cone"],"⤏ Passe":["⤏ Pase", "⤏ Pass"],"→ Movimento":["→ Movimiento", "→ Run"],"〰 Condução":["〰 Conducción", "〰 Dribble"],"✕ Apagar":["✕ Borrar", "✕ Erase"],"Formação…":["Formación…", "Formation…"],"Limpar tudo":["Borrar todo", "Clear all"],"📷 Montar a partir de uma foto":["📷 Armar a partir de una foto", "📷 Build from a photo"],"Campo":["Campo", "Pitch"],"Verde listrado":["Verde a rayas", "Striped green"],"Verde liso":["Verde liso", "Plain green"],"Quadro branco":["Pizarra blanca", "Whiteboard"],"Azul noite":["Azul noche", "Night blue"],"Quadros:":["Cuadros:", "Frames:"],"+ Novo quadro":["+ Nuevo cuadro", "+ New frame"],"Apagar quadro":["Borrar cuadro", "Delete frame"],"▶ Reproduzir":["▶ Reproducir", "▶ Play"],"Velocidade":["Velocidad", "Speed"],"Lenta":["Lenta", "Slow"],"Normal":["Normal", "Normal"],"Rápida":["Rápida", "Fast"],"⬇ Baixar vídeo":["⬇ Descargar video", "⬇ Download video"],"⬇ Baixar imagem":["⬇ Descargar imagen", "⬇ Download image"],"Salvar":["Guardar", "Save"],"Nova":["Nueva", "New"],"🔗 Compartilhar link":["🔗 Compartir enlace", "🔗 Share link"],"Nome da prancheta":["Nombre de la pizarra", "Board name"],"Ferramentas":["Herramientas", "Tools"],"Campo da prancheta tática":["Campo de la pizarra táctica", "Tactics board pitch"],"Quadros da animação":["Cuadros de la animación", "Animation frames"],"Cores":["Colores", "Colors"],"Outra cor":["Otro color", "Other color"],"Outra cor para o time ":["Otro color para el equipo ", "Other color for team "],"Cor do time ":["Color del equipo ", "Team color "],"Cor ":["Color ", "Color "],"Quadro ":["Cuadro ", "Frame "],"Apagar ":["Borrar ", "Delete "],"Minhas pranchetas":["Mis pizarras", "My boards"],"Nenhuma prancheta salva ainda.":["Todavía no hay pizarras guardadas.", "No saved boards yet."],"Abrir":["Abrir", "Open"],"Entre na sua conta grátis para salvar suas pranchetas e compartilhar com jogadores e comissão.":["Entra en tu cuenta gratuita para guardar tus pizarras y compartirlas con jugadores y cuerpo técnico.", "Sign in to your free account to save your boards and share them with players and staff."],"Prancheta compartilhada (somente leitura).":["Pizarra compartida (solo lectura).", "Shared board (read only)."],"Fazer uma cópia para editar":["Hacer una copia para editar", "Make a copy to edit"],"Arraste as peças. Duplo clique em um jogador para mudar o número.":["Arrastra las piezas. Doble clic en un jugador para cambiar el número.", "Drag the pieces. Double-click a player to change the number."],"Clique no campo para colocar jogadores do time A.":["Haz clic en el campo para colocar jugadores del equipo A.", "Click the pitch to place team A players."],"Clique no campo para colocar jogadores do time B.":["Haz clic en el campo para colocar jugadores del equipo B.", "Click the pitch to place team B players."],"Clique no campo para colocar a bola.":["Haz clic en el campo para colocar el balón.", "Click the pitch to place the ball."],"Clique no campo para colocar cones.":["Haz clic en el campo para colocar conos.", "Click the pitch to place cones."],"Arraste para desenhar um passe (seta tracejada).":["Arrastra para dibujar un pase (flecha discontinua).", "Drag to draw a pass (dashed arrow)."],"Arraste para desenhar um movimento sem bola.":["Arrastra para dibujar un movimiento sin balón.", "Drag to draw an off-ball run."],"Arraste para desenhar uma condução de bola.":["Arrastra para dibujar una conducción.", "Drag to draw a dribble."],"Clique em uma peça ou seta para apagar.":["Haz clic en una pieza o flecha para borrarla.", "Click a piece or arrow to erase it."],"Apagar todas as peças e quadros?":["¿Borrar todas las piezas y cuadros?", "Delete all pieces and frames?"],"Começar uma prancheta nova? O que não foi salvo será perdido.":["¿Empezar una pizarra nueva? Lo que no se guardó se perderá.", "Start a new board? Anything not saved will be lost."],"Apagar esta prancheta? Não dá para desfazer.":["¿Borrar esta pizarra? No se puede deshacer.", "Delete this board? This cannot be undone."],"Número ou letra do jogador (até 3 caracteres):":["Número o letra del jugador (hasta 3 caracteres):", "Player number or letter (up to 3 characters):"],"Copie o link da prancheta:":["Copia el enlace de la pizarra:", "Copy the board link:"],"Crie pelo menos 2 quadros para animar (botão “+ Novo quadro”).":["Crea al menos 2 cuadros para animar (botón “+ Nuevo cuadro”).", "Create at least 2 frames to animate (“+ New frame” button)."],"Agora é uma cópia sua: edite e salve.":["Ahora es una copia tuya: edítala y guárdala.", "It is now your copy: edit and save it."],"Gravando…":["Grabando…", "Recording…"],"Vídeo pronto":["Video listo", "Video ready"]," (formato WebM; abre no Chrome, VLC e no WhatsApp Web).":[" (formato WebM; se abre en Chrome, VLC y WhatsApp Web).", " (WebM format; opens in Chrome, VLC and WhatsApp Web)."],"Seu navegador não grava vídeo. Use o Chrome ou o Edge, ou baixe a imagem.":["Tu navegador no graba video. Usa Chrome o Edge, o descarga la imagen.", "Your browser cannot record video. Use Chrome or Edge, or download the image."],"Não foi possível gravar o vídeo neste navegador.":["No fue posible grabar el video en este navegador.", "Could not record video in this browser."],"Para salvar e compartilhar, entre na sua conta grátis da Biblioteca. Ir para o login agora? (o desenho atual fica guardado neste navegador)":["Para guardar y compartir, entra en tu cuenta gratuita de la Biblioteca. ¿Ir al inicio de sesión ahora? (el dibujo actual queda guardado en este navegador)", "To save and share, sign in to your free Library account. Go to sign in now? (your current drawing stays saved in this browser)"],"Salvando…":["Guardando…", "Saving…"],"Salvo ✓":["Guardado ✓", "Saved ✓"],"Não foi possível salvar: ":["No fue posible guardar: ", "Could not save: "],"Link copiado: ":["Enlace copiado: ", "Link copied: "],"Não foi possível gerar o link: ":["No fue posible generar el enlace: ", "Could not create the link: "],"Prancheta aberta.":["Pizarra abierta.", "Board opened."],"Prancheta apagada.":["Pizarra borrada.", "Board deleted."],"Link de prancheta inválido ou removido.":["Enlace de pizarra inválido o eliminado.", "Invalid or removed board link."],"Seu desenho foi recuperado. Agora é só salvar.":["Tu dibujo fue recuperado. Ahora solo tienes que guardarlo.", "Your drawing was recovered. Now just save it."],"Faça uma cópia para editar.":["Haz una copia para editar.", "Make a copy to edit."],"Envie uma imagem (foto do papel).":["Envía una imagen (foto del papel).", "Send an image (photo of the paper)."],"Lendo o seu desenho… (leva uns segundos)":["Leyendo tu dibujo… (tarda unos segundos)", "Reading your drawing… (takes a few seconds)"],"A leitura de fotos está sendo ativada. Tente de novo em breve.":["La lectura de fotos se está activando. Inténtalo de nuevo pronto.", "Photo reading is being activated. Try again soon."],"Você já usou as leituras de foto de hoje (":["Ya usaste las lecturas de foto de hoy (", "You have used today’s photo readings ("]," por dia). Amanhã tem mais.":[" por día). Mañana hay más.", " per day). More tomorrow."],"Entre na sua conta para enviar fotos.":["Entra en tu cuenta para enviar fotos.", "Sign in to send photos."],"A imagem é grande demais. Tente uma foto menor.":["La imagen es demasiado grande. Prueba con una foto más pequeña.", "The image is too large. Try a smaller photo."],"Não encontrei um campo com jogadores nessa foto. Tente uma foto mais de perto, com boa luz e o papel inteiro.":["No encontré un campo con jugadores en esta foto. Prueba con una foto más cerca, con buena luz y el papel entero.", "I could not find a pitch with players in this photo. Try a closer photo, with good light and the whole sheet."],"Não foi possível ler a foto: ":["No fue posible leer la foto: ", "Could not read the photo: "],"Pronto! Montei o quadro a partir da foto":["¡Listo! Armé el cuadro a partir de la foto", "Done! I built the frame from the photo"]," (restam ":[" (quedan ", " ("]," leituras hoje)":[" lecturas hoy)", " readings left today)"],". Confira e ajuste o que precisar.":[". Revisa y ajusta lo que necesites.", ". Check it and adjust as needed."],"Não encontrei jogadores nem setas na foto.":["No encontré jugadores ni flechas en la foto.", "I found no players or arrows in the photo."],"Trocar o que está na prancheta pelo desenho da foto?":["¿Reemplazar lo que hay en la pizarra por el dibujo de la foto?", "Replace what is on the board with the drawing from the photo?"],"Mantive a prancheta como estava.":["Dejé la pizarra como estaba.", "I kept the board as it was."],"Não consegui abrir essa imagem. Envie uma foto em JPG ou PNG.":["No pude abrir esa imagen. Envía una foto en JPG o PNG.", "I could not open that image. Send a JPG or PNG photo."],"Nova prancheta":["Nueva pizarra", "New board"],"Exemplo: terceiro homem":["Ejemplo: tercer hombre", "Example: third man"],"Desenho da foto":["Dibujo de la foto", "Drawing from photo"],"Prancheta sem nome":["Pizarra sin nombre", "Untitled board"]," (cópia)":[" (copia)", " (copy)"],"Prancheta tática animada — Biblioteca EOJ":["Pizarra táctica animada — Biblioteca EOJ", "Animated tactics board — EOJ Library"]};
+  var DIC = {"Clique em uma peça ou seta para editar e arraste para mover. Duplo clique em um jogador muda o número.":["Haz clic en una pieza o flecha para editarla y arrástrala para moverla. Doble clic en un jugador cambia el número.", "Click a piece or arrow to edit it and drag to move it. Double-click a player to change the number."],"Clique no campo para colocar jogadores do time A (clique e arraste um jogador para movê-lo).":["Haz clic en el campo para colocar jugadores del equipo A (haz clic y arrastra un jugador para moverlo).", "Click the pitch to place team A players (click and drag a player to move it)."],"Clique no campo para colocar jogadores do time B (clique e arraste um jogador para movê-lo).":["Haz clic en el campo para colocar jugadores del equipo B (haz clic y arrastra un jugador para moverlo).", "Click the pitch to place team B players (click and drag a player to move it)."],"Jogador":["Jugador", "Player"],"Bola":["Balón", "Ball"],"Cone":["Cono", "Cone"],"Seta":["Flecha", "Arrow"],"Número":["Número", "Number"],"Time":["Equipo", "Team"],"Tamanho":["Tamaño", "Size"],"Tipo":["Tipo", "Type"],"Espessura":["Grosor", "Thickness"],"Fina":["Fina", "Thin"],"Média":["Media", "Medium"],"Grossa":["Gruesa", "Thick"],"Cor":["Color", "Color"],"Automática":["Automático", "Automatic"],"Branca":["Blanco", "White"],"Amarela":["Amarillo", "Yellow"],"Preta":["Negro", "Black"],"Vermelha":["Rojo", "Red"],"Azul":["Azul", "Blue"],"Editar seleção":["Editar selección", "Edit selection"],"Arraste as bolinhas brancas para mudar o tamanho e a direção, ou arraste a seta para mudá-la de lugar.":["Arrastra los círculos blancos para cambiar el tamaño y la dirección, o arrastra la flecha para moverla.", "Drag the white dots to change length and direction, or drag the arrow to move it."],"🎬 Usar como capa no editor":["🎬 Usar como portada en el editor", "🎬 Use as cover in the editor"],"Escolha a playlist do vídeo":["Elige la playlist del video", "Choose the video playlist"],"A imagem do quadro entra como capa de abertura, antes dos clipes.":["La imagen del cuadro entra como portada de apertura, antes de los clips.", "The frame image goes in as the opening cover, before the clips."],"Clipes salvos":["Clips guardados", "Saved clips"],"Cancelar":["Cancelar", "Cancel"],"Não foi possível levar a imagem para o editor.":["No fue posible llevar la imagen al editor.", "Could not send the image to the editor."],"✋ Mover":["✋ Mover", "✋ Move"],"Time A":["Equipo A", "Team A"],"Time B":["Equipo B", "Team B"],"⚽ Bola":["⚽ Balón", "⚽ Ball"],"▲ Cone":["▲ Cono", "▲ Cone"],"⤏ Passe":["⤏ Pase", "⤏ Pass"],"→ Movimento":["→ Movimiento", "→ Run"],"〰 Condução":["〰 Conducción", "〰 Dribble"],"✕ Apagar":["✕ Borrar", "✕ Erase"],"Formação…":["Formación…", "Formation…"],"Limpar tudo":["Borrar todo", "Clear all"],"📷 Montar a partir de uma foto":["📷 Armar a partir de una foto", "📷 Build from a photo"],"Campo":["Campo", "Pitch"],"Verde listrado":["Verde a rayas", "Striped green"],"Verde liso":["Verde liso", "Plain green"],"Quadro branco":["Pizarra blanca", "Whiteboard"],"Azul noite":["Azul noche", "Night blue"],"Quadros:":["Cuadros:", "Frames:"],"+ Novo quadro":["+ Nuevo cuadro", "+ New frame"],"Apagar quadro":["Borrar cuadro", "Delete frame"],"▶ Reproduzir":["▶ Reproducir", "▶ Play"],"Velocidade":["Velocidad", "Speed"],"Lenta":["Lenta", "Slow"],"Normal":["Normal", "Normal"],"Rápida":["Rápida", "Fast"],"⬇ Baixar vídeo":["⬇ Descargar video", "⬇ Download video"],"⬇ Baixar imagem":["⬇ Descargar imagen", "⬇ Download image"],"Salvar":["Guardar", "Save"],"Nova":["Nueva", "New"],"🔗 Compartilhar link":["🔗 Compartir enlace", "🔗 Share link"],"Nome da prancheta":["Nombre de la pizarra", "Board name"],"Ferramentas":["Herramientas", "Tools"],"Campo da prancheta tática":["Campo de la pizarra táctica", "Tactics board pitch"],"Quadros da animação":["Cuadros de la animación", "Animation frames"],"Cores":["Colores", "Colors"],"Outra cor":["Otro color", "Other color"],"Outra cor para o time ":["Otro color para el equipo ", "Other color for team "],"Cor do time ":["Color del equipo ", "Team color "],"Cor ":["Color ", "Color "],"Quadro ":["Cuadro ", "Frame "],"Apagar ":["Borrar ", "Delete "],"Minhas pranchetas":["Mis pizarras", "My boards"],"Nenhuma prancheta salva ainda.":["Todavía no hay pizarras guardadas.", "No saved boards yet."],"Abrir":["Abrir", "Open"],"Entre na sua conta grátis para salvar suas pranchetas e compartilhar com jogadores e comissão.":["Entra en tu cuenta gratuita para guardar tus pizarras y compartirlas con jugadores y cuerpo técnico.", "Sign in to your free account to save your boards and share them with players and staff."],"Prancheta compartilhada (somente leitura).":["Pizarra compartida (solo lectura).", "Shared board (read only)."],"Fazer uma cópia para editar":["Hacer una copia para editar", "Make a copy to edit"],"Arraste as peças. Duplo clique em um jogador para mudar o número.":["Arrastra las piezas. Doble clic en un jugador para cambiar el número.", "Drag the pieces. Double-click a player to change the number."],"Clique no campo para colocar jogadores do time A.":["Haz clic en el campo para colocar jugadores del equipo A.", "Click the pitch to place team A players."],"Clique no campo para colocar jogadores do time B.":["Haz clic en el campo para colocar jugadores del equipo B.", "Click the pitch to place team B players."],"Clique no campo para colocar a bola.":["Haz clic en el campo para colocar el balón.", "Click the pitch to place the ball."],"Clique no campo para colocar cones.":["Haz clic en el campo para colocar conos.", "Click the pitch to place cones."],"Arraste para desenhar um passe (seta tracejada).":["Arrastra para dibujar un pase (flecha discontinua).", "Drag to draw a pass (dashed arrow)."],"Arraste para desenhar um movimento sem bola.":["Arrastra para dibujar un movimiento sin balón.", "Drag to draw an off-ball run."],"Arraste para desenhar uma condução de bola.":["Arrastra para dibujar una conducción.", "Drag to draw a dribble."],"Clique em uma peça ou seta para apagar.":["Haz clic en una pieza o flecha para borrarla.", "Click a piece or arrow to erase it."],"Apagar todas as peças e quadros?":["¿Borrar todas las piezas y cuadros?", "Delete all pieces and frames?"],"Começar uma prancheta nova? O que não foi salvo será perdido.":["¿Empezar una pizarra nueva? Lo que no se guardó se perderá.", "Start a new board? Anything not saved will be lost."],"Apagar esta prancheta? Não dá para desfazer.":["¿Borrar esta pizarra? No se puede deshacer.", "Delete this board? This cannot be undone."],"Número ou letra do jogador (até 3 caracteres):":["Número o letra del jugador (hasta 3 caracteres):", "Player number or letter (up to 3 characters):"],"Copie o link da prancheta:":["Copia el enlace de la pizarra:", "Copy the board link:"],"Crie pelo menos 2 quadros para animar (botão “+ Novo quadro”).":["Crea al menos 2 cuadros para animar (botón “+ Nuevo cuadro”).", "Create at least 2 frames to animate (“+ New frame” button)."],"Agora é uma cópia sua: edite e salve.":["Ahora es una copia tuya: edítala y guárdala.", "It is now your copy: edit and save it."],"Gravando…":["Grabando…", "Recording…"],"Vídeo pronto":["Video listo", "Video ready"]," (formato WebM; abre no Chrome, VLC e no WhatsApp Web).":[" (formato WebM; se abre en Chrome, VLC y WhatsApp Web).", " (WebM format; opens in Chrome, VLC and WhatsApp Web)."],"Seu navegador não grava vídeo. Use o Chrome ou o Edge, ou baixe a imagem.":["Tu navegador no graba video. Usa Chrome o Edge, o descarga la imagen.", "Your browser cannot record video. Use Chrome or Edge, or download the image."],"Não foi possível gravar o vídeo neste navegador.":["No fue posible grabar el video en este navegador.", "Could not record video in this browser."],"Para salvar e compartilhar, entre na sua conta grátis da Biblioteca. Ir para o login agora? (o desenho atual fica guardado neste navegador)":["Para guardar y compartir, entra en tu cuenta gratuita de la Biblioteca. ¿Ir al inicio de sesión ahora? (el dibujo actual queda guardado en este navegador)", "To save and share, sign in to your free Library account. Go to sign in now? (your current drawing stays saved in this browser)"],"Salvando…":["Guardando…", "Saving…"],"Salvo ✓":["Guardado ✓", "Saved ✓"],"Não foi possível salvar: ":["No fue posible guardar: ", "Could not save: "],"Link copiado: ":["Enlace copiado: ", "Link copied: "],"Não foi possível gerar o link: ":["No fue posible generar el enlace: ", "Could not create the link: "],"Prancheta aberta.":["Pizarra abierta.", "Board opened."],"Prancheta apagada.":["Pizarra borrada.", "Board deleted."],"Link de prancheta inválido ou removido.":["Enlace de pizarra inválido o eliminado.", "Invalid or removed board link."],"Seu desenho foi recuperado. Agora é só salvar.":["Tu dibujo fue recuperado. Ahora solo tienes que guardarlo.", "Your drawing was recovered. Now just save it."],"Faça uma cópia para editar.":["Haz una copia para editar.", "Make a copy to edit."],"Envie uma imagem (foto do papel).":["Envía una imagen (foto del papel).", "Send an image (photo of the paper)."],"Lendo o seu desenho… (leva uns segundos)":["Leyendo tu dibujo… (tarda unos segundos)", "Reading your drawing… (takes a few seconds)"],"A leitura de fotos está sendo ativada. Tente de novo em breve.":["La lectura de fotos se está activando. Inténtalo de nuevo pronto.", "Photo reading is being activated. Try again soon."],"Você já usou as leituras de foto de hoje (":["Ya usaste las lecturas de foto de hoy (", "You have used today’s photo readings ("]," por dia). Amanhã tem mais.":[" por día). Mañana hay más.", " per day). More tomorrow."],"Entre na sua conta para enviar fotos.":["Entra en tu cuenta para enviar fotos.", "Sign in to send photos."],"A imagem é grande demais. Tente uma foto menor.":["La imagen es demasiado grande. Prueba con una foto más pequeña.", "The image is too large. Try a smaller photo."],"Não encontrei um campo com jogadores nessa foto. Tente uma foto mais de perto, com boa luz e o papel inteiro.":["No encontré un campo con jugadores en esta foto. Prueba con una foto más cerca, con buena luz y el papel entero.", "I could not find a pitch with players in this photo. Try a closer photo, with good light and the whole sheet."],"Não foi possível ler a foto: ":["No fue posible leer la foto: ", "Could not read the photo: "],"Pronto! Montei o quadro a partir da foto":["¡Listo! Armé el cuadro a partir de la foto", "Done! I built the frame from the photo"]," (restam ":[" (quedan ", " ("]," leituras hoje)":[" lecturas hoy)", " readings left today)"],". Confira e ajuste o que precisar.":[". Revisa y ajusta lo que necesites.", ". Check it and adjust as needed."],"Não encontrei jogadores nem setas na foto.":["No encontré jugadores ni flechas en la foto.", "I found no players or arrows in the photo."],"Trocar o que está na prancheta pelo desenho da foto?":["¿Reemplazar lo que hay en la pizarra por el dibujo de la foto?", "Replace what is on the board with the drawing from the photo?"],"Mantive a prancheta como estava.":["Dejé la pizarra como estaba.", "I kept the board as it was."],"Não consegui abrir essa imagem. Envie uma foto em JPG ou PNG.":["No pude abrir esa imagen. Envía una foto en JPG o PNG.", "I could not open that image. Send a JPG or PNG photo."],"Nova prancheta":["Nueva pizarra", "New board"],"Exemplo: terceiro homem":["Ejemplo: tercer hombre", "Example: third man"],"Desenho da foto":["Dibujo de la foto", "Drawing from photo"],"Prancheta sem nome":["Pizarra sin nombre", "Untitled board"]," (cópia)":[" (copia)", " (copy)"],"Prancheta tática animada — Biblioteca EOJ":["Pizarra táctica animada — Biblioteca EOJ", "Animated tactics board — EOJ Library"]};
   var CHAVES = Object.keys(DIC).sort(function (a, b) { return b.length - a.length; });
   function L(t) { // traduz frases da interface (exatas ou pelo começo)
     if (LG === 'pt' || t == null) return t; t = String(t); var k = LG === 'es' ? 0 : 1;
@@ -56,11 +56,11 @@
       ctx.beginPath(); ctx.arc(x + d * 11 * s, h / 2, 9.15 * s, d > 0 ? -0.93 : Math.PI - 0.93, d > 0 ? 0.93 : Math.PI + 0.93); ctx.stroke();
     });
   }
-  function seta(ctx, a, w, h, alfa) {
-    var s = w / W, x1 = a.x1 * w, y1 = a.y1 * h, x2 = a.x2 * w, y2 = a.y2 * h;
+  function seta(ctx, a, w, h, alfa, selec) {
+    var s = w / W, E2 = a.esp || 1, x1 = a.x1 * w, y1 = a.y1 * h, x2 = a.x2 * w, y2 = a.y2 * h;
     ctx.save(); ctx.globalAlpha = alfa == null ? 1 : alfa;
-    var br = CUR && CUR.campo === 'branco'; ctx.strokeStyle = a.tipo === 'passe' ? (br ? '#222222' : '#FFFFFF') : (br ? '#D9480F' : '#FFE27A'); ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(2, s * 0.45); ctx.lineCap = 'round';
-    var ang = Math.atan2(y2 - y1, x2 - x1), L = Math.hypot(x2 - x1, y2 - y1), cab = Math.max(9, s * 2);
+    var br = CUR && CUR.campo === 'branco'; ctx.strokeStyle = a.cor || (a.tipo === 'passe' ? (br ? '#222222' : '#FFFFFF') : (br ? '#D9480F' : '#FFE27A')); ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(2, s * 0.45) * E2; ctx.lineCap = 'round';
+    var ang = Math.atan2(y2 - y1, x2 - x1), L = Math.hypot(x2 - x1, y2 - y1), cab = Math.max(9, s * 2) * (0.7 + 0.3 * E2);
     ctx.beginPath();
     if (a.tipo === 'cond') { // condução: linha ondulada
       var n = Math.max(4, Math.floor(L / (s * 2.2)));
@@ -72,16 +72,17 @@
     }
     ctx.stroke(); ctx.setLineDash([]);
     ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - 0.42) * cab, y2 - Math.sin(ang - 0.42) * cab); ctx.lineTo(x2 - Math.cos(ang + 0.42) * cab, y2 - Math.sin(ang + 0.42) * cab); ctx.closePath(); ctx.fill();
+    if (selec) { [[x1, y1], [x2, y2]].forEach(function (c) { ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, s * 1.1), 0, Math.PI * 2); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.lineWidth = Math.max(2, s * 0.3); ctx.strokeStyle = '#2F6FB5'; ctx.stroke(); }); }
     ctx.restore();
   }
   function peca(ctx, p, x, y, w, sel) {
-    var s = w / W;
+    var s = (w / W) * (p.tam || 1);
     if (p.tipo === 'bola') {
-      ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#111111'; ctx.lineWidth = Math.max(1, s * 0.2);
+      ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = sel ? '#FFE27A' : '#111111'; ctx.lineWidth = Math.max(1, s * (sel ? 0.4 : 0.2));
       ctx.beginPath(); ctx.arc(x, y, s * 0.9, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.fillStyle = '#111111'; ctx.beginPath(); ctx.arc(x, y, s * 0.35, 0, Math.PI * 2); ctx.fill();
     } else if (p.tipo === 'cone') {
-      ctx.fillStyle = COR.cone; ctx.beginPath(); ctx.moveTo(x, y - s * 1.3); ctx.lineTo(x + s * 1.1, y + s * 0.9); ctx.lineTo(x - s * 1.1, y + s * 0.9); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = COR.cone; ctx.beginPath(); ctx.moveTo(x, y - s * 1.3); ctx.lineTo(x + s * 1.1, y + s * 0.9); ctx.lineTo(x - s * 1.1, y + s * 0.9); ctx.closePath(); ctx.fill(); if (sel) { ctx.lineWidth = Math.max(1.5, s * 0.3); ctx.strokeStyle = '#2F6FB5'; ctx.stroke(); }
     } else {
       var r = s * 1.75;
       ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.arc(x + s * 0.25, y + s * 0.3, r, 0, Math.PI * 2); ctx.fill();
@@ -90,16 +91,22 @@
       if (p.n) { ctx.fillStyle = claro(cp) ? '#111111' : '#FFFFFF'; ctx.font = '700 ' + Math.round(s * 1.7) + 'px Montserrat, Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(p.n).slice(0, 3), x, y + s * 0.08); }
     }
   }
-  function desenhar(ctx, w, h, doc, pos, setas, selId, alfaSetas) {
+  function desenhar(ctx, w, h, doc, pos, setas, selId, alfaSetas, selSeta) {
     CUR = doc.cores || null; ctx.clearRect(0, 0, w, h); campo(ctx, w, h);
-    (setas || []).forEach(function (a) { seta(ctx, a, w, h, alfaSetas); });
+    (setas || []).forEach(function (a, i) { seta(ctx, a, w, h, alfaSetas, i === selSeta); });
     var ordem = doc.pecas.slice().sort(function (p, q) { return (p.tipo === 'bola') - (q.tipo === 'bola'); });
     ordem.forEach(function (p) { var q = pos[p.id]; if (q) peca(ctx, p, q.x * w, q.y * h, w, p.id === selId); });
   }
 
   /* ---------- tela ---------- */
-  window.EOJPrancheta = { iniciar: function (raiz) {
-    var B = window.EOJB, doc = novoDoc(), q = 0, modo = 'mover', sel = null, arr = null, novaSeta = null, tocando = false, idSalvo = null, somenteLeitura = false;
+  function imagemDoc(d, qi) { // imagem 1280x720 de um quadro da prancheta
+    var c2 = document.createElement('canvas'); c2.width = 1280; c2.height = 720; var x2 = c2.getContext('2d'); x2.fillStyle = '#111111'; x2.fillRect(0, 0, 1280, 720);
+    var fw = 1280, fh = Math.round(1280 * H / W); if (fh > 720) { fh = 720; fw = Math.round(720 * W / H); }
+    var c3 = document.createElement('canvas'); c3.width = fw; c3.height = fh; var Q = d.quadros[qi || 0] || d.quadros[0]; desenhar(c3.getContext('2d'), fw, fh, d, Q.pos, Q.setas, null);
+    x2.drawImage(c3, (1280 - fw) / 2, (720 - fh) / 2); return c2.toDataURL('image/jpeg', 0.9);
+  }
+  window.EOJPrancheta = { imagem: imagemDoc, iniciar: function (raiz) {
+    var B = window.EOJB, doc = novoDoc(), q = 0, modo = 'mover', sel = null, selS = null, arr = null, novaSeta = null, tocando = false, idSalvo = null, somenteLeitura = false;
     var css = '.pr{display:flex;flex-direction:column;gap:14px}.pr-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}' +
       '.pr-b{font:inherit;font-size:14px;font-weight:600;padding:9px 12px;border-radius:8px;border:1.5px solid #CCCCCC;background:#FFFFFF;color:#111111;cursor:pointer;display:inline-flex;gap:6px;align-items:center}' +
       '.pr-b[aria-pressed="true"]{background:#111111;border-color:#111111;color:#FFFFFF}.pr-b.p{background:#A1C4E6;border-color:#A1C4E6;color:#111111}.pr-b:disabled{opacity:.5;cursor:default}' +
@@ -110,6 +117,7 @@
       '.pr-cores{gap:8px 18px}.pr-cg{display:inline-flex;align-items:center;gap:5px;font-size:14px}.pr-cg strong{margin-right:4px}' +
       '.pr-sw{width:24px;height:24px;border-radius:50%;border:1.5px solid #BBBBBB;cursor:pointer;padding:0;position:relative;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#555555;background:#FFFFFF}.pr-sw[aria-pressed="true"]{box-shadow:0 0 0 2px #FFFFFF,0 0 0 4px #111111}' +
       '.pr-mais input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}' +
+      '.pr-edit{background:#F3F6FA;border:1px solid #D6E1EC;border-radius:10px;padding:10px 12px;gap:10px 18px}.pr-ed{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600}' +
       '.pr-lista{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}.pr-lista li{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#FFFFFF;border:1px solid #E2E2E2;border-radius:10px;padding:10px 12px}';
     raiz.innerHTML = '<style>' + css + '</style><div class="pr">' +
       '<div class="pr-bar" role="toolbar" aria-label="Ferramentas">' +
@@ -124,24 +132,25 @@
           PALETA.map(function (c) { return '<button type="button" class="pr-sw" data-cor="' + t + '" data-c="' + c + '" style="background:' + c + '" aria-label="Cor ' + c + '" aria-pressed="false"></button>'; }).join('') +
           '<label class="pr-sw pr-mais" title="Outra cor"><input type="color" data-corlivre="' + t + '" aria-label="Outra cor para o time ' + t.toUpperCase() + '">+</label></span>'; }).join('') +
         '<label style="font-size:14px;font-weight:600">Campo <select class="pr-sel" data-campo>' + Object.keys(CAMPOS).map(function (k) { return '<option value="' + k + '">' + CAMPOS[k].nome + '</option>'; }).join('') + '</select></label></div>' +
-      '<canvas class="pr-cv" aria-label="Campo da prancheta tática" role="img"></canvas>' +
+      '<canvas class="pr-cv" tabindex="0" aria-label="Campo da prancheta tática" role="img"></canvas>' +
+      '<div class="pr-bar pr-edit" data-edit hidden aria-label="Editar seleção"></div>' +
       '<p class="pr-dica" data-dica></p>' +
       '<div class="pr-q" aria-label="Quadros da animação"><strong style="font-size:14px">Quadros:</strong><span data-quadros style="display:flex;flex-wrap:wrap;gap:6px"></span>' +
         '<button type="button" class="pr-b" data-acao="novoq">+ Novo quadro</button><button type="button" class="pr-b" data-acao="apagarq">Apagar quadro</button></div>' +
       '<div class="pr-bar"><button type="button" class="pr-b p" data-acao="play">▶ Reproduzir</button>' +
         '<label style="font-size:14px;font-weight:600">Velocidade <select class="pr-sel" data-vel><option value="1.8">Lenta</option><option value="1.2" selected>Normal</option><option value="0.7">Rápida</option></select></label>' +
-        '<button type="button" class="pr-b" data-acao="video">⬇ Baixar vídeo</button><button type="button" class="pr-b" data-acao="png">⬇ Baixar imagem</button><span data-status style="font-size:14px;color:#555555"></span></div>' +
+        '<button type="button" class="pr-b" data-acao="video">⬇ Baixar vídeo</button><button type="button" class="pr-b" data-acao="png">⬇ Baixar imagem</button><button type="button" class="pr-b" data-acao="capa">🎬 Usar como capa no editor</button><span data-status style="font-size:14px;color:#555555"></span></div>' +
       '<div class="pr-bar" style="border-top:1px solid #E2E2E2;padding-top:14px"><input class="pr-in" data-titulo maxlength="80" aria-label="Nome da prancheta" placeholder="Nome da prancheta">' +
         '<button type="button" class="pr-b p" data-acao="salvar">Salvar</button><button type="button" class="pr-b" data-acao="nova">Nova</button><button type="button" class="pr-b" data-acao="link">🔗 Compartilhar link</button></div>' +
       '<div data-minhas></div></div>';
     function b(m, t) { return '<button type="button" class="pr-b" data-modo="' + m + '" aria-pressed="false">' + t + '</button>'; }
     traduzir(raiz);
     var cv = raiz.querySelector('canvas'), ctx = cv.getContext('2d'), stEl = raiz.querySelector('[data-status]'), tit = raiz.querySelector('[data-titulo]');
-    var DICAS = { mover: 'Arraste as peças. Duplo clique em um jogador para mudar o número.', a: 'Clique no campo para colocar jogadores do time A.', b: 'Clique no campo para colocar jogadores do time B.', bola: 'Clique no campo para colocar a bola.', cone: 'Clique no campo para colocar cones.',
+    var DICAS = { mover: 'Clique em uma peça ou seta para editar e arraste para mover. Duplo clique em um jogador muda o número.', a: 'Clique no campo para colocar jogadores do time A (clique e arraste um jogador para movê-lo).', b: 'Clique no campo para colocar jogadores do time B (clique e arraste um jogador para movê-lo).', bola: 'Clique no campo para colocar a bola.', cone: 'Clique no campo para colocar cones.',
       passe: 'Arraste para desenhar um passe (seta tracejada).', mov: 'Arraste para desenhar um movimento sem bola.', cond: 'Arraste para desenhar uma condução de bola.', apagar: 'Clique em uma peça ou seta para apagar.' };
     function tam() { var r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = Math.round(r.width * d); cv.height = Math.round(r.width * H / W * d); render(); }
     function pos() { var Q = doc.quadros[q]; return Q.pos; }
-    function render() { if (tocando) return; var setas = doc.quadros[q].setas.slice(); if (novaSeta) setas.push(novaSeta); desenhar(ctx, cv.width, cv.height, doc, pos(), setas, sel); }
+    function render() { if (tocando) return; var setas = doc.quadros[q].setas.slice(); if (novaSeta) setas.push(novaSeta); desenhar(ctx, cv.width, cv.height, doc, pos(), setas, sel, null, selS); painel(); }
     function ponto(e) { var r = cv.getBoundingClientRect(); return { x: Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)), y: Math.max(0, Math.min(1, (e.clientY - r.top) / r.height)) }; }
     function acha(p) { var P = pos(), melhor = null, d0 = 2.6 / W; doc.pecas.forEach(function (x) { var c = P[x.id]; if (!c) return; var d = Math.hypot((c.x - p.x) * W / H * 0.647 * 1.546, c.y - p.y); d = Math.hypot((c.x - p.x), (c.y - p.y) * H / W); if (d < d0) { d0 = d; melhor = x; } }); return melhor; }
     function achaSeta(p) { var S = doc.quadros[q].setas, k = -1, d0 = 1.5 / W; S.forEach(function (a, i) { var dx = a.x2 - a.x1, dy = (a.y2 - a.y1) * H / W, L = dx * dx + dy * dy || 1e-9, t = Math.max(0, Math.min(1, ((p.x - a.x1) * dx + (p.y - a.y1) * H / W * dy) / L)), d = Math.hypot(a.x1 + t * dx - p.x, (a.y1 * H / W + t * dy) - p.y * H / W); if (d < d0) { d0 = d; k = i; } }); return k; }
@@ -166,27 +175,89 @@
       raiz.querySelector('[data-campo]').value = doc.cores.campo || 'verde';
       raiz.querySelectorAll('.pr-cores button, .pr-cores input, .pr-cores select').forEach(function (x) { x.disabled = somenteLeitura; });
     }
-    function tudo() { quadros(); cores(); tit.value = doc.titulo || ''; render(); }
+    function tudo() { sel = null; selS = null; quadros(); cores(); tit.value = doc.titulo || ''; render(); }
 
+    function ponta(p) { if (selS == null) return 0; var a = doc.quadros[q].setas[selS]; if (!a) return 0; var lim = 2.2 / W;
+      if (Math.hypot(a.x1 - p.x, (a.y1 - p.y) * H / W) < lim) return 1; if (Math.hypot(a.x2 - p.x, (a.y2 - p.y) * H / W) < lim) return 2; return 0; }
+    function apagarSel() {
+      if (sel) { var id = sel; doc.pecas = doc.pecas.filter(function (z) { return z.id !== id; }); doc.quadros.forEach(function (Q) { delete Q.pos[id]; }); sel = null; }
+      else if (selS != null) { doc.quadros[q].setas.splice(selS, 1); selS = null; }
+      render();
+    }
+    var SETA = { passe: 1, mov: 1, cond: 1 }, POR = { a: 1, b: 1, bola: 1, cone: 1 };
     cv.addEventListener('pointerdown', function (e) {
-      if (tocando || somenteLeitura) return; var p = ponto(e); cv.setPointerCapture(e.pointerId);
-      if (modo === 'mover') { var x = acha(p); sel = x ? x.id : null; arr = x ? { id: x.id } : null; render(); }
-      else if (modo === 'a' || modo === 'b' || modo === 'bola' || modo === 'cone') { addPeca(modo, p); render(); }
-      else if (modo === 'passe' || modo === 'mov' || modo === 'cond') { novaSeta = { tipo: modo, x1: p.x, y1: p.y, x2: p.x, y2: p.y }; }
-      else if (modo === 'apagar') {
+      if (tocando || somenteLeitura) return; var p = ponto(e); cv.setPointerCapture(e.pointerId); cv.focus({ preventScroll: true });
+      if (modo === 'apagar') {
         var y = acha(p);
-        if (y) { doc.pecas = doc.pecas.filter(function (z) { return z.id !== y.id; }); doc.quadros.forEach(function (Q) { delete Q.pos[y.id]; }); }
-        else { var k = achaSeta(p); if (k >= 0) doc.quadros[q].setas.splice(k, 1); }
-        render();
+        if (y) { sel = y.id; selS = null; apagarSel(); }
+        else { var k = achaSeta(p); if (k >= 0) { selS = k; sel = null; apagarSel(); } }
+        return;
       }
+      if (modo === 'mover') {
+        var pt = ponta(p); if (pt) { arr = { seta: selS, ponta: pt }; return; }
+        var x = acha(p); if (x) { sel = x.id; selS = null; arr = { id: x.id }; render(); return; }
+        var k2 = achaSeta(p); if (k2 >= 0) { selS = k2; sel = null; var a0 = doc.quadros[q].setas[k2]; arr = { seta: k2, mover: true, p0: p, o: { x1: a0.x1, y1: a0.y1, x2: a0.x2, y2: a0.y2 } }; render(); return; }
+        sel = null; selS = null; render(); return;
+      }
+      if (POR[modo]) { // clicar numa peça que já está no campo arrasta a peça em vez de criar outra
+        var x2 = acha(p); if (x2) { sel = x2.id; selS = null; arr = { id: x2.id }; render(); return; }
+        addPeca(modo, p); var nova = modo === 'bola' ? doc.pecas.filter(function (z) { return z.tipo === 'bola'; })[0] : doc.pecas[doc.pecas.length - 1];
+        sel = nova ? nova.id : null; selS = null; render(); return;
+      }
+      if (SETA[modo]) { sel = null; selS = null; novaSeta = { tipo: modo, x1: p.x, y1: p.y, x2: p.x, y2: p.y }; }
     });
     cv.addEventListener('pointermove', function (e) {
-      if (arr) { var p = ponto(e); pos()[arr.id] = { x: p.x, y: p.y }; render(); }
-      else if (novaSeta) { var p2 = ponto(e); novaSeta.x2 = p2.x; novaSeta.y2 = p2.y; render(); }
+      if (!arr && !novaSeta) { var ph = ponto(e); cv.style.cursor = modo === 'mover' && (ponta(ph) || acha(ph) || achaSeta(ph) >= 0) ? 'move' : POR[modo] && acha(ph) ? 'move' : ''; return; }
+      var p = ponto(e);
+      if (arr && arr.id) { pos()[arr.id] = { x: p.x, y: p.y }; render(); }
+      else if (arr && arr.ponta) { var a = doc.quadros[q].setas[arr.seta]; if (arr.ponta === 1) { a.x1 = p.x; a.y1 = p.y; } else { a.x2 = p.x; a.y2 = p.y; } render(); }
+      else if (arr && arr.mover) { var b = doc.quadros[q].setas[arr.seta], dx = p.x - arr.p0.x, dy = p.y - arr.p0.y; b.x1 = arr.o.x1 + dx; b.y1 = arr.o.y1 + dy; b.x2 = arr.o.x2 + dx; b.y2 = arr.o.y2 + dy; render(); }
+      else if (novaSeta) { novaSeta.x2 = p.x; novaSeta.y2 = p.y; render(); }
     });
     cv.addEventListener('pointerup', function () {
       arr = null;
       if (novaSeta) { if (Math.hypot(novaSeta.x2 - novaSeta.x1, (novaSeta.y2 - novaSeta.y1) * H / W) > 0.02) doc.quadros[q].setas.push(novaSeta); novaSeta = null; render(); }
+    });
+    cv.addEventListener('keydown', function (e) {
+      if (somenteLeitura) return;
+      if ((e.key === 'Delete' || e.key === 'Backspace') && (sel || selS != null)) { e.preventDefault(); apagarSel(); }
+      if (e.key === 'Escape') { sel = null; selS = null; render(); }
+    });
+    // painel de edição da peça ou seta selecionada
+    var TAMS = [['P', 0.75], ['M', 1], ['G', 1.35]], ESPS = [['Fina', 0.7], ['Média', 1], ['Grossa', 1.7]];
+    var CSETA = [['', 'Automática'], ['#FFFFFF', 'Branca'], ['#FFE27A', 'Amarela'], ['#111111', 'Preta'], ['#C8322F', 'Vermelha'], ['#2F6FB5', 'Azul']];
+    function painel() {
+      var box = raiz.querySelector('[data-edit]'); if (!box) return;
+      var pc = sel && doc.pecas.filter(function (z) { return z.id === sel; })[0], st = selS != null && doc.quadros[q].setas[selS];
+      if (somenteLeitura || (!pc && !st)) { box.hidden = true; return; }
+      var bt = function (attr, val, txt, on) { return '<button type="button" class="pr-b" ' + attr + '="' + val + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + txt + '</button>'; };
+      var h = '';
+      if (pc) {
+        var nome = pc.tipo === 'bola' ? 'Bola' : pc.tipo === 'cone' ? 'Cone' : 'Jogador';
+        h += '<strong>' + nome + '</strong>';
+        if (pc.tipo === 'a' || pc.tipo === 'b') h += '<label class="pr-ed">Número <input class="pr-in" data-ed-n maxlength="3" value="' + esc(pc.n || '') + '" style="min-width:0;width:70px;flex:0 0 auto"></label>' +
+          '<span class="pr-ed">Time ' + bt('data-ed-time', 'a', 'A', pc.tipo === 'a') + bt('data-ed-time', 'b', 'B', pc.tipo === 'b') + '</span>';
+        h += '<span class="pr-ed">Tamanho ' + TAMS.map(function (t) { return bt('data-ed-tam', t[1], t[0], Math.abs((pc.tam || 1) - t[1]) < 0.01); }).join('') + '</span>';
+      } else {
+        h += '<strong>Seta</strong><span class="pr-ed">Tipo ' + bt('data-ed-tipo', 'passe', '⤏ Passe', st.tipo === 'passe') + bt('data-ed-tipo', 'mov', '→ Movimento', st.tipo === 'mov') + bt('data-ed-tipo', 'cond', '〰 Condução', st.tipo === 'cond') + '</span>' +
+          '<span class="pr-ed">Espessura ' + ESPS.map(function (t) { return bt('data-ed-esp', t[1], t[0], Math.abs((st.esp || 1) - t[1]) < 0.01); }).join('') + '</span>' +
+          '<span class="pr-ed">Cor ' + CSETA.map(function (c) { return '<button type="button" class="pr-sw" data-ed-cor="' + c[0] + '" aria-label="' + c[1] + '" title="' + c[1] + '" aria-pressed="' + ((st.cor || '') === c[0]) + '" style="background:' + (c[0] || 'linear-gradient(135deg,#FFFFFF 50%,#FFE27A 50%)') + '"></button>'; }).join('') + '</span>' +
+          '<span class="pr-dica" style="flex-basis:100%">Arraste as bolinhas brancas para mudar o tamanho e a direção, ou arraste a seta para mudá-la de lugar.</span>';
+      }
+      h += '<button type="button" class="pr-b" data-ed-apagar style="margin-left:auto">✕ Apagar</button>';
+      box.innerHTML = h; box.hidden = false; traduzir(box);
+      var ni = box.querySelector('[data-ed-n]'); if (ni) ni.addEventListener('input', function () { pc.n = ni.value.trim().slice(0, 3); desenhar(ctx, cv.width, cv.height, doc, pos(), doc.quadros[q].setas, sel, null, selS); });
+    }
+    raiz.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-ed-time],[data-ed-tam],[data-ed-tipo],[data-ed-esp],[data-ed-cor],[data-ed-apagar]'); if (!t) return;
+      var pc = sel && doc.pecas.filter(function (z) { return z.id === sel; })[0], st = selS != null && doc.quadros[q].setas[selS];
+      if (t.hasAttribute('data-ed-apagar')) return apagarSel();
+      if (pc && t.hasAttribute('data-ed-time')) pc.tipo = t.getAttribute('data-ed-time');
+      if (pc && t.hasAttribute('data-ed-tam')) pc.tam = +t.getAttribute('data-ed-tam');
+      if (st && t.hasAttribute('data-ed-tipo')) st.tipo = t.getAttribute('data-ed-tipo');
+      if (st && t.hasAttribute('data-ed-esp')) st.esp = +t.getAttribute('data-ed-esp');
+      if (st && t.hasAttribute('data-ed-cor')) { var c = t.getAttribute('data-ed-cor'); if (c) st.cor = c; else delete st.cor; }
+      render();
     });
     cv.addEventListener('dblclick', function (e) {
       if (somenteLeitura) return; var x = acha(ponto(e)); if (!x || (x.tipo !== 'a' && x.tipo !== 'b')) return;
@@ -196,8 +267,9 @@
       var t = e.target.closest('button'); if (!t) return;
       if (t.hasAttribute('data-modo')) return setModo(t.getAttribute('data-modo'));
       if (t.hasAttribute('data-cor')) { doc.cores[t.getAttribute('data-cor')] = t.getAttribute('data-c'); cores(); render(); return; }
-      if (t.hasAttribute('data-q')) { q = +t.getAttribute('data-q'); sel = null; quadros(); render(); return; }
+      if (t.hasAttribute('data-q')) { q = +t.getAttribute('data-q'); sel = null; selS = null; quadros(); render(); return; }
       var a = t.getAttribute('data-acao');
+      if (a === 'novoq' || a === 'apagarq') { sel = null; selS = null; }
       if (a === 'novoq') { doc.quadros.splice(q + 1, 0, { pos: clone(pos()), setas: [] }); q++; quadros(); render(); }
       if (a === 'apagarq' && doc.quadros.length > 1) { doc.quadros.splice(q, 1); q = Math.max(0, q - 1); quadros(); render(); }
       if (a === 'limpar' && confirm(L('Apagar todas as peças e quadros?'))) { var t0 = doc.titulo; doc = novoDoc(); doc.titulo = t0; q = 0; tudo(); }
@@ -207,6 +279,7 @@
       if (a === 'salvar') salvar();
       if (a === 'nova') { if (!confirm(L('Começar uma prancheta nova? O que não foi salvo será perdido.'))) return; doc = novoDoc(); q = 0; idSalvo = null; somenteLeitura = false; history.replaceState(null, '', location.pathname); tudo(); }
       if (a === 'link') compartilhar();
+      if (a === 'capa') levarAoEditor();
       if (a === 'foto') { if (somenteLeitura) return status('Faça uma cópia para editar.'); if (precisaLogin()) return; inFoto.click(); }
       if (a === 'abrir') abrir(+t.getAttribute('data-id'));
       if (a === 'excluir') excluir(+t.getAttribute('data-id'));
@@ -298,6 +371,23 @@
         var L = r.data || [];
         box.innerHTML = '<h2 style="margin:6px 0 10px;font-size:18px;font-weight:800">Minhas pranchetas (' + L.length + ')</h2>' + (L.length ? '<ul class="pr-lista">' + L.map(function (p) {
           return '<li><span><strong>' + esc(p.titulo) + '</strong><br><span style="font-size:13px;color:#555555">' + new Date(p.atualizado_em).toLocaleDateString(LG === 'pt' ? 'pt-BR' : LG) + '</span></span><span style="display:flex;gap:6px"><button type="button" class="pr-b" data-acao="abrir" data-id="' + p.id + '">Abrir</button><button type="button" class="pr-b" data-acao="excluir" data-id="' + p.id + '" aria-label="Apagar ' + esc(p.titulo) + '">✕</button></span></li>'; }).join('') + '</ul>' : '<p class="pr-dica">Nenhuma prancheta salva ainda.</p>'); traduzir(box);
+      });
+    }
+    /* ---------- levar a imagem do quadro para o editor de vídeo (capa de abertura) ---------- */
+    function levarAoEditor() {
+      if (precisaLogin()) return;
+      try { sessionStorage.setItem('eojCapaEditor', JSON.stringify({ titulo: doc.titulo || L('Prancheta'), img: imagemDoc(doc, q) })); } catch (e) { return status(L('Não foi possível levar a imagem para o editor.')); }
+      B.playlists().catch(function () { return []; }).then(function (pls) {
+        pls = pls || []; var box = document.createElement('div');
+        box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', L('Escolha a playlist do vídeo'));
+        box.style.cssText = 'position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.7);display:flex;align-items:center;justify-content:center;padding:20px';
+        box.innerHTML = '<div style="background:#FFFFFF;border-radius:14px;max-width:460px;width:100%;padding:22px;display:flex;flex-direction:column;gap:10px;max-height:80vh;overflow:auto">' +
+          '<strong style="font-size:18px">' + esc(L('Escolha a playlist do vídeo')) + '</strong><p class="pr-dica">' + esc(L('A imagem do quadro entra como capa de abertura, antes dos clipes.')) + '</p>' +
+          '<a class="pr-b" href="' + PF + '/biblioteca/editor?pl=fav" style="text-decoration:none">★ ' + esc(L('Clipes salvos')) + '</a>' +
+          pls.map(function (pl) { return '<a class="pr-b" href="' + PF + '/biblioteca/editor?pl=' + pl.id + '" style="text-decoration:none">' + esc(pl.nome) + '</a>'; }).join('') +
+          '<button type="button" class="pr-b" data-x style="justify-content:center">' + esc(L('Cancelar')) + '</button></div>';
+        box.addEventListener('click', function (ev2) { if (ev2.target === box || ev2.target.closest('[data-x]')) box.remove(); });
+        document.body.appendChild(box); ev('prancheta_capa_editor');
       });
     }
     /* ---------- foto de um desenho no papel -> prancheta ---------- */

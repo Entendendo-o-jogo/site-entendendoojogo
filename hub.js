@@ -65,6 +65,7 @@
   H.recentes = function (n) { return sb.rpc('conteudos_recentes', { lim: n || 12 }).then(ok); };
 
   // ---------- Busca e sugestões ----------
+  H.trechos = function (q) { return sb.rpc('buscar_trechos', { q: q, lim: 30 }).then(ok); };
   H.buscar = function (q) { return sb.rpc('buscar_hub', { q: q, lim: 40 }).then(ok); };
   H.sugerir = function (texto) { return sb.from('pedidos').insert({ texto: texto, area: 'hub' }).then(ok).then(function () { H.ev('hub_sugestao'); }); };
   H.minhasSugestoes = function () { return B.user ? sb.from('pedidos').select('id,texto,status,aula_id,criado_em').eq('usuario_id', B.user.id).eq('area', 'hub').order('criado_em', { ascending: false }).limit(20).then(ok) : Promise.resolve([]); };

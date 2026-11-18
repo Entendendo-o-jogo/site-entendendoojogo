@@ -85,6 +85,8 @@
   H.trilhaAulas = function (t) { return sb.rpc('trilha_aulas', { t: t }).then(ok); };
   H.meuCertificado = function (curso) { return B.user ? sb.from('certificados').select('codigo').eq('usuario_id', B.user.id).eq('curso_id', curso).maybeSingle().then(ok) : Promise.resolve(null); };
   H.emitirCertificado = function (curso) { return sb.rpc('emitir_certificado', { c: curso }).then(ok).then(function (cod) { H.ev('hub_certificado', { curso_id: curso }); return cod; }); };
+  H.meuCertificadoTrilha = function (t) { return B.user ? sb.from('certificados').select('codigo').eq('usuario_id', B.user.id).eq('trilha_id', t).maybeSingle().then(ok) : Promise.resolve(null); };
+  H.emitirCertificadoTrilha = function (t) { return sb.rpc('emitir_certificado_trilha', { t: t }).then(ok).then(function (cod) { H.ev('hub_certificado_trilha', { trilha: t }); return cod; }); };
   H.verCertificado = function (cod) { return sb.rpc('ver_certificado', { cod: cod }).then(ok).then(function (r) { return (r && r[0]) || null; }); };
   H.salvarNome = function (nome) { return sb.from('perfis').update({ nome: nome }).eq('id', B.user.id).then(ok).then(function () { if (B.perfil) B.perfil.nome = nome; }); };
   H.horas = function (seg) { if (!seg) return ''; var h = Math.floor(seg / 3600), m = Math.round((seg % 3600) / 60); return h ? h + 'h' + (m ? ' ' + m + 'min' : '') : m + ' min'; };

@@ -374,8 +374,22 @@
         tab('Aulas mais vistas (30 dias)', [['Aula', 'titulo'], ['Curso', 'curso'], ['Alunos', 'alunos'], ['Concluíram', 'concluiram']], d.maisVistas || []) +
         tab('Onde os alunos param (mín. 5 que começaram)', [['Aula', 'titulo'], ['Curso', 'curso'], ['Começaram', 'comecaram'], ['% sem concluir', 'pct_abandono']], d.abandono || []) +
         tab('Notas mais baixas (mín. 3 votos)', [['Aula', 'titulo'], ['Curso', 'curso'], ['Média', 'media'], ['Votos', 'votos']], d.piorNota || []) +
-        tab('Cursos com mais alunos ativos (30 dias)', [['Curso', 'titulo'], ['Alunos', 'alunos']], d.cursos || []);
+        tab('Cursos com mais alunos ativos (30 dias)', [['Curso', 'titulo'], ['Alunos', 'alunos']], d.cursos || []) +
+        '<div class="ha-box"><b style="font-size:17px">Alunos sumidos</b><p style="margin:0;font-size:14px;color:#555555">Quem tem acesso pago ativo e não assiste nada há 14 dias ou mais (inclui quem nunca assistiu). Baixe a lista para mandar um e-mail de retomada pelo seu serviço de e-mail.</p>' +
+        '<div class="ha-row"><button type="button" class="ha-p" data-sumidos>Gerar lista (CSV)</button><span data-sum-st style="font-size:14px"></span></div></div>';
     }).catch(falha);
+  }
+
+  function baixarSumidos(btn) {
+    var stt = raiz.querySelector('[data-sum-st]'); btn.disabled = true; stt.textContent = 'Gerando…';
+    sb.rpc('admin_alunos_sumidos', { dias: 14 }).then(ok).then(function (rs) {
+      var q = function (v) { v = v == null ? '' : String(v); return /[",;\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      var linhas = [['email', 'nome', 'acesso', 'ultima_atividade', 'dias_sem_assistir']].concat(rs.map(function (r) { return [r.email, r.nome, r.libera, r.ultima_atividade ? new Date(r.ultima_atividade).toLocaleDateString('pt-BR') : 'nunca assistiu', r.dias_sem_assistir == null ? '' : r.dias_sem_assistir]; }));
+      var blob = new Blob(['\ufeff' + linhas.map(function (l) { return l.map(q).join(';'); }).join('\n')], { type: 'text/csv;charset=utf-8' });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'alunos-sumidos-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+      var nunca = rs.filter(function (r) { return !r.ultima_atividade; }).length;
+      stt.textContent = rs.length + ' alunos na lista (' + nunca + ' nunca assistiram na plataforma nova).'; btn.disabled = false;
+    }).catch(function (e) { btn.disabled = false; stt.textContent = ''; falha(e); });
   }
 
   // ---------- Sugestões dos alunos (EOJHub) ----------
@@ -440,6 +454,7 @@
     if ((x = t.closest('[data-liberar-vimeo]'))) return liberarVimeo(x);
     if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
     if ((x = t.closest('[data-transcricoes-todas]'))) return transcreverTodas(x);
+    if ((x = t.closest('[data-sumidos]'))) return baixarSumidos(x);
     if ((x = t.closest('[data-transcricoes]'))) return prepararTranscricoes(x);
     if ((x = t.closest('[data-marcs]'))) return marcadores(+x.getAttribute('data-marcs'));
     if ((x = t.closest('[data-salvar-marcs]'))) return salvarMarcadores(+x.getAttribute('data-salvar-marcs'));

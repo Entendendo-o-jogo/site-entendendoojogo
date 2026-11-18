@@ -16,6 +16,9 @@
     '.ha-chk{display:inline-flex;gap:6px;align-items:center;font-size:14px}.ha-chk input{width:17px;height:17px;margin:0;accent-color:#4A79A6}' +
     '.ha table{width:100%;border-collapse:collapse;font-size:14px}.ha th{text-align:left;font-size:12px;color:#555555;text-transform:uppercase;letter-spacing:.05em;padding:6px;border-bottom:1px solid #E2E2E2}.ha td{padding:6px;border-bottom:1px solid #F0F0F0;vertical-align:top}' +
     '.ha-mod{border:1px solid #E2E2E2;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}' +
+    '.ha-mod{border-left-width:6px}.ha-modh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-radius:8px;padding:8px 10px;margin:-4px -4px 0}.ha-tag{font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;background:#111111;color:#FFFFFF}' +
+    '.ha-aula.ha-sel{outline:2px solid #2F6FB5;outline-offset:1px}.ha-aula.ha-nova{box-shadow:0 0 0 3px #A1C4E6}.ha-ck{display:inline-flex;align-items:center;justify-content:center;width:34px}.ha-ck input{width:18px;height:18px;cursor:pointer}' +
+    '.ha-mais{align-self:flex-start}.ha-barsel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;background:#111111;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:15px}.ha-barsel[hidden]{display:none}.ha-barsel .ha-b{background:#2A3038;color:#FFFFFF;border-color:#3A424C}.ha-barsel .ha-x{color:#FF8A75}' +
     '.ha-aula{background:#FFFFFF;border:1px solid #E8E8E8;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}' +
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
@@ -87,17 +90,40 @@
         '<li>Para PDFs e materiais extras, use o botão <b>Materiais</b> da aula.</li></ol>' +
         '<p style="margin:10px 0 0;font-size:14px;color:#555555">A aula nova aparece sozinha em “Mais recentes” no /hub e na busca.</p></details>' +
         '<div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Módulos e aulas</b><button type="button" class="ha-p" data-novo-mod="' + k.id + '">+ Novo módulo</button></div>';
-      html += mods.map(function (m) {
-        var as = aulas.filter(function (a) { return a.modulo_id === m.id; });
-        return '<div class="ha-mod" data-mod="' + m.id + '"><div class="ha-row"><input class="ha-in" data-f="ordem" type="number" value="' + m.ordem + '" style="width:64px" aria-label="Ordem"><input class="ha-in" data-f="titulo" value="' + esc(m.titulo) + '" style="flex:1 1 260px" aria-label="Título do módulo">' +
-          '<button type="button" class="ha-b" data-salvar-mod="' + m.id + '">Salvar</button><button type="button" class="ha-b" data-nova-aula="' + m.id + '">+ Aula</button><button type="button" class="ha-b ha-x" data-apagar-mod="' + m.id + '">Apagar</button></div>' +
-          as.map(aulaHtml).join('') + '</div>';
+      var CORES = [['#2F6FB5', '#EEF4FB'], ['#2E9E5B', '#EEF8F2'], ['#C77C1E', '#FCF4EA'], ['#7B4FC9', '#F4F0FB'], ['#C8322F', '#FBEFEE'], ['#1E8C99', '#ECF7F8'], ['#8A6D3B', '#F6F2EA']];
+      html += '<p style="margin:0;font-size:14px;color:#555555">Em cada módulo, as aulas mais recentes aparecem primeiro. A ordem que o aluno vê segue o campo de número à esquerda de cada aula.</p>';
+      html += mods.map(function (m, mi) {
+        var cor = CORES[mi % CORES.length], as = aulas.filter(function (a) { return a.modulo_id === m.id; }).sort(function (x, y) { return y.id - x.id; });
+        var VIS = 3, ab = st.modAberto && st.modAberto[m.id];
+        return '<div class="ha-mod" data-mod="' + m.id + '" style="border-color:' + cor[0] + ';background:' + cor[1] + '"><div class="ha-row ha-modh" style="background:' + cor[0] + '22">' +
+          '<span class="ha-ck"><input type="checkbox" data-selmod="' + m.id + '" aria-label="Selecionar todas as aulas do módulo"></span>' +
+          '<input class="ha-in" data-f="ordem" type="number" value="' + m.ordem + '" style="width:64px" aria-label="Ordem"><input class="ha-in" data-f="titulo" value="' + esc(m.titulo) + '" style="flex:1 1 260px;font-weight:700" aria-label="Título do módulo">' +
+          '<span style="font-size:13px;font-weight:700;color:' + cor[0] + '">' + as.length + ' aula' + (as.length === 1 ? '' : 's') + '</span>' + (m.oculto ? '<span class="ha-tag" title="Módulo escondido dos alunos">Oculto</span>' : '') +
+          '<button type="button" class="ha-b" data-salvar-mod="' + m.id + '">Salvar</button><button type="button" class="ha-p" data-nova-aula="' + m.id + '">+ Aula</button><button type="button" class="ha-b ha-x" data-apagar-mod="' + m.id + '">Apagar</button></div>' +
+          as.slice(0, VIS).map(aulaHtml).join('') +
+          (as.length > VIS ? '<div data-resto="' + m.id + '"' + (ab ? '' : ' hidden') + ' style="display:flex;flex-direction:column;gap:10px">' + as.slice(VIS).map(aulaHtml).join('') + '</div>' +
+            '<button type="button" class="ha-b ha-mais" data-maisaulas="' + m.id + '">' + (ab ? 'Esconder as aulas antigas' : 'Mostrar as outras ' + (as.length - VIS) + ' aulas') + '</button>' : '') + '</div>';
       }).join('');
+      html += '<div class="ha-barsel" data-barsel hidden role="region" aria-label="Aulas selecionadas"><b data-nsel></b><button type="button" class="ha-b" data-lote="publicar">Publicar</button><button type="button" class="ha-b" data-lote="despublicar">Despublicar</button><button type="button" class="ha-b ha-x" data-lote="apagar">Apagar</button><button type="button" class="ha-b" data-lote="limpar">Limpar seleção</button></div>';
       c.innerHTML = html;
+      if (st.novaAula) { var na = c.querySelector('[data-aula="' + st.novaAula + '"]'); st.novaAula = null; if (na) { na.classList.add('ha-nova'); na.scrollIntoView({ block: 'center' }); var vi = na.querySelector('[data-f="vimeo_id"]'); if (vi) vi.focus(); } }
     }).catch(falha);
   }
+  function selecionadas() { return [].map.call(raiz.querySelectorAll('[data-selaula]:checked'), function (i) { return +i.getAttribute('data-selaula'); }); }
+  function atualizaSel() {
+    var ids = selecionadas(), bar = raiz.querySelector('[data-barsel]'); if (!bar) return;
+    raiz.querySelectorAll('[data-aula]').forEach(function (a) { var ck = a.querySelector('[data-selaula]'); a.classList.toggle('ha-sel', !!(ck && ck.checked)); });
+    bar.hidden = !ids.length; bar.querySelector('[data-nsel]').textContent = ids.length + (ids.length === 1 ? ' aula selecionada' : ' aulas selecionadas');
+  }
+  function lote(acao) {
+    var ids = selecionadas();
+    if (acao === 'limpar' || !ids.length) { raiz.querySelectorAll('[data-selaula]:checked, [data-selmod]:checked').forEach(function (i) { i.checked = false; }); return atualizaSel(); }
+    if (acao === 'apagar') { if (!confirm('Apagar ' + ids.length + (ids.length === 1 ? ' aula' : ' aulas') + '? O progresso e os comentários delas também somem. Não dá para desfazer.')) return;
+      return sb.from('aulas').delete().in('id', ids).then(ok).then(function () { aviso(ids.length + ' aula(s) apagada(s)'); }).then(desenhar).catch(falha); }
+    return sb.from('aulas').update({ publicado: acao === 'publicar' }).in('id', ids).then(ok).then(function () { aviso(ids.length + ' aula(s) ' + (acao === 'publicar' ? 'publicada(s)' : 'despublicada(s)')); }).then(desenhar).catch(falha);
+  }
   function aulaHtml(a) {
-    return '<div class="ha-aula" data-aula="' + a.id + '"><div class="ha-row"><input class="ha-in" data-f="ordem" type="number" value="' + a.ordem + '" style="width:64px" aria-label="Ordem">' +
+    return '<div class="ha-aula" data-aula="' + a.id + '"><div class="ha-row"><span class="ha-ck"><input type="checkbox" data-selaula="' + a.id + '" aria-label="Selecionar a aula ' + esc(a.titulo) + '"></span><input class="ha-in" data-f="ordem" type="number" value="' + a.ordem + '" style="width:64px" aria-label="Ordem">' +
       '<input class="ha-in" data-f="titulo" value="' + esc(a.titulo) + '" style="flex:1 1 260px" aria-label="Título da aula">' +
       '<input class="ha-in" data-f="vimeo_id" value="' + esc(a.vimeo_id) + '" placeholder="ID ou link do Vimeo" style="width:200px" aria-label="ID ou link do vídeo no Vimeo">' +
       '<input class="ha-in" data-f="duracao_seg" type="number" value="' + esc(a.duracao_seg) + '" placeholder="seg" style="width:80px" aria-label="Duração em segundos">' +
@@ -514,7 +540,10 @@
     if ((x = t.closest('[data-novo-mod]'))) { var tm = prompt('Nome do módulo:'); if (!tm) return; return sb.from('modulos').insert({ curso_id: +x.getAttribute('data-novo-mod'), titulo: tm, ordem: 99 }).then(ok).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-salvar-mod]'))) { var mb = x.closest('[data-mod]'); return sb.from('modulos').update({ titulo: mb.querySelector(':scope > .ha-row [data-f="titulo"]').value, ordem: +mb.querySelector(':scope > .ha-row [data-f="ordem"]').value }).eq('id', +x.getAttribute('data-salvar-mod')).then(ok).then(function () { aviso('Módulo salvo'); }).catch(falha); }
     if ((x = t.closest('[data-apagar-mod]'))) { if (!confirm('Apagar este módulo e todas as aulas dele? Não dá para desfazer.')) return; return sb.from('modulos').delete().eq('id', +x.getAttribute('data-apagar-mod')).then(ok).then(desenhar).catch(falha); }
-    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; return sb.from('aulas').insert({ modulo_id: +x.getAttribute('data-nova-aula'), titulo: ta, ordem: 99, publicado: false }).then(ok).then(desenhar).catch(falha); }
+    if ((x = t.closest('[data-maisaulas]'))) { var mid = x.getAttribute('data-maisaulas'), rs = raiz.querySelector('[data-resto="' + mid + '"]'); st.modAberto = st.modAberto || {}; st.modAberto[mid] = rs.hidden; rs.hidden = !rs.hidden; x.textContent = rs.hidden ? 'Mostrar as outras ' + rs.querySelectorAll('[data-aula]').length + ' aulas' : 'Esconder as aulas antigas'; return; }
+    if ((x = t.closest('[data-lote]'))) return lote(x.getAttribute('data-lote'));
+    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = (ords.length ? Math.max.apply(null, ords) : 0) + 1;
+      return sb.from('aulas').insert({ modulo_id: mN, titulo: ta, ordem: prox, publicado: false }).select('id').single().then(ok).then(function (r) { st.novaAula = r && r.id; }).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
       return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva'); }).catch(falha); }
     if ((x = t.closest('[data-apagar-aula]'))) { if (!confirm('Apagar esta aula? Não dá para desfazer.')) return; return sb.from('aulas').delete().eq('id', +x.getAttribute('data-apagar-aula')).then(ok).then(desenhar).catch(falha); }
@@ -581,6 +610,8 @@
         raiz.addEventListener('click', cliques);
         raiz.addEventListener('change', function (e) {
           var t = e.target;
+          if (t.matches('[data-selmod]')) { var mm = raiz.querySelector('[data-mod="' + t.getAttribute('data-selmod') + '"]'); mm.querySelectorAll('[data-selaula]').forEach(function (i) { i.checked = t.checked; }); if (t.checked) { var rs2 = mm.querySelector('[data-resto]'); if (rs2 && rs2.hidden) mm.querySelector('[data-maisaulas]').click(); } return atualizaSel(); }
+          if (t.matches('[data-selaula]')) return atualizaSel();
           if (t.matches('[data-f-mom],[data-f-esc],[data-f-mod-mom],[data-f-mod-esc]')) return salvarFiltro(t);
           if (t.matches('[data-f-sem]')) raiz.querySelectorAll('[data-f-aula]').forEach(function (tr) { tr.style.display = t.checked && tr.getAttribute('data-vazio') === '0' ? 'none' : ''; });
         });

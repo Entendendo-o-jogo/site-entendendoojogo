@@ -20,7 +20,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -33,6 +33,7 @@
     if (st.aba === 'trilhas') return trilhas(c);
     if (st.aba === 'engajamento') return engajamento(c);
     if (st.aba === 'almanaque') return almanaque(c);
+    if (st.aba === 'filtros') return filtrosMc(c);
   }
 
   // ---------- Cursos ----------
@@ -247,6 +248,45 @@
       .then(function () { aviso('Trilha salva (' + ids.length + ' aulas)'); trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha);
   }
 
+  // ---------- Filtros das masterclasses (momento do jogo + tipo de tática) ----------
+  var MOM = [['', '— sem momento —'], ['org_ofensiva', 'Organização ofensiva'], ['org_defensiva', 'Organização defensiva'], ['trans_ofensiva', 'Transição ofensiva'], ['trans_defensiva', 'Transição defensiva'], ['bolas_paradas', 'Bolas paradas'], ['treino', 'Treino']];
+  var ESC = [['', '— sem tipo —'], ['coletiva', 'Tática coletiva'], ['individual', 'Tática individual']];
+  function sel(lista, v, attr, id) { return '<select class="ha-in" ' + attr + '="' + id + '">' + lista.map(function (o) { return '<option value="' + o[0] + '"' + ((v || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; }
+  function filtrosMc(c) {
+    c.innerHTML = 'Carregando…';
+    sb.from('cursos').select('id').eq('slug', 'masterclasses').single().then(ok).then(function (k) {
+      return sb.from('modulos').select('id,titulo,ordem,oculto,aulas(id,titulo,ordem,momento,escopo)').eq('curso_id', k.id).order('ordem').then(ok);
+    }).then(function (ms) {
+      ms = ms.filter(function (m) { return !m.oculto; });
+      var n = 0, sem = 0; ms.forEach(function (m) { m.aulas.sort(function (a, b) { return a.ordem - b.ordem || a.id - b.id; }); m.aulas.forEach(function (a) { n++; if (!a.momento) sem++; }); });
+      c.innerHTML = '<div class="ha-box"><b style="font-size:18px">Filtros das masterclasses</b>' +
+        '<p style="margin:0;font-size:14px;color:#555555">Defina em que filtro cada masterclass aparece na área do aluno (aba Masterclasses). Salva sozinho ao trocar. Já deixei uma sugestão pelo tema e pelo título — confira. ' + n + ' masterclasses; ' + sem + ' sem momento do jogo.</p>' +
+        '<div class="ha-row"><label class="ha-chk"><input type="checkbox" data-f-sem>Mostrar só as que estão sem momento do jogo</label></div></div>' +
+        ms.map(function (m) {
+          return '<div class="ha-box" data-f-mod><div class="ha-row" style="justify-content:space-between"><b style="font-size:16px">' + esc(m.titulo) + ' (' + m.aulas.length + ')</b>' +
+            '<span class="ha-row" style="font-size:13px">Aplicar a todas deste tema: ' + sel(MOM, '__', 'data-f-mod-mom', m.id) + sel(ESC, '__', 'data-f-mod-esc', m.id) + '</span></div>' +
+            '<table><tbody>' + m.aulas.map(function (a) {
+              return '<tr data-f-aula="' + a.id + '" data-vazio="' + (a.momento ? '0' : '1') + '"><td>' + esc(a.titulo) + '</td><td style="width:220px">' + sel(MOM, a.momento, 'data-f-mom', a.id) + '</td><td style="width:170px">' + sel(ESC, a.escopo, 'data-f-esc', a.id) + '</td></tr>';
+            }).join('') + '</tbody></table></div>';
+        }).join('');
+    }).catch(falha);
+  }
+  function salvarFiltro(el) {
+    var id, campo, ids;
+    if (el.hasAttribute('data-f-mom')) { id = +el.getAttribute('data-f-mom'); campo = 'momento'; }
+    else if (el.hasAttribute('data-f-esc')) { id = +el.getAttribute('data-f-esc'); campo = 'escopo'; }
+    else if (el.hasAttribute('data-f-mod-mom') || el.hasAttribute('data-f-mod-esc')) {
+      campo = el.hasAttribute('data-f-mod-mom') ? 'momento' : 'escopo';
+      var box = el.closest('[data-f-mod]'); ids = [].map.call(box.querySelectorAll('[data-f-aula]'), function (tr) { return +tr.getAttribute('data-f-aula'); });
+      if (el.value === '__') return;
+      if (!confirm('Aplicar a todas as ' + ids.length + ' masterclasses deste tema?')) { el.value = '__'; return; }
+      var d1 = {}; d1[campo] = el.value || null;
+      return sb.from('aulas').update(d1).in('id', ids).then(ok).then(function () { aviso('Filtro aplicado a ' + ids.length + ' masterclasses'); filtrosMc(raiz.querySelector('.ha-corpo')); }).catch(falha);
+    } else return;
+    var d = {}; d[campo] = el.value || null;
+    sb.from('aulas').update(d).eq('id', id).then(ok).then(function () { aviso('Filtro salvo'); if (campo === 'momento') el.closest('tr').setAttribute('data-vazio', el.value ? '0' : '1'); }).catch(falha);
+  }
+
   // ---------- Almanaque de artigos (PDF; aberto a qualquer aluno com conta) ----------
   function almanaque(c) {
     c.innerHTML = 'Carregando…';
@@ -392,7 +432,12 @@
         if (!B.isAdmin()) { raiz.innerHTML = '<p style="margin:0">Esta página é só para administradores.</p>'; return; }
         raiz.innerHTML = '<style>' + CSS + '</style><div class="ha"><div class="ha-tabs-w"></div><div class="ha-corpo"></div></div><div class="ha-aviso" role="status"></div>';
         raiz.addEventListener('click', cliques);
-        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque)$/.test(location.hash)) st.aba = location.hash.slice(1);
+        raiz.addEventListener('change', function (e) {
+          var t = e.target;
+          if (t.matches('[data-f-mom],[data-f-esc],[data-f-mod-mom],[data-f-mod-esc]')) return salvarFiltro(t);
+          if (t.matches('[data-f-sem]')) raiz.querySelectorAll('[data-f-aula]').forEach(function (tr) { tr.style.display = t.checked && tr.getAttribute('data-vazio') === '0' ? 'none' : ''; });
+        });
+        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

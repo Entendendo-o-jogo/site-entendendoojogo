@@ -13,7 +13,7 @@
   };
 
   // ---------- Catálogo ----------
-  var AULA_COLS = 'id,titulo,duracao_seg,ordem,publicado_em';
+  var AULA_COLS = 'id,titulo,duracao_seg,ordem,publicado_em,momento,escopo';
   H.cursos = function () {
     return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,titulo,ordem,oculto,aulas(id))')
       .order('ordem').order('titulo').then(ok).then(function (cs) { (cs || []).forEach(function (c) { c.modulos = (c.modulos || []).filter(function (m) { return !m.oculto; }); }); return cs; });
@@ -50,6 +50,8 @@
     gs.forEach(function (g, i) { g.n = i + 1; });
     return gs;
   };
+  H.MOMENTOS = [['org_ofensiva', 'Organização ofensiva'], ['org_defensiva', 'Organização defensiva'], ['trans_ofensiva', 'Transição ofensiva'], ['trans_defensiva', 'Transição defensiva'], ['bolas_paradas', 'Bolas paradas'], ['treino', 'Treino']];
+  H.ESCOPOS = [['coletiva', 'Tática coletiva'], ['individual', 'Tática individual']];
   H.OCULTOS_HUB = { 'material-complementar': 1 };
   H.artigos = function () { return sb.from('artigos').select('id,titulo,autores,ano,tema,resumo,arquivo,tamanho_kb,criado_em').eq('publicado', true).order('criado_em', { ascending: false }).then(ok); };
   H.abrirArtigo = function (a) {

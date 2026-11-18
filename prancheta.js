@@ -177,7 +177,7 @@
       doc.pecas.filter(function (x) { return x.tipo === tipo; }).forEach(function (x) { doc.quadros.forEach(function (Q) { delete Q.pos[x.id]; }); });
       doc.pecas = doc.pecas.filter(function (x) { return x.tipo !== tipo; });
       var nums = [1, 2, 3, 4, 6, 5, 8, 10, 7, 9, 11];
-      f.forEach(function (c, i) { var x = c[0] / 100, y = c[1] / 100; if (tipo === 'b') { x = 1 - x; y = 1 - y; } addPeca(tipo, { x: x, y: y }, nums[i] || i + 1); });
+      f.forEach(function (c, i) { var x = c[0] / 100, y = 1 - c[1] / 100; if (tipo === 'b') { x = 1 - x; y = 1 - y; } addPeca(tipo, { x: x, y: y }, nums[i] || i + 1); });
       render();
     }); });
     tit.addEventListener('input', function () { doc.titulo = tit.value; });

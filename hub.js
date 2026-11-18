@@ -32,7 +32,7 @@
   // Cursos cujos módulos são temas independentes (cada módulo vira um card na área do aluno)
   H.TEMAS = { masterclasses: 1 };
   H.porTema = function (c) { return !!(c && H.TEMAS[c.slug]); };
-  H.nomeTema = function (t) { return String(t || '').replace(/^master\s*class(es)?\s*[-–:]?\s*(?!de\s)/i, '').replace(/^./, function (x) { return x.toUpperCase(); }); };
+  H.nomeTema = function (t) { if (/^master\s*class(es)?\s+de\s/i.test(t || '')) return String(t); return String(t || '').replace(/^master\s*class(es)?\s*[-–:]?\s*/i, '').replace(/^./, function (x) { return x.toUpperCase(); }); };
   H.soModulo = function (c, mid) {
     var m = (c.modulos || []).filter(function (x) { return x.id === mid; })[0];
     if (!m) return null;

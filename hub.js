@@ -15,19 +15,29 @@
   // ---------- Catálogo ----------
   var AULA_COLS = 'id,titulo,duracao_seg,ordem,publicado_em';
   H.cursos = function () {
-    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,aulas(id))')
-      .order('ordem').order('titulo').then(ok);
+    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,titulo,ordem,oculto,aulas(id))')
+      .order('ordem').order('titulo').then(ok).then(function (cs) { (cs || []).forEach(function (c) { c.modulos = (c.modulos || []).filter(function (m) { return !m.oculto; }); }); return cs; });
   };
   H.curso = function (filtro) {
-    var q = sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,modulos(id,titulo,ordem,aulas(' + AULA_COLS + '))');
+    var q = sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,modulos(id,titulo,ordem,oculto,aulas(' + AULA_COLS + '))');
     q = typeof filtro === 'number' ? q.eq('id', filtro) : q.eq('slug', filtro);
     return q.maybeSingle().then(ok).then(function (c) {
       if (!c) return null;
-      c.modulos = (c.modulos || []).sort(function (a, b) { return a.ordem - b.ordem || a.id - b.id; });
+      c.modulos = (c.modulos || []).filter(function (m) { return !m.oculto; }).sort(function (a, b) { return a.ordem - b.ordem || a.id - b.id; });
       c.modulos.forEach(function (m) { m.aulas = (m.aulas || []).sort(function (a, b) { return a.ordem - b.ordem || a.id - b.id; }); });
       c.aulas = []; c.modulos.forEach(function (m) { m.aulas.forEach(function (a) { a.modulo = m; c.aulas.push(a); }); });
       return c;
     });
+  };
+  // Cursos cujos módulos são temas independentes (cada módulo vira um card na área do aluno)
+  H.TEMAS = { masterclasses: 1 };
+  H.porTema = function (c) { return !!(c && H.TEMAS[c.slug]); };
+  H.nomeTema = function (t) { return String(t || '').replace(/^master\s*class(es)?\s*[-–:]?\s*/i, '').replace(/^./, function (x) { return x.toUpperCase(); }); };
+  H.soModulo = function (c, mid) {
+    var m = (c.modulos || []).filter(function (x) { return x.id === mid; })[0];
+    if (!m) return null;
+    var d = Object.assign({}, c, { modulos: [m], aulas: m.aulas.slice(), tema: m, titulo: H.nomeTema(m.titulo), cursoTitulo: c.titulo });
+    return d;
   };
   H.aula = function (id) {
     return sb.from('aulas').select('id,titulo,descricao,duracao_seg,modulo_id,modulos(curso_id)').eq('id', id).maybeSingle().then(ok);

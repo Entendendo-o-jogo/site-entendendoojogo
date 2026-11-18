@@ -20,7 +20,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['engajamento', 'Engajamento']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -32,6 +32,7 @@
     if (st.aba === 'sugestoes') return sugestoes(c);
     if (st.aba === 'trilhas') return trilhas(c);
     if (st.aba === 'engajamento') return engajamento(c);
+    if (st.aba === 'almanaque') return almanaque(c);
   }
 
   // ---------- Cursos ----------
@@ -246,6 +247,42 @@
       .then(function () { aviso('Trilha salva (' + ids.length + ' aulas)'); trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha);
   }
 
+  // ---------- Almanaque de artigos (PDF; aberto a qualquer aluno com conta) ----------
+  function almanaque(c) {
+    c.innerHTML = 'Carregando…';
+    sb.from('artigos').select('*').order('criado_em', { ascending: false }).then(ok).then(function (as) {
+      c.innerHTML = '<div class="ha-box"><b style="font-size:18px">Novo artigo</b>' +
+        '<p style="margin:0;font-size:14px;color:#555555">Envie o PDF do artigo científico. Ele aparece na aba “Almanaque de artigos” da área do aluno para qualquer pessoa com conta (inclusive plano grátis).</p>' +
+        '<div class="ha-row" data-art-novo><label style="flex:1 1 320px">Título<br><input class="ha-in" data-a="titulo" style="width:100%"></label>' +
+        '<label style="flex:1 1 240px">Autores<br><input class="ha-in" data-a="autores" placeholder="Ex.: Garganta, J.; Pinto, J." style="width:100%"></label>' +
+        '<label style="flex:0 1 90px">Ano<br><input class="ha-in" type="number" data-a="ano" style="width:100%"></label>' +
+        '<label style="flex:0 1 200px">Tema<br><input class="ha-in" data-a="tema" list="ha-temas" placeholder="Ex.: Treinamento" style="width:100%"></label>' +
+        '<label style="flex:1 1 100%">Resumo (opcional)<br><textarea class="ha-in" data-a="resumo" rows="2" style="width:100%"></textarea></label>' +
+        '<label style="flex:1 1 320px">Arquivo PDF<br><input type="file" accept="application/pdf,.pdf" data-art-arq></label>' +
+        '<button type="button" class="ha-p" data-art-enviar>Enviar artigo</button><span data-art-st style="font-size:14px"></span></div>' +
+        '<datalist id="ha-temas">' + as.map(function (a) { return a.tema; }).filter(function (t, i, l) { return t && l.indexOf(t) === i; }).map(function (t) { return '<option value="' + esc(t) + '">'; }).join('') + '</datalist></div>' +
+        '<div class="ha-box"><b style="font-size:18px">Artigos (' + as.length + ')</b>' + (as.length ? '<table><thead><tr><th>Artigo</th><th>Tema</th><th>Publicado</th><th></th></tr></thead><tbody>' +
+        as.map(function (a) { return '<tr data-art="' + a.id + '"><td><b>' + esc(a.titulo) + '</b><div style="font-size:12px;color:#777777">' + esc([a.autores, a.ano].filter(Boolean).join(' · ')) + '</div></td><td>' + esc(a.tema) + '</td>' +
+          '<td><input type="checkbox" data-art-pub="' + a.id + '"' + (a.publicado ? ' checked' : '') + '></td><td style="white-space:nowrap"><button type="button" class="ha-b" data-art-ver="' + a.id + '">Ver PDF</button> <button type="button" class="ha-b ha-x" data-art-apagar="' + a.id + '">Apagar</button></td></tr>'; }).join('') +
+        '</tbody></table>' : '<p style="margin:0;color:#555555">Nenhum artigo ainda.</p>') + '</div>';
+      st.artigos = as;
+    }).catch(falha);
+  }
+  function enviarArtigo() {
+    var box = raiz.querySelector('[data-art-novo]'), d = {}, stt = raiz.querySelector('[data-art-st]');
+    box.querySelectorAll('[data-a]').forEach(function (i) { d[i.getAttribute('data-a')] = i.value.trim() || null; });
+    var f = box.querySelector('[data-art-arq]').files[0];
+    if (!d.titulo) return aviso('Informe o título do artigo', true);
+    if (!f) return aviso('Escolha o arquivo PDF', true);
+    if (d.ano) d.ano = +d.ano;
+    var nome = Date.now() + '-' + f.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-');
+    stt.textContent = 'Enviando…';
+    sb.storage.from('artigos').upload(nome, f, { upsert: false, contentType: 'application/pdf' }).then(ok)
+      .then(function () { d.arquivo = nome; d.tamanho_kb = Math.round(f.size / 1024); return sb.from('artigos').insert(d).then(ok); })
+      .then(function () { aviso('Artigo publicado no Almanaque'); almanaque(raiz.querySelector('.ha-corpo')); })
+      .catch(function (e) { stt.textContent = ''; falha(e); });
+  }
+
   // ---------- Engajamento ----------
   function engajamento(c) {
     c.innerHTML = 'Carregando…';
@@ -278,6 +315,11 @@
   function cliques(e) {
     var t = e.target, x;
     if ((x = t.closest('[data-aba]'))) { st.aba = x.getAttribute('data-aba'); st.aberto = null; return desenhar(); }
+    if (t.closest('[data-art-enviar]')) return enviarArtigo();
+    if ((x = t.closest('[data-art-ver]'))) { var av = (st.artigos || []).filter(function (a) { return a.id === +x.getAttribute('data-art-ver'); })[0]; return sb.storage.from('artigos').createSignedUrl(av.arquivo, 600).then(ok).then(function (u) { window.open(u.signedUrl, '_blank', 'noopener'); }).catch(falha); }
+    if ((x = t.closest('[data-art-pub]'))) { return sb.from('artigos').update({ publicado: x.checked }).eq('id', +x.getAttribute('data-art-pub')).then(ok).then(function () { aviso(x.checked ? 'Artigo publicado' : 'Artigo escondido dos alunos'); }).catch(falha); }
+    if ((x = t.closest('[data-art-apagar]'))) { var ap = (st.artigos || []).filter(function (a) { return a.id === +x.getAttribute('data-art-apagar'); })[0]; if (!confirm('Apagar o artigo “' + ap.titulo + '” e o PDF? Não dá para desfazer.')) return;
+      return sb.storage.from('artigos').remove([ap.arquivo]).then(function () { return sb.from('artigos').delete().eq('id', ap.id).then(ok); }).then(function () { aviso('Artigo apagado'); almanaque(raiz.querySelector('.ha-corpo')); }).catch(falha); }
     if ((x = t.closest('[data-abrir]'))) { st.aberto = +x.getAttribute('data-abrir'); return desenhar(); }
     if (t.closest('[data-voltar]')) { st.aberto = null; return carregarCursos().then(desenhar); }
     if ((x = t.closest('[data-salvar-curso]'))) {
@@ -350,7 +392,7 @@
         if (!B.isAdmin()) { raiz.innerHTML = '<p style="margin:0">Esta página é só para administradores.</p>'; return; }
         raiz.innerHTML = '<style>' + CSS + '</style><div class="ha"><div class="ha-tabs-w"></div><div class="ha-corpo"></div></div><div class="ha-aviso" role="status"></div>';
         raiz.addEventListener('click', cliques);
-        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento)$/.test(location.hash)) st.aba = location.hash.slice(1);
+        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

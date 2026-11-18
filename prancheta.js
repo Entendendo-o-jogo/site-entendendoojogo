@@ -5,6 +5,12 @@
   'use strict';
   var W = 105, H = 68; // proporção do campo (metros)
   var COR = { a: '#2F6FB5', b: '#C8322F', bola: '#FFFFFF', cone: '#F28C28' };
+  var PALETA = ['#2F6FB5', '#C8322F', '#F2C230', '#2E9E5B', '#111111', '#FFFFFF', '#F28C28', '#7B4FC9', '#E85D9E', '#7FC8F0'];
+  var CAMPOS = { verde: { f1: '#2A7341', f2: '#2E7D46', l: 'rgba(255,255,255,0.85)', nome: 'Verde listrado' }, liso: { f1: '#2C7843', f2: '#2C7843', l: 'rgba(255,255,255,0.85)', nome: 'Verde liso' },
+    branco: { f1: '#F4F4F2', f2: '#F4F4F2', l: '#3A3A3A', nome: 'Quadro branco' }, noite: { f1: '#1E3550', f2: '#213A57', l: 'rgba(255,255,255,0.8)', nome: 'Azul noite' } };
+  var CUR = null; // cores da prancheta que está sendo desenhada
+  function corDe(t) { return (CUR && CUR[t]) || COR[t]; }
+  function claro(hex) { var h = String(hex || '').replace('#', ''); if (h.length === 3) h = h.replace(/./g, '$&$&'); var r = parseInt(h.substr(0, 2), 16), g = parseInt(h.substr(2, 2), 16), b = parseInt(h.substr(4, 2), 16); return (r * 299 + g * 587 + b * 114) / 1000 > 165; }
   var FORM = {
     '4-3-3': [[5, 50], [20, 15], [20, 38], [20, 62], [20, 85], [33, 30], [31, 50], [33, 70], [45, 20], [47, 50], [45, 80]],
     '4-4-2': [[5, 50], [20, 15], [20, 38], [20, 62], [20, 85], [33, 15], [32, 38], [32, 62], [33, 85], [45, 40], [45, 60]],
@@ -15,17 +21,17 @@
   function el(tag, attrs, html) { var e = document.createElement(tag); for (var k in attrs || {}) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
   function uid() { return Math.random().toString(36).slice(2, 9); }
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
-  function novoDoc() { return { titulo: 'Nova prancheta', dur: 1.2, pecas: [], quadros: [{ pos: {}, setas: [] }] }; }
+  function novoDoc() { return { titulo: 'Nova prancheta', dur: 1.2, cores: { a: COR.a, b: COR.b, campo: 'verde' }, pecas: [], quadros: [{ pos: {}, setas: [] }] }; }
 
   /* ---------- desenho ---------- */
   function campo(ctx, w, h) {
-    var s = w / W;
-    for (var i = 0; i < 10; i++) { ctx.fillStyle = i % 2 ? '#2E7D46' : '#2A7341'; ctx.fillRect(i * w / 10, 0, w / 10 + 1, h); }
-    ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = Math.max(1.5, s * 0.25);
+    var s = w / W, E = CAMPOS[(CUR && CUR.campo) || 'verde'] || CAMPOS.verde;
+    for (var i = 0; i < 10; i++) { ctx.fillStyle = i % 2 ? E.f2 : E.f1; ctx.fillRect(i * w / 10, 0, w / 10 + 1, h); }
+    ctx.strokeStyle = E.l; ctx.lineWidth = Math.max(1.5, s * 0.25);
     var m = 2 * s; ctx.strokeRect(m, m, w - 2 * m, h - 2 * m);
     ctx.beginPath(); ctx.moveTo(w / 2, m); ctx.lineTo(w / 2, h - m); ctx.stroke();
     ctx.beginPath(); ctx.arc(w / 2, h / 2, 9.15 * s, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.beginPath(); ctx.arc(w / 2, h / 2, 0.5 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = E.l; ctx.beginPath(); ctx.arc(w / 2, h / 2, 0.5 * s, 0, Math.PI * 2); ctx.fill();
     [[m, 1], [w - m, -1]].forEach(function (g) {
       var x = g[0], d = g[1];
       ctx.strokeRect(Math.min(x, x + d * 16.5 * s), h / 2 - 20.16 * s, 16.5 * s, 40.32 * s);
@@ -37,7 +43,7 @@
   function seta(ctx, a, w, h, alfa) {
     var s = w / W, x1 = a.x1 * w, y1 = a.y1 * h, x2 = a.x2 * w, y2 = a.y2 * h;
     ctx.save(); ctx.globalAlpha = alfa == null ? 1 : alfa;
-    ctx.strokeStyle = a.tipo === 'passe' ? '#FFFFFF' : '#FFE27A'; ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(2, s * 0.45); ctx.lineCap = 'round';
+    var br = CUR && CUR.campo === 'branco'; ctx.strokeStyle = a.tipo === 'passe' ? (br ? '#222222' : '#FFFFFF') : (br ? '#D9480F' : '#FFE27A'); ctx.fillStyle = ctx.strokeStyle; ctx.lineWidth = Math.max(2, s * 0.45); ctx.lineCap = 'round';
     var ang = Math.atan2(y2 - y1, x2 - x1), L = Math.hypot(x2 - x1, y2 - y1), cab = Math.max(9, s * 2);
     ctx.beginPath();
     if (a.tipo === 'cond') { // condução: linha ondulada
@@ -63,13 +69,13 @@
     } else {
       var r = s * 1.75;
       ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.arc(x + s * 0.25, y + s * 0.3, r, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = COR[p.tipo]; ctx.strokeStyle = sel ? '#FFE27A' : '#FFFFFF'; ctx.lineWidth = Math.max(1.5, s * (sel ? 0.5 : 0.3));
+      var cp = corDe(p.tipo); ctx.fillStyle = cp; ctx.strokeStyle = sel ? '#FFE27A' : (claro(cp) ? '#333333' : '#FFFFFF'); ctx.lineWidth = Math.max(1.5, s * (sel ? 0.5 : 0.3));
       ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      if (p.n) { ctx.fillStyle = '#FFFFFF'; ctx.font = '700 ' + Math.round(s * 1.7) + 'px Montserrat, Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(p.n).slice(0, 3), x, y + s * 0.08); }
+      if (p.n) { ctx.fillStyle = claro(cp) ? '#111111' : '#FFFFFF'; ctx.font = '700 ' + Math.round(s * 1.7) + 'px Montserrat, Arial, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(p.n).slice(0, 3), x, y + s * 0.08); }
     }
   }
   function desenhar(ctx, w, h, doc, pos, setas, selId, alfaSetas) {
-    ctx.clearRect(0, 0, w, h); campo(ctx, w, h);
+    CUR = doc.cores || null; ctx.clearRect(0, 0, w, h); campo(ctx, w, h);
     (setas || []).forEach(function (a) { seta(ctx, a, w, h, alfaSetas); });
     var ordem = doc.pecas.slice().sort(function (p, q) { return (p.tipo === 'bola') - (q.tipo === 'bola'); });
     ordem.forEach(function (p) { var q = pos[p.id]; if (q) peca(ctx, p, q.x * w, q.y * h, w, p.id === selId); });
@@ -85,15 +91,23 @@
       '.pr-cv{width:100%;aspect-ratio:105/68;border-radius:12px;touch-action:none;display:block;box-shadow:0 10px 30px rgba(0,0,0,.15);background:#2A7341}' +
       '.pr-q{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.pr-q .pr-b{min-width:44px;justify-content:center}.pr-dica{font-size:13px;color:#555555;margin:0}' +
       '.pr-in{font:inherit;font-size:15px;padding:9px 11px;border-radius:8px;border:1.5px solid #CCCCCC;min-width:220px;flex:1 1 220px}' +
+      '.pr-cores{gap:8px 18px}.pr-cg{display:inline-flex;align-items:center;gap:5px;font-size:14px}.pr-cg strong{margin-right:4px}' +
+      '.pr-sw{width:24px;height:24px;border-radius:50%;border:1.5px solid #BBBBBB;cursor:pointer;padding:0;position:relative;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#555555;background:#FFFFFF}.pr-sw[aria-pressed="true"]{box-shadow:0 0 0 2px #FFFFFF,0 0 0 4px #111111}' +
+      '.pr-mais input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}' +
       '.pr-lista{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}.pr-lista li{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#FFFFFF;border:1px solid #E2E2E2;border-radius:10px;padding:10px 12px}';
     raiz.innerHTML = '<style>' + css + '</style><div class="pr">' +
       '<div class="pr-bar" role="toolbar" aria-label="Ferramentas">' +
-        b('mover', '✋ Mover') + b('a', '<span style="width:12px;height:12px;border-radius:50%;background:' + COR.a + '"></span> Jogador azul') + b('b', '<span style="width:12px;height:12px;border-radius:50%;background:' + COR.b + '"></span> Jogador vermelho') +
+        b('mover', '✋ Mover') + b('a', '<span data-dot="a" style="width:14px;height:14px;border-radius:50%;border:1px solid #999999;background:' + COR.a + '"></span> Time A') + b('b', '<span data-dot="b" style="width:14px;height:14px;border-radius:50%;border:1px solid #999999;background:' + COR.b + '"></span> Time B') +
         b('bola', '⚽ Bola') + b('cone', '▲ Cone') + '<span class="pr-sep"></span>' + b('passe', '⤏ Passe') + b('mov', '→ Movimento') + b('cond', '〰 Condução') + '<span class="pr-sep"></span>' + b('apagar', '✕ Apagar') +
       '</div>' +
-      '<div class="pr-bar"><label style="font-size:14px;font-weight:600">Azul <select class="pr-sel" data-form="a"><option value="">Formação…</option>' + Object.keys(FORM).map(function (k) { return '<option>' + k + '</option>'; }).join('') + '</select></label>' +
-        '<label style="font-size:14px;font-weight:600">Vermelho <select class="pr-sel" data-form="b"><option value="">Formação…</option>' + Object.keys(FORM).map(function (k) { return '<option>' + k + '</option>'; }).join('') + '</select></label>' +
-        '<button type="button" class="pr-b" data-acao="limpar">Limpar tudo</button></div>' +
+      '<div class="pr-bar"><label style="font-size:14px;font-weight:600">Time A <select class="pr-sel" data-form="a"><option value="">Formação…</option>' + Object.keys(FORM).map(function (k) { return '<option>' + k + '</option>'; }).join('') + '</select></label>' +
+        '<label style="font-size:14px;font-weight:600">Time B <select class="pr-sel" data-form="b"><option value="">Formação…</option>' + Object.keys(FORM).map(function (k) { return '<option>' + k + '</option>'; }).join('') + '</select></label>' +
+        '<button type="button" class="pr-b" data-acao="limpar">Limpar tudo</button><span class="pr-sep"></span>' +
+        '<button type="button" class="pr-b p" data-acao="foto">📷 Montar a partir de uma foto</button><input type="file" accept="image/*" data-foto hidden></div>' +
+      '<div class="pr-bar pr-cores" aria-label="Cores">' + ['a', 'b'].map(function (t) { return '<span class="pr-cg" role="group" aria-label="Cor do time ' + t.toUpperCase() + '"><strong>Time ' + t.toUpperCase() + '</strong>' +
+          PALETA.map(function (c) { return '<button type="button" class="pr-sw" data-cor="' + t + '" data-c="' + c + '" style="background:' + c + '" aria-label="Cor ' + c + '" aria-pressed="false"></button>'; }).join('') +
+          '<label class="pr-sw pr-mais" title="Outra cor"><input type="color" data-corlivre="' + t + '" aria-label="Outra cor para o time ' + t.toUpperCase() + '">+</label></span>'; }).join('') +
+        '<label style="font-size:14px;font-weight:600">Campo <select class="pr-sel" data-campo>' + Object.keys(CAMPOS).map(function (k) { return '<option value="' + k + '">' + CAMPOS[k].nome + '</option>'; }).join('') + '</select></label></div>' +
       '<canvas class="pr-cv" aria-label="Campo da prancheta tática" role="img"></canvas>' +
       '<p class="pr-dica" data-dica></p>' +
       '<div class="pr-q" aria-label="Quadros da animação"><strong style="font-size:14px">Quadros:</strong><span data-quadros style="display:flex;flex-wrap:wrap;gap:6px"></span>' +
@@ -106,7 +120,7 @@
       '<div data-minhas></div></div>';
     function b(m, t) { return '<button type="button" class="pr-b" data-modo="' + m + '" aria-pressed="false">' + t + '</button>'; }
     var cv = raiz.querySelector('canvas'), ctx = cv.getContext('2d'), stEl = raiz.querySelector('[data-status]'), tit = raiz.querySelector('[data-titulo]');
-    var DICAS = { mover: 'Arraste as peças. Duplo clique em um jogador para mudar o número.', a: 'Clique no campo para colocar jogadores azuis.', b: 'Clique no campo para colocar jogadores vermelhos.', bola: 'Clique no campo para colocar a bola.', cone: 'Clique no campo para colocar cones.',
+    var DICAS = { mover: 'Arraste as peças. Duplo clique em um jogador para mudar o número.', a: 'Clique no campo para colocar jogadores do time A.', b: 'Clique no campo para colocar jogadores do time B.', bola: 'Clique no campo para colocar a bola.', cone: 'Clique no campo para colocar cones.',
       passe: 'Arraste para desenhar um passe (seta tracejada).', mov: 'Arraste para desenhar um movimento sem bola.', cond: 'Arraste para desenhar uma condução de bola.', apagar: 'Clique em uma peça ou seta para apagar.' };
     function tam() { var r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = Math.round(r.width * d); cv.height = Math.round(r.width * H / W * d); render(); }
     function pos() { var Q = doc.quadros[q]; return Q.pos; }
@@ -127,7 +141,15 @@
       box.innerHTML = doc.quadros.map(function (Q, i) { return '<button type="button" class="pr-b" data-q="' + i + '" aria-pressed="' + (i === q) + '" aria-label="Quadro ' + (i + 1) + '">' + (i + 1) + '</button>'; }).join('');
       raiz.querySelector('[data-acao="apagarq"]').disabled = doc.quadros.length < 2;
     }
-    function tudo() { quadros(); tit.value = doc.titulo || ''; render(); }
+    function cores() {
+      if (!doc.cores) doc.cores = { a: COR.a, b: COR.b, campo: 'verde' };
+      ['a', 'b'].forEach(function (t) { var c = (doc.cores[t] || COR[t]).toLowerCase(); raiz.querySelector('[data-dot="' + t + '"]').style.background = c;
+        raiz.querySelectorAll('[data-cor="' + t + '"]').forEach(function (x) { x.setAttribute('aria-pressed', x.getAttribute('data-c').toLowerCase() === c ? 'true' : 'false'); });
+        raiz.querySelector('[data-corlivre="' + t + '"]').value = c; });
+      raiz.querySelector('[data-campo]').value = doc.cores.campo || 'verde';
+      raiz.querySelectorAll('.pr-cores button, .pr-cores input, .pr-cores select').forEach(function (x) { x.disabled = somenteLeitura; });
+    }
+    function tudo() { quadros(); cores(); tit.value = doc.titulo || ''; render(); }
 
     cv.addEventListener('pointerdown', function (e) {
       if (tocando || somenteLeitura) return; var p = ponto(e); cv.setPointerCapture(e.pointerId);
@@ -156,6 +178,7 @@
     raiz.addEventListener('click', function (e) {
       var t = e.target.closest('button'); if (!t) return;
       if (t.hasAttribute('data-modo')) return setModo(t.getAttribute('data-modo'));
+      if (t.hasAttribute('data-cor')) { doc.cores[t.getAttribute('data-cor')] = t.getAttribute('data-c'); cores(); render(); return; }
       if (t.hasAttribute('data-q')) { q = +t.getAttribute('data-q'); sel = null; quadros(); render(); return; }
       var a = t.getAttribute('data-acao');
       if (a === 'novoq') { doc.quadros.splice(q + 1, 0, { pos: clone(pos()), setas: [] }); q++; quadros(); render(); }
@@ -167,6 +190,7 @@
       if (a === 'salvar') salvar();
       if (a === 'nova') { if (!confirm('Começar uma prancheta nova? O que não foi salvo será perdido.')) return; doc = novoDoc(); q = 0; idSalvo = null; somenteLeitura = false; history.replaceState(null, '', location.pathname); tudo(); }
       if (a === 'link') compartilhar();
+      if (a === 'foto') { if (somenteLeitura) return status('Faça uma cópia para editar.'); if (precisaLogin()) return; inFoto.click(); }
       if (a === 'abrir') abrir(+t.getAttribute('data-id'));
       if (a === 'excluir') excluir(+t.getAttribute('data-id'));
       if (a === 'copiar') { somenteLeitura = false; idSalvo = null; doc.titulo = (doc.titulo || 'Prancheta') + ' (cópia)'; tit.value = doc.titulo; status('Agora é uma cópia sua: edite e salve.'); }
@@ -181,6 +205,10 @@
       render();
     }); });
     tit.addEventListener('input', function () { doc.titulo = tit.value; });
+    raiz.querySelectorAll('[data-corlivre]').forEach(function (inp) { inp.addEventListener('input', function () { doc.cores[inp.getAttribute('data-corlivre')] = inp.value; cores(); render(); }); });
+    raiz.querySelector('[data-campo]').addEventListener('change', function (e) { doc.cores.campo = e.target.value; render(); });
+    var inFoto = raiz.querySelector('[data-foto]');
+    inFoto.addEventListener('change', function () { var f = inFoto.files && inFoto.files[0]; inFoto.value = ''; if (f) lerFoto(f); });
     window.addEventListener('resize', tam);
 
     /* ---------- animação e vídeo ---------- */
@@ -254,6 +282,47 @@
         box.innerHTML = '<h2 style="margin:6px 0 10px;font-size:18px;font-weight:800">Minhas pranchetas (' + L.length + ')</h2>' + (L.length ? '<ul class="pr-lista">' + L.map(function (p) {
           return '<li><span><strong>' + esc(p.titulo) + '</strong><br><span style="font-size:13px;color:#555555">' + new Date(p.atualizado_em).toLocaleDateString('pt-BR') + '</span></span><span style="display:flex;gap:6px"><button type="button" class="pr-b" data-acao="abrir" data-id="' + p.id + '">Abrir</button><button type="button" class="pr-b" data-acao="excluir" data-id="' + p.id + '" aria-label="Apagar ' + esc(p.titulo) + '">✕</button></span></li>'; }).join('') + '</ul>' : '<p class="pr-dica">Nenhuma prancheta salva ainda.</p>');
       });
+    }
+    /* ---------- foto de um desenho no papel -> prancheta ---------- */
+    function reduzir(f) {
+      return new Promise(function (ok, erro) {
+        var url = URL.createObjectURL(f), im = new Image();
+        im.onload = function () { var m = 1400, k = Math.min(1, m / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.82).split(',')[1]); };
+        im.onerror = function () { erro(new Error('Não consegui abrir essa imagem. Envie uma foto em JPG ou PNG.')); }; im.src = url;
+      });
+    }
+    function lerFoto(f) {
+      if (!/^image\//.test(f.type)) return status('Envie uma imagem (foto do papel).');
+      var btn = raiz.querySelector('[data-acao="foto"]'); btn.disabled = true; status('Lendo o seu desenho… (leva uns segundos)');
+      reduzir(f).then(function (b64) { return B.sb.functions.invoke('ia', { body: { acao: 'prancheta_foto', imagem: b64 } }); })
+        .then(function (r) {
+          var d = r.data || {}; if (r.error) throw r.error;
+          var M = { sem_chave: 'A leitura de fotos está sendo ativada. Tente de novo em breve.', limite: 'Você já usou as leituras de foto de hoje (' + (d.limite || '') + ' por dia). Amanhã tem mais.', login: 'Entre na sua conta para enviar fotos.', imagem: 'A imagem é grande demais. Tente uma foto menor.', nada: 'Não encontrei um campo com jogadores nessa foto. Tente uma foto mais de perto, com boa luz e o papel inteiro.' };
+          if (d.erro) return status(M[d.erro] || ('Não foi possível ler a foto: ' + d.erro));
+          montar(d.desenho || {}); ev('prancheta_foto');
+          status('Pronto! Montei o quadro a partir da foto' + (d.restantes != null ? ' (restam ' + d.restantes + ' leituras hoje)' : '') + '. Confira e ajuste o que precisar.');
+        })
+        .catch(function (er) { status('Não foi possível ler a foto: ' + (er.message || er)); })
+        .then(function () { btn.disabled = false; });
+    }
+    function montar(D) {
+      var J = D.jogadores || [], tem = doc.pecas.length || doc.quadros.some(function (Q) { return Q.setas.length; });
+      if (!J.length && !(D.setas || []).length) { status('Não encontrei jogadores nem setas na foto.'); return; }
+      if (tem && !confirm('Trocar o que está na prancheta pelo desenho da foto?')) { status('Mantive a prancheta como estava.'); return; }
+      { var c0 = doc.cores, t0 = doc.titulo; doc = novoDoc(); doc.cores = c0 || doc.cores; doc.titulo = t0 === 'Nova prancheta' || /^Exemplo/.test(t0 || '') ? 'Desenho da foto' : t0; q = 0; }
+      var vert = D.orientacao === 'vertical', meio = D.campo === 'metade';
+      function conv(x, y) { // coordenadas da foto (0–1 dentro do campo desenhado) -> campo deitado
+        x = Math.max(0, Math.min(1, +x || 0)); y = Math.max(0, Math.min(1, +y || 0));
+        var X = vert ? 1 - y : x, Y = vert ? x : y;
+        if (meio) X = 0.5 + X * 0.5;
+        return { x: X, y: Y };
+      }
+      J.forEach(function (j) { var t = j.time === 'b' ? 'b' : 'a', p = conv(j.x, j.y); addPeca(t, p, j.n ? String(j.n).slice(0, 3) : null); var id = doc.pecas[doc.pecas.length - 1].id; doc.quadros[q].pos[id] = p; });
+      if (D.bola) { var pb = conv(D.bola.x, D.bola.y); addPeca('bola', pb); var bo = doc.pecas.filter(function (x) { return x.tipo === 'bola'; })[0]; doc.quadros[q].pos[bo.id] = pb; }
+      (D.cones || []).forEach(function (c) { var pc = conv(c.x, c.y); addPeca('cone', pc); doc.quadros[q].pos[doc.pecas[doc.pecas.length - 1].id] = pc; });
+      (D.setas || []).forEach(function (a) { var p1 = conv(a.x1, a.y1), p2 = conv(a.x2, a.y2), tp = a.tipo === 'passe' ? 'passe' : a.tipo === 'conducao' ? 'cond' : 'mov'; doc.quadros[q].setas.push({ tipo: tp, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y }); });
+      somenteLeitura = false; tudo();
     }
     function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function exemplo() { // prancheta inicial: um ataque simples em 3 quadros

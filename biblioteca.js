@@ -199,6 +199,39 @@
     document.addEventListener('keydown', tecla); document.body.appendChild(f); f.querySelector('button').focus();
     B.ev('bib_tutorial');
   };
+  // Barra fixa no pé das páginas da Biblioteca com o vídeo de apresentação (pode ser fechada; volta depois de 30 dias)
+  (function () {
+    var m = /^(?:\/(es|en))?\/biblioteca(\/[^\/?#]*)?/.exec(location.pathname); if (!m) return;
+    if (/^\/(admin|editor|prancheta)/.test(m[2] || '')) return;
+    try { var f0 = +localStorage.getItem('eojBibVideoFechado') || 0; if (Date.now() - f0 < 30 * 864e5) return; } catch (e) {}
+    var LG = m[1] || 'pt', T = { pt: ['Vídeo · 52 s', 'Como funciona a Biblioteca EOJ', 'Filtrar, assistir, baixar, montar playlists e juntar clipes no editor.', 'Assistir', 'Fechar'],
+      es: ['Video · 52 s', 'Cómo funciona la Biblioteca EOJ', 'Filtrar, ver, descargar, armar playlists y unir clips en el editor.', 'Ver', 'Cerrar'],
+      en: ['Video · 52 s', 'How the EOJ Library works', 'Filter, watch, download, build playlists and join clips in the editor.', 'Watch', 'Close'] }[LG];
+    var css = '#eoj-bv{position:fixed;left:16px;bottom:16px;z-index:45;max-width:520px;background:#111111;color:#FFFFFF;border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.35);display:flex;align-items:center;gap:14px;padding:10px 14px 10px 10px;font-family:Montserrat,sans-serif;transform:translateY(160%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}' +
+      '#eoj-bv.on{transform:none}#eoj-bv .bv-img{position:relative;flex:0 0 auto;width:112px;aspect-ratio:16/9;border:0;padding:0;border-radius:9px;background:#000 url(/media/biblioteca.jpg) 50% 50%/cover;cursor:pointer}' +
+      '#eoj-bv .bv-img span{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#A1C4E6;display:flex;align-items:center;justify-content:center}' +
+      '#eoj-bv .bv-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}#eoj-bv .bv-tag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A1C4E6}' +
+      '#eoj-bv .bv-t{font-size:15px;font-weight:800;line-height:1.25}#eoj-bv .bv-d{font-size:13px;color:#CFCFCF;line-height:1.4}' +
+      '#eoj-bv .bv-cta{flex:0 0 auto;font:inherit;background:#A1C4E6;color:#111111;border:0;font-size:14px;font-weight:700;padding:11px 16px;border-radius:8px;cursor:pointer}' +
+      '#eoj-bv .bv-x{position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;border:0;background:#FFFFFF;color:#111111;font-size:16px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.25)}' +
+      '@media (max-width:640px){#eoj-bv{left:10px;right:80px;bottom:12px;gap:10px}#eoj-bv .bv-img{width:72px}#eoj-bv .bv-d{display:none}#eoj-bv .bv-cta{padding:10px 12px;font-size:13px}}' +
+      '@media (prefers-reduced-motion:reduce){#eoj-bv{transition:none}}';
+    function montar() {
+      var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+      var el = document.createElement('aside'); el.id = 'eoj-bv'; el.setAttribute('aria-label', T[1]);
+      el.innerHTML = '<button type="button" class="bv-img" aria-label="' + T[3] + ': ' + T[1] + '"><span aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="#111111"><path d="M8 5v14l11-7z"></path></svg></span></button>' +
+        '<span class="bv-tx"><span class="bv-tag">' + T[0] + '</span><span class="bv-t">' + T[1] + '</span><span class="bv-d">' + T[2] + '</span></span>' +
+        '<button type="button" class="bv-cta">' + T[3] + '</button><button type="button" class="bv-x" aria-label="' + T[4] + '">×</button>';
+      document.body.appendChild(el);
+      function ver() { B.tutorial('/media/biblioteca.mp4', '/media/biblioteca.jpg', T[1]); B.ev('bib_video_barra'); }
+      el.querySelector('.bv-img').onclick = ver; el.querySelector('.bv-cta').onclick = ver;
+      el.querySelector('.bv-x').onclick = function () { el.classList.remove('on'); try { localStorage.setItem('eojBibVideoFechado', String(Date.now())); } catch (e) {} setTimeout(function () { el.remove(); }, 500); };
+      function escolheu() { try { return !!localStorage.getItem('eoj-cookies'); } catch (e) { return true; } }
+      function abrir() { if (!escolheu()) { setTimeout(abrir, 2000); return; } el.classList.add('on'); }
+      setTimeout(abrir, 3000);
+    }
+    if (document.body) montar(); else document.addEventListener('DOMContentLoaded', montar);
+  })();
   B.avisos = function () { return B.user ? sb.from('avisos').select('*').eq('usuario_id', B.user.id).order('criado_em', { ascending: false }).limit(30).then(ok) : Promise.resolve([]); };
   B.naoLidos = function () { return B.user ? sb.from('avisos').select('id', { count: 'exact', head: true }).eq('usuario_id', B.user.id).eq('lido', false).then(function (r) { return r.count || 0; }) : Promise.resolve(0); };
   B.lerAvisos = function () { return B.user ? sb.from('avisos').update({ lido: true }).eq('usuario_id', B.user.id).eq('lido', false).then(ok) : Promise.resolve(); };

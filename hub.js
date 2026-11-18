@@ -66,6 +66,7 @@
 
   // ---------- Busca e sugestões ----------
   H.trechos = function (q) { return sb.rpc('buscar_trechos', { q: q, lim: 30 }).then(ok); };
+  H.ehPremium = function () { return B.user ? sb.rpc('eh_premium').then(function (r) { return !!r.data; }) : Promise.resolve(false); };
   H.perguntar = function (q) { return sb.functions.invoke('ia', { body: { acao: 'pergunta', pergunta: q } }).then(function (r) { if (r.error) throw r.error; H.ev('hub_ia_pergunta'); return r.data || {}; }); };
   H.buscar = function (q) { return sb.rpc('buscar_hub', { q: q, lim: 40 }).then(ok); };
   H.sugerir = function (texto) { return sb.from('pedidos').insert({ texto: texto, area: 'hub' }).then(ok).then(function () { H.ev('hub_sugestao'); }); };

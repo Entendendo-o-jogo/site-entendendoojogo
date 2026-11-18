@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<script id="eoj-consent-ga">
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+// Consent Mode v2: o GA carrega sempre, com tudo negado por padrão (medição anônima, sem cookies);
+// ao aceitar, libera cookies de análise e marketing e carrega o Pixel da Meta.
+gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500 });
+(function () {
+  var s = document.createElement('script'); s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9Y9W2X7RP5';
+  document.head.appendChild(s);
+  gtag('js', new Date()); gtag('config', 'G-9Y9W2X7RP5');
+  window.__eojGA = true;
+})();
+window.eojLoadGA = function () {
+  if (window.__eojMkt) return; window.__eojMkt = true;
+  gtag('consent', 'update', { analytics_storage: 'granted', ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted' });
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '249992227113113'); fbq('track', 'PageView');
+};
+(function () { try { if (localStorage.getItem('eoj-cookies') === 'aceito') window.eojLoadGA(); } catch (e) {} })();
+document.addEventListener('click', function (ev) {
+  if (!window.__eojGA) return;
+  var a = ev.target.closest && ev.target.closest('a[href]');
+  if (!a) return;
+  var h = a.getAttribute('href') || '';
+  var txt = (a.textContent || '').trim().slice(0, 80);
+  var fb = window.fbq || function () {};
+  if (h.indexOf('pay.hotmart.com') >= 0) { gtag('event', 'begin_checkout', { link_url: h, link_text: txt }); fb('track', 'InitiateCheckout'); }
+  else if (h.indexOf('wa.me') >= 0 || h.indexOf('whatsapp.com') >= 0) { gtag('event', 'contact', { method: 'whatsapp', link_text: txt }); fb('track', 'Contact'); }
+  else if ((h.indexOf('hub.entendendoojogo.com.br') >= 0 || /^\/hub(\/|$|\?)/.test(h))) gtag('event', 'eojhub_click', { link_url: h, link_text: txt });
+  else if (a.hasAttribute('download')) { gtag('event', 'generate_lead', { method: 'ebook_download', link_text: txt }); fb('track', 'Lead'); }
+}, true);
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EXTRA- Aula sobre sistemas táticos — Aula gratuita | Entendendo o Jogo</title>
+<meta name="description" content="Aula extra sobre sistemas táticos: o lado de quem pressiona, dois centroavantes no 3-2-5, tempo do salto de pressão e como gerar vantagem no 1x1.">
+<link rel="canonical" href="https://entendendoojogo.com.br/aulas-gratuitas/extra-aula-sobre-sistemas-taticos">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Entendendo o Jogo">
+<meta property="og:title" content="EXTRA- Aula sobre sistemas táticos — Aula gratuita | Entendendo o Jogo">
+<meta property="og:description" content="Aula extra sobre sistemas táticos: o lado de quem pressiona, dois centroavantes no 3-2-5, tempo do salto de pressão e como gerar vantagem no 1x1.">
+<meta property="og:url" content="https://entendendoojogo.com.br/aulas-gratuitas/extra-aula-sobre-sistemas-taticos">
+<meta property="og:image" content="https://entendendoojogo.com.br/assets/og.jpg?v=227a2f0f">
+<meta property="og:image:alt" content="Entendendo o Jogo — formação tática para o futebol">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F5F5F5}
+a{color:#4A79A6}a:hover{color:#3A6894}
+
+</style>
+<link rel="stylesheet" href="/site.css?v=c2184a4c">
+<!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
+<link rel="alternate" hreflang="pt-BR" href="https://entendendoojogo.com.br/aulas-gratuitas/extra-aula-sobre-sistemas-taticos"><link rel="alternate" hreflang="es" href="https://entendendoojogo.com.br/es/aulas-gratuitas/extra-aula-sobre-sistemas-taticos"><link rel="alternate" hreflang="en" href="https://entendendoojogo.com.br/en/aulas-gratuitas/extra-aula-sobre-sistemas-taticos"><link rel="alternate" hreflang="x-default" href="https://entendendoojogo.com.br/aulas-gratuitas/extra-aula-sobre-sistemas-taticos">
+</head>
+<body>
+<div id="eoj-root"></div>
+<template id="eoj-tpl">
+<div style="font-family: Montserrat, system-ui, sans-serif; color: #111111; background: #F5F5F5; min-height: 100vh">
+<header style="background: #111111; color: #FFFFFF">
+<div style="max-width: 1376px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: nowrap; align-items: center; gap: 14px 24px">
+<a href="/" style="display: flex; flex: 0 0 auto; align-items: center; gap: 10px; text-decoration: none; color: #FFFFFF">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke="#FFFFFF" stroke-width="4.5"></circle><rect x="1" y="17.75" width="38" height="4.5" fill="#FFFFFF"></rect><circle cx="20" cy="20" r="4" fill="#A1C4E6"></circle></svg>
+<span style="display: flex; flex-direction: column; font-family: Montserrat, sans-serif; text-transform: uppercase; line-height: 1"><span style="font-weight: 500; font-size: 11px; letter-spacing: 0.06em">Entendendo</span><span style="font-weight: 800; font-size: 19px; letter-spacing: 0.01em">O Jogo</span></span>
+</a>
+<nav aria-label="Principal" id="menu-principal" data-open="{{menuOpen}}" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; flex: 1 1 auto; min-width: 0; font-size: 14px; font-weight: 500; white-space: nowrap">
+<a href="/biblioteca/acervo" style="color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 10px 0">Biblioteca EOJ <span style="background: #A1C4E6; color: #111111; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.04em">NOVO</span></a>
+<a href="/eojhub" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">EOJHub</a>
+<a href="/cursos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Cursos</a>
+<div class="eoj-dd" data-dd="mentoria"><button type="button" class="eoj-dd-b" aria-expanded="false" aria-haspopup="true" style="font: inherit; color: #D9D9D9; background: none; border: 0; padding: 10px 0; cursor: pointer; display: flex; align-items: center; gap: 5px">Mentoria<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="eoj-dd-m"><a href="/mentoria" style="color: #D9D9D9; text-decoration: none">Para profissionais</a><a href="/mentoria/clubes" style="color: #D9D9D9; text-decoration: none">Para clubes</a></div></div>
+<div class="eoj-dd" data-dd="conteudos"><button type="button" class="eoj-dd-b" aria-expanded="false" aria-haspopup="true" style="font: inherit; color: #D9D9D9; background: none; border: 0; padding: 10px 0; cursor: pointer; display: flex; align-items: center; gap: 5px">Conteúdos<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button><div class="eoj-dd-m"><a href="/blog" style="color: #D9D9D9; text-decoration: none">Blog</a><a href="/conteudos#lives" style="color: #D9D9D9; text-decoration: none">Lives</a><a href="/conteudos#podcasts" style="color: #D9D9D9; text-decoration: none">Podcasts</a><a href="/livros" style="color: #D9D9D9; text-decoration: none">Livros</a></div></div>
+<a href="/quem-somos" style="color: #D9D9D9; text-decoration: none; padding: 10px 0">Quem somos</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center; white-space: nowrap; flex: 0 0 auto; margin-left: auto"><nav class="eoj-lang" aria-label="Idioma / Language" style="display: flex; align-items: center; gap: 4px; font-size: 12px; letter-spacing: 0.04em; margin-right: 6px"><a href="/aulas-gratuitas/extra-aula-sobre-sistemas-taticos" hreflang="pt-BR" aria-label="Português" lang="pt-BR" aria-current="true" style="color: #FFFFFF; font-weight: 800; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 1"><svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="20" height="14" fill="#009C3B"/><path d="M10 1.6 18.2 7 10 12.4 1.8 7z" fill="#FFDF00"/><circle cx="10" cy="7" r="3.1" fill="#002776"/><path d="M7 6.4c2-.5 4.1-.3 6 .6" stroke="#FFFFFF" stroke-width=".6" fill="none"/></svg><span class="eoj-lang-t">PT</span></a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/es/aulas-gratuitas/extra-aula-sobre-sistemas-taticos" hreflang="es" aria-label="Español" lang="es" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 0.85"><svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="20" height="14" fill="#AA151B"/><rect y="3.5" width="20" height="7" fill="#F1BF00"/></svg><span class="eoj-lang-t">ES</span></a><span aria-hidden="true" style="color: #4A4A4A">·</span><a href="/en/aulas-gratuitas/extra-aula-sobre-sistemas-taticos" hreflang="en" aria-label="English" lang="en" style="color: #A6A6A6; font-weight: 600; text-decoration: none; padding: 6px 4px; display: inline-flex; align-items: center; gap: 5px; opacity: 0.85"><svg width="18" height="13" viewBox="0 0 60 42" aria-hidden="true" style="display: block; border-radius: 2px; flex: 0 0 auto"><rect width="60" height="42" fill="#012169"/><path d="M0 0l60 42M60 0L0 42" stroke="#FFFFFF" stroke-width="8"/><path d="M0 0l60 42M60 0L0 42" stroke="#C8102E" stroke-width="3"/><path d="M30 0v42M0 21h60" stroke="#FFFFFF" stroke-width="12"/><path d="M30 0v42M0 21h60" stroke="#C8102E" stroke-width="7"/></svg><span class="eoj-lang-t">EN</span></a></nav>
+<a href="/hub" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar EOJHub</a>
+<a href="/biblioteca/acervo" style="background: #A1C4E6; color: #111111; text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 7px">Acessar Biblioteca EOJ</a>
+
+<button type="button" class="eoj-burger" aria-label="Abrir menu" aria-controls="menu-principal" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1.5px solid #4A4A4A; border-radius: 8px; background: none; color: #FFFFFF; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
+</div>
+</header>
+<section style="background: #111111; color: #FFFFFF"><div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 60px; display: flex; flex-direction: column; gap: 14px"><p style="margin: 0; color: #A1C4E6; font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase">Masterclasses especiais da Copa do Mundo · EOJHub</p><h1 style="margin: 0; font-weight: 800; font-size: 52px; line-height: 1; text-transform: uppercase; max-width: 960px">EXTRA- Aula sobre sistemas táticos</h1><p style="margin: 0; font-size: 18px; line-height: 1.6; color: #CFCFCF; max-width: 720px">Aula extra sobre sistemas táticos: o lado de quem pressiona, dois centroavantes no 3-2-5, tempo do salto de pressão e como gerar vantagem no 1x1.</p></div></section><div style="max-width: 1240px; margin: 0 auto; padding: 40px 32px 72px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start"><section style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 14px"><h2 style="margin: 0; font-size: 24px; font-weight: 800">O que você vai ver nesta aula</h2><ol style="list-style: none; margin: 0; padding: 0"><li><a href="/hub/aula?id=50&amp;t=0" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">0:00</span><span>Objetivo da aula</span></a></li><li><a href="/hub/aula?id=50&amp;t=261" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">4:21</span><span>Ponto de desequilíbrio: o lado de quem pressiona</span></a></li><li><a href="/hub/aula?id=50&amp;t=517" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">8:37</span><span>Relação de dois centroavantes no 3-2-5</span></a></li><li><a href="/hub/aula?id=50&amp;t=651" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">10:51</span><span>Tempo do salto de pressão</span></a></li><li><a href="/hub/aula?id=50&amp;t=910" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">15:10</span><span>1x1 e geração de vantagem</span></a></li><li><a href="/hub/aula?id=50&amp;t=1043" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">17:23</span><span>Espaço central desprotegido</span></a></li><li><a href="/hub/aula?id=50&amp;t=1301" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">21:41</span><span>Ponta por baixo e meia por fora</span></a></li><li><a href="/hub/aula?id=50&amp;t=1563" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">26:03</span><span>Vantagem de quem defende</span></a></li><li><a href="/hub/aula?id=50&amp;t=1822" style="display: flex; gap: 14px; align-items: baseline; text-decoration: none; color: #111111; padding: 12px 6px; border-bottom: 1px solid #F0F0F0"><span style="flex: 0 0 64px; font-weight: 700; font-variant-numeric: tabular-nums; color: #4A79A6">30:22</span><span>Bola diagonal para dentro</span></a></li></ol><p style="margin: 0; font-size: 13px; color: #777777">Clique em um trecho para assistir a partir daquele minuto (é preciso entrar com a sua conta grátis).</p></section><div style="flex: 1 1 300px; max-width: 380px"><aside style="background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 96px"><p style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #4A79A6">Aula gratuita</p><p style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.2">Assista grátis no EOJHub</p><p style="margin: 0; font-size: 15px; line-height: 1.55; color: #444444">Crie sua conta grátis e assista à aula completa, com índice para pular direto para cada trecho.</p><a href="/hub/aula?id=50" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #111111; color: #FFFFFF">▶ Assistir à aula</a><span style="font-size: 14px; color: #555555">Duração: 33 min</span><a href="/eojhub" style="font-size: 14px; font-weight: 600">Conheça os planos do EOJHub</a></aside></div><section style="flex: 1 1 100%; background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 14px"><h2 style="margin: 0; font-size: 20px; font-weight: 800">Outras aulas gratuitas</h2><ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 15px"><li><a href="/aulas-gratuitas/aula-sobre-volantes-medios-e-meias-desmarques-e-treinamento" style="text-decoration: none; font-weight: 600">Aula sobre volantes, médios e meias (desmarques e treinamento)</a></li><li><a href="/aulas-gratuitas/aula-sobre-bolas-paradas-daniel-alegria-parte-1" style="text-decoration: none; font-weight: 600">Aula sobre bolas paradas (Daniel Alegria) - Parte 1</a></li><li><a href="/aulas-gratuitas/aula-sobre-bolas-paradas-daniel-alegria-parte-2" style="text-decoration: none; font-weight: 600">Aula sobre bolas paradas (Daniel Alegria) - Parte 2</a></li><li><a href="/aulas-gratuitas/live-13-1x1-defensivo-de-van-dijk-foco-no-giro-de-quadril" style="text-decoration: none; font-weight: 600">Live 13 - 1x1 defensivo de Van Dijk - foco no giro de quadril</a></li><li><a href="/aulas-gratuitas/live-14-como-chegar-no-entrelinhas-adversario" style="text-decoration: none; font-weight: 600">Live 14 - Como chegar no entrelinhas adversário</a></li><li><a href="/aulas-gratuitas/live-15-o-4-4-2-e-4-5-1-do-newcastle-que-parou-o-arsenal" style="text-decoration: none; font-weight: 600">Live 15 - O 4-4-2 e 4-5-1 do Newcastle que parou o Arsenal</a></li></ul><a href="/aulas-gratuitas" style="font-weight: 700">Ver todas as aulas gratuitas</a></section></div>
+<footer style="background: #111111; color: #CFCFCF">
+<div style="max-width: 1240px; margin: 0 auto; padding: 56px 32px 40px; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 320px">
+<span style="font-family: Montserrat, sans-serif; font-weight: 800; font-size: 24px; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.04em">Entendendo o Jogo</span>
+<span style="font-size: 15px; line-height: 1.6">Formação tática e análise de jogo para treinadores, analistas e profissionais do futebol.</span>
+<a href="mailto:entendendoojogo@gmail.com" style="color: #A1C4E6; text-decoration: none; font-size: 15px">entendendoojogo@gmail.com</a>
+</div>
+<nav aria-label="Rodapé" style="display: flex; flex-wrap: wrap; gap: 48px; font-size: 15px">
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Conteúdo</span><a href="/biblioteca/acervo" style="color: #CFCFCF; text-decoration: none">Biblioteca EOJ</a><a href="/blog" style="color: #CFCFCF; text-decoration: none">Blog</a><a href="/conteudos" style="color: #CFCFCF; text-decoration: none">Lives e podcasts</a><a href="/livros" style="color: #CFCFCF; text-decoration: none">Livros EOJ</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Comunidade</span><a href="https://chat.whatsapp.com/IfDikJxXWKVJVp5pad7DaE" style="color: #CFCFCF; text-decoration: none">Grupo sobre tática (WhatsApp)</a><a href="https://chat.whatsapp.com/Lk3CEDf12ZQ3IQRd9Y34Xi" style="color: #CFCFCF; text-decoration: none">Grupo sobre treino (WhatsApp)</a><a href="https://www.instagram.com/entendendoojogo/" style="color: #CFCFCF; text-decoration: none">Instagram</a><a href="https://www.youtube.com/channel/UCXC2Uxw9CoJHGAN_FC06LYQ" style="color: #CFCFCF; text-decoration: none">YouTube</a><a href="https://x.com/italobresende" style="color: #CFCFCF; text-decoration: none">X</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px"><span style="color: #FFFFFF; font-weight: 600">Ajuda</span><a href="/ajuda" style="color: #CFCFCF; text-decoration: none">Perguntas frequentes</a><a href="https://api.whatsapp.com/send?phone=6281385430917" style="color: #CFCFCF; text-decoration: none">WhatsApp</a><a href="/termos" style="color: #CFCFCF; text-decoration: none">Termo de uso</a><a href="/privacidade" style="color: #CFCFCF; text-decoration: none">Política de privacidade</a></div>
+</nav>
+</div>
+<div style="max-width: 1240px; margin: 0 auto; padding: 20px 32px 32px; border-top: 1px solid #2A2A2A; font-size: 13px; color: #A6A6A6">© 2026 Entendendo o Jogo. Todos os direitos reservados. · <a href="#" onclick="window.eojCookies && window.eojCookies(); return false;" style="color: #A6A6A6">Preferências de cookies</a></div>
+</footer>
+<a href="https://api.whatsapp.com/send?phone=6281385430917" aria-label="Fale com o suporte pelo WhatsApp" title="Suporte pelo WhatsApp" style="position: fixed; right: 20px; bottom: 20px; z-index: 20; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: transparent; color: #25D366; text-decoration: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25))"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M20 11.5a8 8 0 01-11.6 7.1L4 20l1.4-4.2A8 8 0 1120 11.5z"></path><path d="M9 9.5c.3 1.8 1.7 3.6 3.6 4.4l1.2-1.1 2 .8-.4 1.6c-3.4.2-7-3.2-7.2-6.6l1.6-.5.8 2z"></path></svg></a>
+</div>
+</template>
+<script src="/eoj-runtime.js?v=6476652e"></script>
+<script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+EOJ.mount(typeof Component !== 'undefined' ? Component : null);
+</script>
+<div id="eoj-consent" role="dialog" aria-live="polite" aria-label="Aviso de cookies" hidden style="position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 90; max-width: 760px; margin: 0 auto; background: #111111; color: #FFFFFF; border: 1px solid #2A2A2A; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); padding: 18px 20px; display: none; flex-wrap: wrap; align-items: center; gap: 14px 20px; font-size: 14px; line-height: 1.5; font-family: Montserrat, system-ui, sans-serif">
+<p style="margin: 0; flex: 1 1 320px">Usamos cookies de análise e de marketing (Google Analytics e Meta) para entender como o site é usado, melhorar o conteúdo e mostrar anúncios relevantes. Você pode aceitar ou recusar. <a href="/privacidade" style="color: #A1C4E6">Política de privacidade</a></p>
+<div style="display: flex; gap: 10px; flex: 0 0 auto">
+<button type="button" data-eoj-cookies="recusado" style="font: inherit; font-weight: 600; background: transparent; color: #FFFFFF; border: 1px solid #555555; border-radius: 8px; padding: 10px 16px; cursor: pointer">Recusar</button>
+<button type="button" data-eoj-cookies="aceito" style="font: inherit; font-weight: 700; background: #A1C4E6; color: #111111; border: 0; border-radius: 8px; padding: 10px 18px; cursor: pointer">Aceitar</button>
+</div>
+</div>
+<script>
+(function () {
+  var box = document.getElementById('eoj-consent');
+  var v = null; try { v = localStorage.getItem('eoj-cookies'); } catch (e) {}
+  if (!v) { box.hidden = false; box.style.display = 'flex'; }
+  window.eojCookies = function () { box.hidden = false; box.style.display = 'flex'; };
+  box.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-eoj-cookies]'); if (!b) return;
+    var c = b.getAttribute('data-eoj-cookies');
+    try { localStorage.setItem('eoj-cookies', c); } catch (e) {}
+    box.hidden = true; box.style.display = 'none';
+    if (c === 'aceito') window.eojLoadGA();
+    else if (window.__eojMkt) { try { location.reload(); } catch (e) {} }
+  });
+})();
+</script>
+</body>
+</html>

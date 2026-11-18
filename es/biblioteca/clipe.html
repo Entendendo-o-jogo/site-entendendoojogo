@@ -59,7 +59,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 .bib-in{font:inherit;font-weight:400;font-size:15px;padding:12px;border:1.5px solid #CCCCCC;border-radius:8px;background:#FFFFFF;color:#111111;width:100%;box-sizing:border-box}.bib-in:focus{outline:2px solid #A1C4E6;outline-offset:1px}.bib-lb{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
-<script src="/biblioteca.js?v=ed576482"></script>
+<script src="/biblioteca.js?v=7aae59f5"></script>
 <link rel="stylesheet" href="/site.css?v=d322d344">
 <!-- Google Analytics: cole aqui o código do GA4 quando a conta estiver criada -->
 <link rel="alternate" hreflang="pt-BR" href="https://entendendoojogo.com.br/biblioteca/clipe"><link rel="alternate" hreflang="es" href="https://entendendoojogo.com.br/es/biblioteca/clipe"><link rel="alternate" hreflang="en" href="https://entendendoojogo.com.br/en/biblioteca/clipe"><link rel="alternate" hreflang="x-default" href="https://entendendoojogo.com.br/biblioteca/clipe">
@@ -120,7 +120,7 @@ class Component extends DCLogic {
         if (!r[0]) return self.setState({ loading: false, erro: 'Clip no encontrado o todavía no publicado.' });
         var f = {}; r[1].forEach(function (x) { f[x] = true; });
         var c = r[0], outros = r[3].filter(function (x) { return x.id !== c.id; });
-        function pontos(x) { return (x.conceito && x.conceito === c.conceito ? 3 : 0) + (x.subtema && x.subtema === c.subtema ? 2 : 0) + (x.fase && x.fase === c.fase ? 2 : 0) + (x.momento && x.momento === c.momento ? 1 : 0) + (x.equipe && x.equipe === c.equipe ? 1 : 0); }
+        function pontos(x) { return (x.conceito && x.conceito === c.conceito ? 3 : 0) + (x.subtema && x.subtema === c.subtema ? 2 : 0) + (x.fase && x.fase === c.fase ? 2 : 0) + (x.momento && x.momento === c.momento ? 1 : 0) + (x.equipe && x.equipe === c.equipe ? 1 : 0) + (x.jogador && x.jogador === c.jogador ? 2 : 0); }
         var rel = outros.filter(function (x) { return pontos(x) > 0; }).sort(function (a, b) { return pontos(b) - pontos(a); }).slice(0, 3);
         document.title = c.titulo + ' — Biblioteca EOJ';
         self.setState({ c: c, loading: false, favs: f, pls: r[2], rel: rel, esc: r[4] });
@@ -145,7 +145,7 @@ class Component extends DCLogic {
     v.voltaPl = EOJB.param('pl') ? EOJB.u('/biblioteca/playlist?c=') + encodeURIComponent(EOJB.param('pl')) : '';
     v.momento = EOJB.t(c.momento || ''); v.fase = EOJB.t(c.fase || ''); v.momentoUrl = EOJB.u('/biblioteca/acervo?m=') + encodeURIComponent(c.momento || '');
     v.titulo = c.titulo; v.linha = [c.momento, c.fase].filter(Boolean).map(EOJB.t).join(' · ');
-    v.meta = [c.equipe, c.treinador, c.competicao, c.temporada].filter(Boolean).join(' · '); v.escudo = EOJB.escudoDe(st.esc, c.equipe);
+    v.meta = [c.jogador, c.equipe, c.treinador, c.competicao, c.temporada].filter(Boolean).join(' · '); v.escudo = EOJB.escudoDe(st.esc, c.equipe);
     // O que observar: linhas que começam com tempo (0:12) viram momentos clicáveis
     var linhas = String(c.descricao || '').split(/\r?\n/), texto = [], moms = [];
     linhas.forEach(function (l) {
@@ -185,7 +185,7 @@ class Component extends DCLogic {
       EOJB.novaPlaylist(nome).then(function (p) { self._nova = ''; return EOJB.adicionar(p.id, c.id).then(function () { self.aviso('Añadido a “' + nome + '”'); return self.recarregar(); }); }).catch(function (e) { self.aviso(EOJB.msg(e)); });
     };
     // Ficha
-    v.ficha = [['Tipo', c.tipo], ['Resultado', c.resultado], ['Subtema', c.subtema], ['Momento', c.momento], ['Fase', c.fase], ['Posición', c.posicao], ['Equipo', c.equipe], ['Concepto', c.conceito],
+    v.ficha = [['Tipo', c.tipo], ['Resultado', c.resultado], ['Subtema', c.subtema], ['Momento', c.momento], ['Fase', c.fase], ['Posición', c.posicao], ['Jugador', c.jogador], ['Equipo', c.equipe], ['Concepto', c.conceito],
       ['Nivel', c.nivel], ['Género', c.genero], ['Cámara', c.camera], ['Duración', c.duracao]].filter(function (x) { return x[1]; }).map(function (x) { return { k: x[0], v: EOJB.t(x[1]) }; });
     return v;
   }

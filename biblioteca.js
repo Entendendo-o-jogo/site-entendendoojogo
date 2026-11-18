@@ -360,7 +360,7 @@
   var POS = ['goleiro', 'zagueiro', 'lateral', 'ala', 'volante', 'meia', 'meio-campista', 'ponta', 'extremo', 'atacante', 'centroavante', 'segundo atacante'];
   var PLURAL = { goleiros: 'goleiro', zagueiros: 'zagueiro', laterais: 'lateral', alas: 'ala', volantes: 'volante', meias: 'meia', 'meio-campistas': 'meio-campista', pontas: 'ponta', extremos: 'extremo', atacantes: 'atacante', centroavantes: 'centroavante' };
   function semAcento(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
-  B.lerNome = function (nome) {
+  B.lerNome = function (nome, jogadores) {
     var base = String(nome || '').replace(/\.(mp4|mov|m4v|avi|mkv)$/i, '');
     var partes = base.split('_').map(function (x) { return x.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
     var titulo = partes.join(' - ');
@@ -385,7 +385,12 @@
     if (tem(/\bfeminino\b/)) c.genero = 'Feminino'; else c.genero = 'Masculino';
     if (partes.length >= 3) {
       var ult = partes[partes.length - 1];
-      if (!/^\d/.test(ult) && !/^(tv|camera.*|positivo|negativo|compilado|clipe separado|feminino|masculino|org\.?\s.*|organizacao.*|transicao.*|bolas? paradas?)$/.test(semAcento(ult))) { c.equipe = ult; titulo = partes.slice(0, -1).join(' - '); }
+      if (!/^\d/.test(ult) && !/^(tv|camera.*|positivo|negativo|compilado|clipe separado|feminino|masculino|org\.?\s.*|organizacao.*|transicao.*|bolas? paradas?)$/.test(semAcento(ult))) {
+        // "jogador Yamal" ou um jogador já cadastrado vai para o campo Jogador; o resto é Equipe
+        var mj = ult.match(/^(jogador|jog\.?|player)\s*:?\s+(.+)$/i), conhecido = (jogadores || []).find(function (j) { return semAcento(j) === semAcento(ult); });
+        if (mj) c.jogador = mj[2].trim(); else if (conhecido) c.jogador = conhecido; else c.equipe = ult;
+        titulo = partes.slice(0, -1).join(' - ');
+      }
     }
     c.titulo = B.limparTitulo(titulo);
     return c;

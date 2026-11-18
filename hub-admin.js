@@ -42,6 +42,7 @@
     c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div>' +
       '<div class="ha-row"><button type="button" class="ha-b" data-duracoes>Buscar a duração das aulas no Vimeo</button><span data-dur-st style="font-size:14px"></span></div>' +
       '<div class="ha-row"><button type="button" class="ha-b" data-transcricoes>Preparar o índice das aulas (legendas do Vimeo)</button><span data-tr-st style="font-size:14px"></span></div>' +
+      '<div class="ha-row"><button type="button" class="ha-b" data-indices-todos>Gerar o índice (IA) das aulas que ainda não têm</button><span data-ind-st style="font-size:14px"></span></div>' +
       '<div class="ha-row"><button type="button" class="ha-p" data-transcricoes-todas>Ler a legenda de TODAS as aulas (as que faltam)</button><span data-trt-st style="font-size:14px"></span></div>' +
       '<p style="margin:0;font-size:13px;color:#555555">Lê a legenda automática do Vimeo das aulas das trilhas e das aulas gratuitas e guarda um resumo para o Claude sugerir os marcadores de minuto. Não muda nada para os alunos.</p></div>' +
       '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
@@ -276,6 +277,25 @@
       .catch(function (e) { passo('Parou: ' + (e && e.message || e)); btn.disabled = false; });
   }
 
+  function indicesTodos(btn) {
+    var stt = raiz.querySelector('[data-ind-st]'); btn.disabled = true; stt.textContent = 'Separando as aulas…';
+    Promise.all([sb.rpc('admin_aulas_sem_indice').then(ok)]).then(function (r) {
+      var ids = r[0].map(function (x) { return x.aula_id; }), i = 0, feitos = 0, falhas = 0;
+      if (!ids.length) { stt.textContent = 'Todas as aulas com legenda já têm índice.'; btn.disabled = false; return; }
+      function prox() {
+        if (i >= ids.length) { stt.textContent = 'Pronto: ' + feitos + ' aulas ganharam índice' + (falhas ? ', ' + falhas + ' falharam' : '') + '.'; btn.disabled = false; return; }
+        var id = ids[i++]; stt.textContent = 'Gerando índice ' + i + ' de ' + ids.length + '…';
+        return sb.functions.invoke('ia', { body: { acao: 'indice', aula: id } }).then(function (x) {
+          var d = x && x.data || {};
+          if (d.erro === 'sem_chave') throw new Error('falta a chave da IA (ANTHROPIC_API_KEY) nos segredos do Supabase');
+          if (x.error || d.erro) falhas++; else feitos++;
+          return prox();
+        });
+      }
+      return prox();
+    }).catch(function (e) { btn.disabled = false; stt.textContent = 'Parou: ' + (e && e.message || e); });
+  }
+
   // ---------- Trilhas ----------
   function trilhas(c) {
     c.innerHTML = 'Carregando…';
@@ -472,6 +492,7 @@
     if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
     if ((x = t.closest('[data-transcricoes-todas]'))) return transcreverTodas(x);
     if ((x = t.closest('[data-sumidos]'))) return baixarSumidos(x);
+    if ((x = t.closest('[data-indices-todos]'))) return indicesTodos(x);
     if ((x = t.closest('[data-preparar]'))) return prepararAula(+x.getAttribute('data-preparar'), x);
     if ((x = t.closest('[data-transcricoes]'))) return prepararTranscricoes(x);
     if ((x = t.closest('[data-marcs]'))) return marcadores(+x.getAttribute('data-marcs'));

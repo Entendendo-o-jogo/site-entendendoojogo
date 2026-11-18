@@ -378,6 +378,19 @@
     else if (tem(/\btransicao\s*ofensiva\b/)) c.momento = 'Transição ofensiva';
     else if (tem(/\btransicao\s*defensiva\b/)) c.momento = 'Transição defensiva';
     else if (tem(/\b(bolas? paradas?|escanteio|tiro livre)\b/)) c.momento = 'Bolas paradas';
+    // Fase (e momento, se ainda vazio) pelas palavras do nome
+    var lado = tem(/\b(defensiv[oa]s?|de defesa)\b/) ? ' defensivo' : tem(/\b(ofensiv[oa]s?|de ataque)\b/) ? ' ofensivo' : '';
+    var BP = [[/\b(arremessos? (lateral|laterais)|(lateral|laterais) cobrad[oa]s?)\b/, 'Arremesso lateral'], [/\bescanteios?\b/, 'Escanteio'], [/\bfaltas? (frontal|frontais)\b/, 'Falta frontal'], [/\bfaltas? (lateral|laterais)\b/, 'Falta lateral'], [/\b(tiros? livres?|faltas? (ofensivas?|defensivas?|cobradas?|diretas?|indiretas?))\b/, 'Falta']];
+    var bp = BP.find(function (x) { return x[0].test(n); });
+    if (bp) { c.fase = bp[1] + (/^Falta/.test(bp[1]) ? lado.replace(/o$/, 'a') : lado); c.momento = 'Bolas paradas'; if (!c.subtema) c.subtema = 'Bolas paradas'; }
+    else {
+      var OF = [[/\bsaida de bola\b/, 'Saída de bola'], [/\bconstru(cao|coes)\b/, 'Construção'], [/\bfinaliza(cao|coes)\b/, 'Finalização']];
+      var DF = [[/\bbloco alto\b/, 'Bloco alto'], [/\bbloco medio\b/, 'Bloco médio'], [/\bbloco baixo\b/, 'Bloco baixo']];
+      var of = OF.find(function (x) { return x[0].test(n); }), df = DF.find(function (x) { return x[0].test(n); });
+      if (of) { c.fase = of[1]; if (!c.momento) c.momento = 'Org. ofensiva'; }
+      else if (df && tem(/\bcontra (o |um )?bloco\b/)) { if (!c.momento) c.momento = 'Org. ofensiva'; }
+      else if (df) { c.fase = df[1]; if (!c.momento) c.momento = 'Org. defensiva'; }
+    }
     if (tem(/\bcamera\s*tatica\b/)) c.camera = 'Câmera tática';
     else if (tem(/\b(camera\s*(da\s*)?tv|tv)\b/)) c.camera = 'Câmera da TV';
     if (tem(/\bpositivo\b/)) c.resultado = 'Positivo'; else if (tem(/\bnegativo\b/)) c.resultado = 'Negativo';

@@ -16,6 +16,8 @@
   var TX = {
     es: {
       'Imagem': 'Imagen',
+      'imagem': 'imagen',
+      'imagens': 'imágenes',
       'Duração': 'Duración',
       'Tirar da lista': 'Quitar de la lista',
       'A imagem fica parada na tela pelo tempo escolhido. Use ↑ e ↓ na lista para mudar a posição (no topo ela vira a capa de abertura).': 'La imagen queda fija en pantalla durante el tiempo elegido. Usa ↑ y ↓ en la lista para cambiar su posición (arriba se convierte en la portada de apertura).',
@@ -47,6 +49,8 @@
     },
     en: {
       'Imagem': 'Image',
+      'imagem': 'image',
+      'imagens': 'images',
       'Duração': 'Duration',
       'Tirar da lista': 'Remove from list',
       'A imagem fica parada na tela pelo tempo escolhido. Use ↑ e ↓ na lista para mudar a posição (no topo ela vira a capa de abertura).': 'The image stays on screen for the chosen time. Use ↑ and ↓ in the list to move it (at the top it becomes the opening cover).',

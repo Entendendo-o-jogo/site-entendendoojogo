@@ -52,7 +52,8 @@
         '<span class="ed-tx"><b>' + (i + 1) + '. ' + esc(x.titulo) + '</b><span>' + (x.tipo === 'img' ? '🖼 ' + esc(L('Imagem')) + ' · ' + x.dur + ' s' : x.dur ? tm(x.ini) + ' → ' + tm(x.fim) + ' · ' + Math.round(x.fim - x.ini) + ' s' : (x.erro ? esc(L('Não foi possível carregar')) : esc(L('Carregando…')))) + '</span></span>' +
         '<span class="ed-mv"><button type="button" data-up="' + i + '" aria-label="' + esc(L('Subir')) + '"' + (i === 0 ? ' disabled' : '') + '>↑</button><button type="button" data-down="' + i + '" aria-label="' + esc(L('Descer')) + '"' + (i === st.itens.length - 1 ? ' disabled' : '') + '>↓</button></span></div>';
     }).join('');
-    raiz.querySelector('.ed-total').textContent = nOn + ' ' + (nOn === 1 ? L('clipe') : L('clipes')) + ' · ' + L('duração') + ' ' + B.dur(total);
+    var nImg = st.itens.filter(function (x) { return x.on && x.tipo === 'img'; }).length, nVid = nOn - nImg;
+    raiz.querySelector('.ed-total').textContent = (nVid ? nVid + ' ' + (nVid === 1 ? L('clipe') : L('clipes')) : '') + (nVid && nImg ? ' + ' : '') + (nImg ? nImg + ' ' + (nImg === 1 ? L('imagem') : L('imagens')) : '') + (nOn ? '' : '0 ' + L('clipes')) + ' · ' + L('duração') + ' ' + B.dur(total);
     raiz.querySelector('.ed-gerar').disabled = st.gerando || !nOn || st.itens.some(function (x) { return x.on && !x.dur; });
     var ehImg = it && it.tipo === 'img';
     raiz.querySelector('.ed-video').style.display = ehImg ? 'none' : '';

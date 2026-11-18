@@ -76,6 +76,16 @@
         '<label>Descrição<br><textarea class="ha-in" data-f="descricao" rows="3" style="width:100%">' + esc(k.descricao) + '</textarea></label>' +
         '<div class="ha-row"><label class="ha-chk"><input type="checkbox" data-f="publicado"' + (k.publicado ? ' checked' : '') + '>Publicado</label><label class="ha-chk"><input type="checkbox" data-f="gratuito"' + (k.gratuito ? ' checked' : '') + '>Grátis</label><label class="ha-chk"><input type="checkbox" data-f="plano_basic"' + (k.plano_basic ? ' checked' : '') + '>Incluído no Basic</label>' +
         '<button type="button" class="ha-p" data-salvar-curso="' + k.id + '">Salvar curso</button></div></div>' +
+        '<details class="ha-box" style="background:#F3F6FA;border-color:#D6E1EC"><summary style="cursor:pointer;font-weight:700;font-size:16px">Como subir uma aula nova (passo a passo)</summary>' +
+        '<ol style="margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5">' +
+        '<li>Envie o vídeo para o <b>Vimeo</b> (na conta do EOJ, pasta das aulas). O vídeo não sobe aqui no site: ele fica no Vimeo e o site só mostra.</li>' +
+        '<li>Aqui embaixo, no módulo certo, clique em <b>+ Aula</b>. Se for um módulo novo, crie antes com <b>+ Novo módulo</b>.</li>' +
+        '<li>Preencha o <b>título</b> e cole o <b>link do vídeo no Vimeo</b> (ou só o número dele) no campo “ID ou link do Vimeo”. A duração pode ficar vazia.</li>' +
+        '<li>Marque <b>Publicada</b> e clique em <b>Salvar aula</b>.</li>' +
+        '<li>Clique em <b>⚡ Preparar aula</b>: ele preenche a duração, lê a legenda, sugere os filtros e cria o índice.</li>' +
+        '<li>Se o vídeo não abrir para os alunos, use <b>Liberar vídeos no site novo</b> na lista de cursos (caixa “Vídeos das aulas no Vimeo”).</li>' +
+        '<li>Para PDFs e materiais extras, use o botão <b>Materiais</b> da aula.</li></ol>' +
+        '<p style="margin:10px 0 0;font-size:14px;color:#555555">A aula nova aparece sozinha em “Mais recentes” no /hub e na busca.</p></details>' +
         '<div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Módulos e aulas</b><button type="button" class="ha-p" data-novo-mod="' + k.id + '">+ Novo módulo</button></div>';
       html += mods.map(function (m) {
         var as = aulas.filter(function (a) { return a.modulo_id === m.id; });
@@ -89,7 +99,7 @@
   function aulaHtml(a) {
     return '<div class="ha-aula" data-aula="' + a.id + '"><div class="ha-row"><input class="ha-in" data-f="ordem" type="number" value="' + a.ordem + '" style="width:64px" aria-label="Ordem">' +
       '<input class="ha-in" data-f="titulo" value="' + esc(a.titulo) + '" style="flex:1 1 260px" aria-label="Título da aula">' +
-      '<input class="ha-in" data-f="vimeo_id" value="' + esc(a.vimeo_id) + '" placeholder="ID do Vimeo" style="width:120px" aria-label="ID do Vimeo">' +
+      '<input class="ha-in" data-f="vimeo_id" value="' + esc(a.vimeo_id) + '" placeholder="ID ou link do Vimeo" style="width:200px" aria-label="ID ou link do vídeo no Vimeo">' +
       '<input class="ha-in" data-f="duracao_seg" type="number" value="' + esc(a.duracao_seg) + '" placeholder="seg" style="width:80px" aria-label="Duração em segundos">' +
       '<label class="ha-chk"><input type="checkbox" data-f="publicado"' + (a.publicado ? ' checked' : '') + '>Publicada</label></div>' +
       '<textarea class="ha-in" data-f="descricao" rows="2" placeholder="Descrição da aula" aria-label="Descrição">' + esc(a.descricao) + '</textarea>' +
@@ -505,7 +515,7 @@
     if ((x = t.closest('[data-salvar-mod]'))) { var mb = x.closest('[data-mod]'); return sb.from('modulos').update({ titulo: mb.querySelector(':scope > .ha-row [data-f="titulo"]').value, ordem: +mb.querySelector(':scope > .ha-row [data-f="ordem"]').value }).eq('id', +x.getAttribute('data-salvar-mod')).then(ok).then(function () { aviso('Módulo salvo'); }).catch(falha); }
     if ((x = t.closest('[data-apagar-mod]'))) { if (!confirm('Apagar este módulo e todas as aulas dele? Não dá para desfazer.')) return; return sb.from('modulos').delete().eq('id', +x.getAttribute('data-apagar-mod')).then(ok).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; return sb.from('aulas').insert({ modulo_id: +x.getAttribute('data-nova-aula'), titulo: ta, ordem: 99, publicado: false }).then(ok).then(desenhar).catch(falha); }
-    if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; da[i.getAttribute('data-f')] = v; });
+    if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
       return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva'); }).catch(falha); }
     if ((x = t.closest('[data-apagar-aula]'))) { if (!confirm('Apagar esta aula? Não dá para desfazer.')) return; return sb.from('aulas').delete().eq('id', +x.getAttribute('data-apagar-aula')).then(ok).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-materiais]'))) { return materiais(+x.getAttribute('data-materiais')); }

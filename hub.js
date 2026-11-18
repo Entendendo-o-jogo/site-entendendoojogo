@@ -262,6 +262,58 @@
   };
 })();
 
+/* Janela de compra: ao clicar em conteúdo bloqueado (links /cursos/... dentro da área do aluno),
+   mostra as opções (curso avulso, Basic, Premium) em vez de mandar direto para a página de venda. */
+(function () {
+  'use strict';
+  if (!/^\/hub(\/|$)/.test(location.pathname)) return;
+  var HM = 'https://pay.hotmart.com/T89761885Q?off=';
+  var LINK = { basic: HM + 'l30o64an', anual: HM + '4kfotxvj', mensal: HM + 'foqitieg&bid=1704899286192' };
+  var VENDA = { 'atuacao-profissional': 'consultoria', 'masterclasses': '' };
+  var css = '.pw-bg{position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.6);display:flex;align-items:center;justify-content:center;padding:16px}' +
+    '.pw{background:#FFFFFF;border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:26px;display:flex;flex-direction:column;gap:16px;font-family:inherit;color:#111111;box-shadow:0 30px 80px rgba(0,0,0,.35)}' +
+    '.pw h2{margin:0;font-size:24px;font-weight:800;line-height:1.15}.pw p{margin:0;font-size:15px;line-height:1.55;color:#444444}' +
+    '.pw-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}' +
+    '.pw-c{border:1.5px solid #E2E2E2;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}.pw-c.dest{border-color:#D4AF37;background:#FFFBEF}' +
+    '.pw-c b{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#4A79A6}.pw-c.dest b{color:#8A6A12}' +
+    '.pw-c .v{font-size:26px;font-weight:800;line-height:1}.pw-c .v small{font-size:13px;font-weight:600;color:#555555}.pw-c span{font-size:14px;line-height:1.45;color:#444444}' +
+    '.pw-c a{margin-top:auto;display:inline-flex;justify-content:center;text-decoration:none;font-weight:700;font-size:15px;padding:12px 14px;border-radius:8px;background:#111111;color:#FFFFFF}' +
+    '.pw-c.dest a{background:#D4AF37;color:#111111}.pw-x{align-self:flex-end;font:inherit;font-size:14px;font-weight:600;background:none;border:0;color:#4A79A6;cursor:pointer;padding:6px 0}';
+  function abrir(slug, href) {
+    var B = window.EOJB, H = window.EOJH;
+    var venda = slug in VENDA ? VENDA[slug] : slug;
+    B.sb.from('cursos').select('titulo,plano_basic').eq('slug', slug).maybeSingle().then(function (r) {
+      var c = (r && r.data) || { titulo: '', plano_basic: slug === 'masterclasses' };
+      var op = [];
+      if (venda) op.push('<div class="pw-c"><b>Curso avulso</b><div class="v" style="font-size:20px">' + esc(c.titulo || 'Este curso') + '</div><span>Acesso por 12 meses a este curso, com certificado.</span><a data-pw="curso" href="/cursos/' + venda + '">Ver preço e comprar</a></div>');
+      if (c.plano_basic) op.push('<div class="pw-c"><b>Basic</b><div class="v">R$ 19,99<small> /mês</small></div><span>Todas as masterclasses + novas todo mês.</span><a data-pw="basic" href="' + LINK.basic + '">Assinar o Basic</a></div>');
+      op.push('<div class="pw-c dest"><b>Premium · tudo</b><div class="v">R$ 111,90<small> /mês no anual</small></div><span>Todos os cursos, masterclasses e conteúdos novos. Mensal: R$ 159,90.</span><a data-pw="premium" href="' + LINK.anual + '">Assinar o Premium</a></div>');
+      var bg = document.createElement('div'); bg.className = 'pw-bg'; bg.setAttribute('role', 'dialog'); bg.setAttribute('aria-modal', 'true'); bg.setAttribute('aria-labelledby', 'pw-t');
+      bg.innerHTML = '<style>' + css + '</style><div class="pw"><button type="button" class="pw-x" data-pw-x>Fechar ✕</button>' +
+        '<h2 id="pw-t">Este conteúdo não está no seu plano</h2><p>' + (c.titulo ? 'Ele faz parte de <strong>' + esc(c.titulo) + '</strong>. ' : '') + 'Escolha como liberar:</p>' +
+        '<div class="pw-op">' + op.join('') + '</div>' +
+        '<p style="font-size:13px;color:#555555">Já comprou? Confira se entrou com o mesmo e-mail da compra na Hotmart. Dúvidas: <a href="https://api.whatsapp.com/send?phone=6282113761580" target="_blank" rel="noopener">fale com a gente no WhatsApp</a> · <a href="/eojhub">comparar os planos</a></p></div>';
+      document.body.appendChild(bg);
+      var x = bg.querySelector('[data-pw-x]'); x.focus();
+      function fechar() { bg.remove(); document.removeEventListener('keydown', esc1); }
+      function esc1(e) { if (e.key === 'Escape') fechar(); }
+      document.addEventListener('keydown', esc1);
+      bg.addEventListener('click', function (e) {
+        if (e.target === bg || e.target.closest('[data-pw-x]')) return fechar();
+        var a = e.target.closest('[data-pw]'); if (a && H) H.ev('paywall_clique', { opcao: a.getAttribute('data-pw'), curso: slug });
+      });
+      if (H) H.ev('paywall_abriu', { curso: slug });
+    });
+  }
+  function esc(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="/cursos/"]');
+    if (!a || a.closest('.pw, header, footer, nav') || e.ctrlKey || e.metaKey) return;
+    var m = /^\/cursos\/([a-z0-9-]+)/.exec(a.getAttribute('href')); if (!m) return;
+    e.preventDefault(); abrir(m[1], a.getAttribute('href'));
+  }, true);
+})();
+
 /* QR Code (c) 2009 Kazuhiko Arase, MIT license — empacotado de qrcode-terminal/vendor. EOJQR.svg(texto) devolve um <svg>. */
 (function () {
 var M = {};

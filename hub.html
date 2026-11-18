@@ -170,7 +170,7 @@ class Component extends DCLogic {
       if (q.length < 8) return self.setState({ iaMsg: 'Escreva a sua pergunta com um pouco mais de detalhe.' });
       self.setState({ iaCarregando: true, iaMsg: '', ia: null });
       EOJH.perguntar(q).then(function (d) {
-        var M = { premium: 'O Pergunte ao EOJ é exclusivo para assinantes Premium.', sem_chave: 'O Pergunte ao EOJ está sendo ativado. Volte em breve!', limite: 'Você chegou ao limite de perguntas de hoje. Volte amanhã!', pergunta_curta: 'Escreva a sua pergunta com um pouco mais de detalhe.', login: 'Entre na sua conta para perguntar.' };
+        var M = { premium: 'O Pergunte ao EOJ é exclusivo para assinantes Premium.', sem_chave: 'O Pergunte ao EOJ está sendo ativado. Volte em breve!', desligada: 'O Pergunte ao EOJ está sendo ativado. Volte em breve!', limite: 'Você chegou ao limite de perguntas de hoje. Volte amanhã!', pergunta_curta: 'Escreva a sua pergunta com um pouco mais de detalhe.', login: 'Entre na sua conta para perguntar.' };
         if (d.erro) return self.setState({ iaCarregando: false, iaMsg: M[d.erro] || 'Não foi possível responder agora. Tente de novo em instantes.' });
         self.setState({ iaCarregando: false, ia: d });
       }).catch(function () { self.setState({ iaCarregando: false, iaMsg: 'Não foi possível responder agora. Tente de novo em instantes.' }); }); };

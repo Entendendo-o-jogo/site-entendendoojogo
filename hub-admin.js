@@ -18,7 +18,7 @@
     '.ha-mod{border:1px solid #E2E2E2;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}' +
     '.ha-mod{border-left-width:6px}.ha-modh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-radius:8px;padding:8px 10px;margin:-4px -4px 0}.ha-tag{font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;background:#111111;color:#FFFFFF}' +
     '.ha-aula.ha-sel{outline:2px solid #2F6FB5;outline-offset:1px}.ha-aula.ha-nova{box-shadow:0 0 0 3px #A1C4E6}.ha-ck{display:inline-flex;align-items:center;justify-content:center;width:34px}.ha-ck input{width:18px;height:18px;cursor:pointer}' +
-    '[data-resto][hidden]{display:none!important}.ha-mais{align-self:flex-start}.ha-barsel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:96vw;z-index:60;background:#111111;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:15px}.ha-barsel[hidden]{display:none}.ha-barsel .ha-b{background:#2A3038;color:#FFFFFF;border-color:#3A424C}.ha-barsel .ha-x{color:#FF8A75}' +
+    '[data-resto][hidden],[data-corpomod][hidden]{display:none!important}.ha-modh{cursor:pointer}.ha-mais{align-self:flex-start}.ha-barsel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:96vw;z-index:60;background:#111111;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:15px}.ha-barsel[hidden]{display:none}.ha-barsel .ha-b{background:#2A3038;color:#FFFFFF;border-color:#3A424C}.ha-barsel .ha-x{color:#FF8A75}' +
     '.ha-aula{background:#FFFFFF;border:1px solid #E8E8E8;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}' +
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
@@ -94,15 +94,17 @@
       html += '<p style="margin:0;font-size:14px;color:#555555">Em cada módulo, as aulas mais recentes aparecem primeiro. A ordem que o aluno vê segue o campo de número à esquerda de cada aula.</p>';
       html += mods.map(function (m, mi) {
         var cor = CORES[mi % CORES.length], as = aulas.filter(function (a) { return a.modulo_id === m.id; }).sort(function (x, y) { return y.id - x.id; });
-        var VIS = 3, ab = st.modAberto && st.modAberto[m.id];
+        var VIS = 3, ab = st.modAberto && st.modAberto[m.id], ex = st.modExp && st.modExp[m.id];
         return '<div class="ha-mod" data-mod="' + m.id + '" style="border-color:' + cor[0] + ';background:' + cor[1] + '"><div class="ha-row ha-modh" style="background:' + cor[0] + '22">' +
+          '<button type="button" class="ha-b ha-tog" data-togmod="' + m.id + '" aria-expanded="' + (ex ? 'true' : 'false') + '" style="min-width:110px;font-weight:700;border-color:' + cor[0] + ';color:' + cor[0] + '">' + (ex ? '▾ Fechar' : '▸ Abrir') + '</button>' +
           '<span class="ha-ck"><input type="checkbox" data-selmod="' + m.id + '" aria-label="Selecionar todas as aulas do módulo"></span>' +
           '<input class="ha-in" data-f="ordem" type="number" value="' + m.ordem + '" style="width:64px" aria-label="Ordem"><input class="ha-in" data-f="titulo" value="' + esc(m.titulo) + '" style="flex:1 1 260px;font-weight:700" aria-label="Título do módulo">' +
           '<span style="font-size:13px;font-weight:700;color:' + cor[0] + '">' + as.length + ' aula' + (as.length === 1 ? '' : 's') + '</span>' + (m.oculto ? '<span class="ha-tag" title="Módulo escondido dos alunos">Oculto</span>' : '') +
           '<button type="button" class="ha-b" data-salvar-mod="' + m.id + '">Salvar</button><button type="button" class="ha-p" data-nova-aula="' + m.id + '">+ Aula</button><button type="button" class="ha-b ha-x" data-apagar-mod="' + m.id + '">Apagar</button></div>' +
+          '<div data-corpomod="' + m.id + '"' + (ex ? '' : ' hidden') + ' style="display:flex;flex-direction:column;gap:10px">' + (as.length ? '' : '<p style="margin:0;font-size:14px;color:#555555">Nenhuma aula neste módulo ainda.</p>') +
           as.slice(0, VIS).map(aulaHtml).join('') +
           (as.length > VIS ? '<div data-resto="' + m.id + '"' + (ab ? '' : ' hidden') + ' style="display:flex;flex-direction:column;gap:10px">' + as.slice(VIS).map(aulaHtml).join('') + '</div>' +
-            '<button type="button" class="ha-b ha-mais" data-maisaulas="' + m.id + '">' + (ab ? 'Esconder as aulas antigas' : 'Mostrar as outras ' + (as.length - VIS) + ' aulas') + '</button>' : '') + '</div>';
+            '<button type="button" class="ha-b ha-mais" data-maisaulas="' + m.id + '">' + (ab ? 'Esconder as aulas antigas' : 'Mostrar as outras ' + (as.length - VIS) + ' aulas') + '</button>' : '') + '</div></div>';
       }).join('');
       html += '<div class="ha-barsel" data-barsel hidden role="region" aria-label="Aulas selecionadas"><b data-nsel></b><button type="button" class="ha-b" data-lote="publicar">Publicar</button><button type="button" class="ha-b" data-lote="despublicar">Despublicar</button><span style="display:inline-flex;gap:6px;align-items:center;border-left:1px solid #3A424C;padding-left:10px">Mover para <select class="ha-in" data-lote-dest aria-label="Módulo de destino" style="max-width:260px"><option value="">Escolha o módulo…</option>' + mods.map(function (m) { return '<option value="' + m.id + '">' + esc(m.titulo) + (m.oculto ? ' (oculto)' : '') + '</option>'; }).join('') + '</select><button type="button" class="ha-b" data-lote="mover">Mover</button></span><button type="button" class="ha-b ha-x" data-lote="apagar">Apagar</button><button type="button" class="ha-b" data-lote="limpar">Limpar seleção</button></div>';
       c.innerHTML = html;
@@ -125,7 +127,7 @@
       ids = ids.filter(function (i) { return jaLa.indexOf(i) < 0; }); if (!ids.length) return aviso('As aulas selecionadas já estão nesse módulo.');
       if (!confirm('Mover ' + ids.length + (ids.length === 1 ? ' aula' : ' aulas') + ' para “' + nomeD + '”? Progresso, comentários, índice e filtros vão junto.')) return;
       var ords = [].map.call(raiz.querySelectorAll('[data-mod="' + dest + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), base = ords.length ? Math.max.apply(null, ords) : 0;
-      st.modAberto = st.modAberto || {}; st.modAberto[dest] = true;
+      st.modAberto = st.modAberto || {}; st.modAberto[dest] = true; st.modExp = st.modExp || {}; st.modExp[dest] = true;
       return Promise.all(ids.map(function (id, k) { return sb.from('aulas').update({ modulo_id: dest, ordem: base + k + 1 }).eq('id', id).then(ok); }))
         .then(function () { aviso(ids.length + ' aula(s) movida(s) para ' + nomeD); }).then(desenhar).catch(falha);
     }
@@ -551,9 +553,13 @@
     if ((x = t.closest('[data-novo-mod]'))) { var tm = prompt('Nome do módulo:'); if (!tm) return; return sb.from('modulos').insert({ curso_id: +x.getAttribute('data-novo-mod'), titulo: tm, ordem: 99 }).then(ok).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-salvar-mod]'))) { var mb = x.closest('[data-mod]'); return sb.from('modulos').update({ titulo: mb.querySelector(':scope > .ha-row [data-f="titulo"]').value, ordem: +mb.querySelector(':scope > .ha-row [data-f="ordem"]').value }).eq('id', +x.getAttribute('data-salvar-mod')).then(ok).then(function () { aviso('Módulo salvo'); }).catch(falha); }
     if ((x = t.closest('[data-apagar-mod]'))) { if (!confirm('Apagar este módulo e todas as aulas dele? Não dá para desfazer.')) return; return sb.from('modulos').delete().eq('id', +x.getAttribute('data-apagar-mod')).then(ok).then(desenhar).catch(falha); }
+    if ((x = t.closest('[data-togmod]')) || (t.closest('.ha-modh') && !t.closest('input,button,select,textarea,label,a'))) {
+      var hm = x ? x.getAttribute('data-togmod') : t.closest('[data-mod]').getAttribute('data-mod'), cm = raiz.querySelector('[data-corpomod="' + hm + '"]'), bt = raiz.querySelector('[data-togmod="' + hm + '"]');
+      st.modExp = st.modExp || {}; st.modExp[hm] = cm.hidden; cm.hidden = !cm.hidden; bt.textContent = cm.hidden ? '▸ Abrir' : '▾ Fechar'; bt.setAttribute('aria-expanded', cm.hidden ? 'false' : 'true'); return;
+    }
     if ((x = t.closest('[data-maisaulas]'))) { var mid = x.getAttribute('data-maisaulas'), rs = raiz.querySelector('[data-resto="' + mid + '"]'); st.modAberto = st.modAberto || {}; st.modAberto[mid] = rs.hidden; rs.hidden = !rs.hidden; x.textContent = rs.hidden ? 'Mostrar as outras ' + rs.querySelectorAll('[data-aula]').length + ' aulas' : 'Esconder as aulas antigas'; return; }
     if ((x = t.closest('[data-lote]'))) return lote(x.getAttribute('data-lote'));
-    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = (ords.length ? Math.max.apply(null, ords) : 0) + 1;
+    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = (ords.length ? Math.max.apply(null, ords) : 0) + 1; st.modExp = st.modExp || {}; st.modExp[mN] = true;
       return sb.from('aulas').insert({ modulo_id: mN, titulo: ta, ordem: prox, publicado: false }).select('id').single().then(ok).then(function (r) { st.novaAula = r && r.id; }).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
       return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva'); }).catch(falha); }
@@ -621,7 +627,7 @@
         raiz.addEventListener('click', cliques);
         raiz.addEventListener('change', function (e) {
           var t = e.target;
-          if (t.matches('[data-selmod]')) { var mm = raiz.querySelector('[data-mod="' + t.getAttribute('data-selmod') + '"]'); mm.querySelectorAll('[data-selaula]').forEach(function (i) { i.checked = t.checked; }); if (t.checked) { var rs2 = mm.querySelector('[data-resto]'); if (rs2 && rs2.hidden) mm.querySelector('[data-maisaulas]').click(); } return atualizaSel(); }
+          if (t.matches('[data-selmod]')) { var mm = raiz.querySelector('[data-mod="' + t.getAttribute('data-selmod') + '"]'); mm.querySelectorAll('[data-selaula]').forEach(function (i) { i.checked = t.checked; }); if (t.checked) { var cm2 = mm.querySelector('[data-corpomod]'); if (cm2 && cm2.hidden) mm.querySelector('[data-togmod]').click(); var rs2 = mm.querySelector('[data-resto]'); if (rs2 && rs2.hidden) mm.querySelector('[data-maisaulas]').click(); } return atualizaSel(); }
           if (t.matches('[data-selaula]')) return atualizaSel();
           if (t.matches('[data-f-mom],[data-f-esc],[data-f-mod-mom],[data-f-mod-esc]')) return salvarFiltro(t);
           if (t.matches('[data-f-sem]')) raiz.querySelectorAll('[data-f-aula]').forEach(function (tr) { tr.style.display = t.checked && tr.getAttribute('data-vazio') === '0' ? 'none' : ''; });

@@ -193,7 +193,7 @@ class Component extends DCLogic {
         pctTxt: col ? (vistas ? vistas + ' de ' + n + ' assistidos' : 'Explore os conteúdos') : pct === 100 ? 'Concluído' : pct ? pct + '% concluído' : 'Ainda não começou' };
     }
     v.meus = st.cursos.filter(function (c) { return st.acc[c.id]; }).map(card); v.temMeus = v.meus.length > 0; v.semMeus = !v.temMeus;
-    v.cursosAv = st.cursos.filter(function (c) { return !EOJH.porTema(c); }).map(card);
+    v.cursosAv = st.cursos.filter(function (c) { return !EOJH.porTema(c) && c.formato !== 'colecao'; }).map(card);
     var mcC = st.cursos.filter(EOJH.porTema)[0], nMc = 0;
     v.mcs = !mcC ? [] : (mcC.modulos || []).filter(function (m) { return !m.oculto && (m.aulas || []).length; })
       .sort(function (a, b) { return a.ordem - b.ordem || a.id - b.id; }).map(function (m) {

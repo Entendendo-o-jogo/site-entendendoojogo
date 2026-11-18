@@ -40,7 +40,9 @@
   function carregarCursos() { return sb.from('cursos').select('*').order('ordem').order('id').then(ok).then(function (d) { st.cursos = d; }); }
   function listaCursos(c) {
     c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div>' +
-      '<div class="ha-row"><button type="button" class="ha-b" data-duracoes>Buscar a duração das aulas no Vimeo</button><span data-dur-st style="font-size:14px"></span></div></div>' +
+      '<div class="ha-row"><button type="button" class="ha-b" data-duracoes>Buscar a duração das aulas no Vimeo</button><span data-dur-st style="font-size:14px"></span></div>' +
+      '<div class="ha-row"><button type="button" class="ha-b" data-transcricoes>Preparar o índice das aulas (legendas do Vimeo)</button><span data-tr-st style="font-size:14px"></span></div>' +
+      '<p style="margin:0;font-size:13px;color:#555555">Lê a legenda automática do Vimeo das aulas das trilhas e das aulas gratuitas e guarda um resumo para o Claude sugerir os marcadores de minuto. Não muda nada para os alunos.</p></div>' +
       '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Cursos (' + st.cursos.length + ')</b><button type="button" class="ha-p" data-novo-curso>+ Novo curso</button></div>' +
       '<p style="margin:0;font-size:13px;color:#555555">Só aparecem para os alunos os cursos marcados como publicados. "Basic" = incluído no plano Basic. "Grátis" = aberto para qualquer conta.</p>' +
       '<table><thead><tr><th>Curso</th><th>Tipo</th><th>Publicado</th><th>Grátis</th><th>Basic</th><th></th></tr></thead><tbody>' +
@@ -217,6 +219,27 @@
       });
     }
     lote().catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e); });
+  }
+
+  function prepararTranscricoes(btn) {
+    var stt = raiz.querySelector('[data-tr-st]'); btn.disabled = true; stt.textContent = 'Separando as aulas…';
+    var com = 0, sem = 0, erros = 0;
+    sb.from('trilha_itens').select('aula_id').then(ok).then(function (ti) {
+      var ids = ti.map(function (x) { return x.aula_id; }).concat([13, 14, 15, 16, 17, 18, 19, 20, 21, 50]);
+      ids = ids.filter(function (v, i, l) { return l.indexOf(v) === i; });
+      var i = 0;
+      function lote() {
+        if (i >= ids.length) { stt.textContent = 'Pronto: ' + com + ' aulas com legenda, ' + sem + ' sem legenda' + (erros ? ', ' + erros + ' com erro' : '') + '. Pode avisar o Claude.'; btn.disabled = false; return; }
+        var parte = ids.slice(i, i + 4); i += 4;
+        stt.textContent = 'Lendo legendas… ' + Math.min(i, ids.length) + ' de ' + ids.length;
+        return sb.functions.invoke('vimeo', { body: { acao: 'legendas', aulas: parte, intervalo: 60, salvar: true } }).then(function (r) {
+          if (r.error) throw r.error;
+          (r.data && r.data.aulas || []).forEach(function (a) { if (a.erro === 'sem_legenda') sem++; else if (a.erro) erros++; else com++; });
+          return lote();
+        });
+      }
+      return lote();
+    }).catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e); });
   }
 
   // ---------- Trilhas ----------
@@ -399,6 +422,7 @@
     if ((x = t.closest('[data-arquivar]'))) return sb.from('pedidos').update({ status: 'arquivado' }).eq('id', +x.getAttribute('data-arquivar')).then(ok).then(function () { sugestoes(raiz.querySelector('.ha-corpo')); }).catch(falha);
     if ((x = t.closest('[data-liberar-vimeo]'))) return liberarVimeo(x);
     if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
+    if ((x = t.closest('[data-transcricoes]'))) return prepararTranscricoes(x);
     if ((x = t.closest('[data-marcs]'))) return marcadores(+x.getAttribute('data-marcs'));
     if ((x = t.closest('[data-salvar-marcs]'))) return salvarMarcadores(+x.getAttribute('data-salvar-marcs'));
     if (t.closest('[data-nova-trilha]')) { var tn = prompt('Nome da trilha (ex.: Começando como analista):'); if (!tn) return; return sb.from('trilhas').insert({ titulo: tn }).then(ok).then(function () { trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha); }

@@ -20,6 +20,7 @@
     '.ha-aula.ha-sel{outline:2px solid #2F6FB5;outline-offset:1px}.ha-aula.ha-nova{box-shadow:0 0 0 3px #A1C4E6}.ha-ck{display:inline-flex;align-items:center;justify-content:center;width:34px}.ha-ck input{width:18px;height:18px;cursor:pointer}' +
     '[data-resto][hidden],[data-corpomod][hidden]{display:none!important}.ha-modh{cursor:pointer}.ha-mais{align-self:flex-start}.ha-barsel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:96vw;z-index:60;background:#111111;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:15px}.ha-barsel[hidden]{display:none}.ha-barsel .ha-b{background:#2A3038;color:#FFFFFF;border-color:#3A424C}.ha-barsel .ha-x{color:#FF8A75}' +
     '.ha-aula{background:#FFFFFF;border:1px solid #E8E8E8;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}' +
+    '.ha-imp{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}.ha-imp-c{background:#FFFFFF;border-radius:14px;max-width:880px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px}.ha-imp-l{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow:auto;border:1px solid #E2E2E2;border-radius:10px;padding:10px}.ha-imp-r{display:flex;gap:10px;align-items:center}.ha-imp-r input[type=text]{flex:1}.ha-imp-r small{color:#555555;min-width:64px;text-align:right}.ha-imp-r.ja{opacity:.5}' +
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
@@ -82,7 +83,8 @@
         '<details class="ha-box" style="background:#F3F6FA;border-color:#D6E1EC"><summary style="cursor:pointer;font-weight:700;font-size:16px">Como subir uma aula nova (passo a passo)</summary>' +
         '<ol style="margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5">' +
         '<li>Envie o vídeo para o <b>Vimeo</b> (na conta do EOJ, pasta das aulas). O vídeo não sobe aqui no site: ele fica no Vimeo e o site só mostra.</li>' +
-        '<li>Aqui embaixo, no módulo certo, clique em <b>+ Aula</b>. Se for um módulo novo, crie antes com <b>+ Novo módulo</b>.</li>' +
+        '<li><b>Várias aulas de uma vez:</b> no Vimeo, junte os vídeos numa pasta. Aqui, no módulo certo, clique em <b>⇪ Importar do Vimeo</b> e cole o link da pasta. Cada vídeo vira uma aula com o nome que tem no Vimeo (dá para corrigir antes), na ordem do nome, já com a duração, o vídeo liberado no site, a legenda, os filtros e o índice. Pronto, pode pular os passos abaixo.</li>' +
+        '<li><b>Uma aula só:</b> no módulo certo, clique em <b>+ Aula</b>. Se for um módulo novo, crie antes com <b>+ Novo módulo</b>.</li>' +
         '<li>Preencha o <b>título</b> e cole o <b>link do vídeo no Vimeo</b> (ou só o número dele) no campo “ID ou link do Vimeo”. A duração pode ficar vazia.</li>' +
         '<li>Marque <b>Publicada</b> e clique em <b>Salvar aula</b>. Ao salvar com o vídeo e sem duração, o painel prepara a aula sozinho: preenche a duração, lê a legenda, sugere os filtros e cria o índice (o andamento aparece ao lado dos botões da aula).</li>' +
         '<li>Se o Vimeo ainda não tiver gerado a legenda (vídeo recém-enviado), espere um pouco e clique em <b>⚡ Preparar aula</b> para tentar de novo. O índice automático depende da chave da IA no Supabase.</li>' +
@@ -100,7 +102,7 @@
           '<span class="ha-ck"><input type="checkbox" data-selmod="' + m.id + '" aria-label="Selecionar todas as aulas do módulo"></span>' +
           '<input class="ha-in" data-f="ordem" type="number" value="' + m.ordem + '" style="width:64px" aria-label="Ordem"><input class="ha-in" data-f="titulo" value="' + esc(m.titulo) + '" style="flex:1 1 260px;font-weight:700" aria-label="Título do módulo">' +
           '<span style="font-size:13px;font-weight:700;color:' + cor[0] + '">' + as.length + ' aula' + (as.length === 1 ? '' : 's') + '</span>' + (m.oculto ? '<span class="ha-tag" title="Módulo escondido dos alunos">Oculto</span>' : '') +
-          '<button type="button" class="ha-b" data-salvar-mod="' + m.id + '">Salvar</button><button type="button" class="ha-p" data-nova-aula="' + m.id + '">+ Aula</button><button type="button" class="ha-b ha-x" data-apagar-mod="' + m.id + '">Apagar</button></div>' +
+          '<button type="button" class="ha-b" data-salvar-mod="' + m.id + '">Salvar</button><button type="button" class="ha-p" data-nova-aula="' + m.id + '">+ Aula</button><button type="button" class="ha-p" data-importar="' + m.id + '" title="Cria as aulas de uma pasta do Vimeo, com o nome de cada vídeo">⇪ Importar do Vimeo</button><button type="button" class="ha-b ha-x" data-apagar-mod="' + m.id + '">Apagar</button></div>' +
           '<div data-corpomod="' + m.id + '"' + (ex ? '' : ' hidden') + ' style="display:flex;flex-direction:column;gap:10px">' + (as.length ? '' : '<p style="margin:0;font-size:14px;color:#555555">Nenhuma aula neste módulo ainda.</p>') +
           as.slice(0, VIS).map(aulaHtml).join('') +
           (as.length > VIS ? '<div data-resto="' + m.id + '"' + (ab ? '' : ' hidden') + ' style="display:flex;flex-direction:column;gap:10px">' + as.slice(VIS).map(aulaHtml).join('') + '</div>' +
@@ -561,9 +563,10 @@
     }
     if ((x = t.closest('[data-maisaulas]'))) { var mid = x.getAttribute('data-maisaulas'), rs = raiz.querySelector('[data-resto="' + mid + '"]'); st.modAberto = st.modAberto || {}; st.modAberto[mid] = rs.hidden; rs.hidden = !rs.hidden; x.textContent = rs.hidden ? 'Mostrar as outras ' + rs.querySelectorAll('[data-aula]').length + ' aulas' : 'Esconder as aulas antigas'; return; }
     if ((x = t.closest('[data-lote]'))) return lote(x.getAttribute('data-lote'));
+    if ((x = t.closest('[data-importar]'))) return importarVimeo(+x.getAttribute('data-importar'));
     if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = (ords.length ? Math.max.apply(null, ords) : 0) + 1; st.modExp = st.modExp || {}; st.modExp[mN] = true;
       return sb.from('aulas').insert({ modulo_id: mN, titulo: ta, ordem: prox, publicado: false }).select('id').single().then(ok).then(function (r) { st.novaAula = r && r.id; }).then(desenhar).catch(falha); }
-    if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
+    if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var hv = String(v).match(/vimeo\.com\/(?:video\/)?\d{6,}\/([0-9a-f]{6,})/i) || String(v).match(/[?&]h=([0-9a-f]{6,})/i); if (hv) da.vimeo_hash = hv[1]; var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
       return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva');
         var idA = +x.getAttribute('data-salvar-aula'), pb = ab.querySelector('[data-preparar]');
         if (da.vimeo_id && !da.duracao_seg && pb && !pb.disabled) prepararAula(idA, pb); }).catch(falha); }
@@ -602,6 +605,112 @@
     if ((x = t.closest('[data-salvar-trilha]'))) return salvarTrilha(+x.getAttribute('data-salvar-trilha'));
     if ((x = t.closest('[data-apagar-trilha]'))) { if (!confirm('Apagar esta trilha?')) return; return sb.from('trilhas').delete().eq('id', +x.getAttribute('data-apagar-trilha')).then(ok).then(function () { trilhas(raiz.querySelector('.ha-corpo')); }).catch(falha); }
     if ((x = t.closest('[data-ativo]'))) { return sb.from('acessos_email').update({ ativo: x.getAttribute('data-v') === 'true', atualizado_em: new Date().toISOString() }).eq('id', +x.getAttribute('data-ativo')).then(ok).then(buscar).catch(falha); }
+  }
+
+  // ---------- Importar aulas de uma pasta do Vimeo (nome do vídeo vira o título) ----------
+  function limparNome(n) { return String(n || '').replace(/\.(mp4|mov|m4v|mkv|avi|wmv)$/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function fmtDur(s) { s = +s || 0; var m = Math.floor(s / 60); return m >= 60 ? Math.floor(m / 60) + 'h' + ('0' + (m % 60)).slice(-2) : m + ' min'; }
+  function importarVimeo(modId) {
+    var nomeMod = (raiz.querySelector('[data-mod="' + modId + '"] .ha-modh [data-f="titulo"]') || {}).value || 'módulo';
+    var w = document.createElement('div'); w.className = 'ha-imp';
+    w.innerHTML = '<div class="ha-imp-c" role="dialog" aria-label="Importar do Vimeo"><div class="ha-row" style="justify-content:space-between"><b style="font-size:20px">Importar do Vimeo para “' + esc(nomeMod) + '”</b><button type="button" class="ha-b" data-imp-x>Fechar</button></div>' +
+      '<p style="margin:0;font-size:15px;line-height:1.5">1. No Vimeo, coloque os vídeos novos numa <b>pasta</b>. 2. Abra a pasta e copie o link do navegador (algo como vimeo.com/user/…/folder/<b>123456</b>). 3. Cole aqui. O título de cada aula será o nome do vídeo no Vimeo; dá para corrigir antes de criar.</p>' +
+      '<div class="ha-row"><input class="ha-in" data-imp-pasta placeholder="Link da pasta do Vimeo (ou só o número dela)" style="flex:1 1 360px"><button type="button" class="ha-p" data-imp-buscar>Buscar vídeos</button></div>' +
+      '<div data-imp-corpo></div></div>';
+    document.body.appendChild(w);
+    var corpo = w.querySelector('[data-imp-corpo]'), lista = [];
+    w.querySelector('[data-imp-pasta]').focus();
+    function fechar() { w.remove(); }
+    w.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t === w || t.closest('[data-imp-x]')) return fechar();
+      if (t.closest('[data-imp-buscar]')) return buscar();
+      if (t.closest('[data-imp-todos]')) { var v = t.checked; corpo.querySelectorAll('[data-imp-ck]:not(:disabled)').forEach(function (c) { c.checked = v; }); return contar(); }
+      if (t.closest('[data-imp-ck]')) return contar();
+      if (t.closest('[data-imp-criar]')) return criar(t.closest('[data-imp-criar]'));
+    });
+    w.querySelector('[data-imp-pasta]').addEventListener('keydown', function (e) { if (e.key === 'Enter') buscar(); });
+    function contar() { var n = corpo.querySelectorAll('[data-imp-ck]:checked').length, b = corpo.querySelector('[data-imp-criar]'); if (b) { b.textContent = 'Criar ' + n + (n === 1 ? ' aula' : ' aulas'); b.disabled = !n; } }
+    function buscar() {
+      var txt = w.querySelector('[data-imp-pasta]').value.trim(), m = txt.match(/folders?\/(\d+)/) || txt.match(/projects\/(\d+)/) || txt.match(/^(\d+)$/);
+      if (!m) { corpo.innerHTML = '<p style="margin:0;color:#8C1D18">Não reconheci o link. Abra a pasta no Vimeo e copie o endereço inteiro do navegador (ele tem “/folder/” e um número).</p>'; return; }
+      corpo.innerHTML = '<p style="margin:0">Buscando os vídeos da pasta…</p>';
+      Promise.all([
+        sb.functions.invoke('vimeo', { body: { acao: 'pasta', pasta: m[1] } }),
+        sb.from('aulas').select('vimeo_id').not('vimeo_id', 'is', null).limit(10000).then(ok)
+      ]).then(function (r) {
+        if (r[0].error) throw r[0].error;
+        var ja = {}; r[1].forEach(function (a) { ja[String(a.vimeo_id).replace(/\D/g, '')] = 1; });
+        lista = ((r[0].data && r[0].data.videos) || []).map(function (v) { return { id: String(v.id), hash: v.hash, nome: limparNome(v.nome), dur: v.duracao, status: v.status, ja: !!ja[String(v.id)] }; });
+        lista.sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt-BR', { numeric: true, sensitivity: 'base' }); });
+        if (!lista.length) { corpo.innerHTML = '<p style="margin:0">Nenhum vídeo nessa pasta (ou a pasta é de outra conta do Vimeo).</p>'; return; }
+        var novos = lista.filter(function (v) { return !v.ja; }).length;
+        corpo.innerHTML = '<p style="margin:0 0 8px;font-size:15px"><b>' + lista.length + ' vídeos</b> na pasta · ' + novos + ' novos' + (lista.length - novos ? ' · ' + (lista.length - novos) + ' já estão cadastrados (ficam de fora)' : '') + '. Ordem por nome; a sequência do aluno segue essa ordem.</p>' +
+          '<label class="ha-chk" style="margin-bottom:6px"><input type="checkbox" data-imp-todos checked> Selecionar todos os novos</label>' +
+          '<div class="ha-imp-l">' + lista.map(function (v, i) {
+            return '<div class="ha-imp-r' + (v.ja ? ' ja' : '') + '"><span class="ha-ck"><input type="checkbox" data-imp-ck="' + i + '"' + (v.ja ? ' disabled' : ' checked') + '></span>' +
+              '<input type="text" class="ha-in" data-imp-nome="' + i + '" value="' + esc(v.nome) + '"' + (v.ja ? ' disabled' : '') + ' aria-label="Título da aula">' +
+              '<small>' + (v.ja ? 'já cadastrada' : v.status && v.status !== 'available' ? 'processando' : fmtDur(v.dur)) + '</small></div>';
+          }).join('') + '</div>' +
+          '<div class="ha-row"><label class="ha-chk"><input type="checkbox" data-imp-pub checked> Publicar já</label><label class="ha-chk"><input type="checkbox" data-imp-prep checked> Depois de criar, preparar as aulas (legenda, filtros e índice)</label></div>' +
+          '<div class="ha-row"><button type="button" class="ha-p" data-imp-criar>Criar</button><span data-imp-st style="font-size:14px"></span></div>';
+        contar();
+      }).catch(function (e) { corpo.innerHTML = '<p style="margin:0;color:#8C1D18">Não consegui ler a pasta: ' + esc(B.msg ? B.msg(e) : (e && e.message || e)) + '</p>'; });
+    }
+    function criar(btn) {
+      var stt = corpo.querySelector('[data-imp-st]'), sel = [];
+      corpo.querySelectorAll('[data-imp-ck]:checked').forEach(function (c) { var i = +c.getAttribute('data-imp-ck'), v = lista[i]; v.titulo = (corpo.querySelector('[data-imp-nome="' + i + '"]').value || '').trim() || v.nome; sel.push(v); });
+      if (!sel.length) return;
+      var pub = corpo.querySelector('[data-imp-pub]').checked, prep = corpo.querySelector('[data-imp-prep]').checked;
+      btn.disabled = true; stt.textContent = 'Criando ' + sel.length + ' aulas…';
+      sb.from('aulas').select('ordem').eq('modulo_id', modId).order('ordem', { ascending: false }).limit(1).then(ok).then(function (r) {
+        var base = (r[0] && r[0].ordem) || 0;
+        var linhas = sel.map(function (v, k) { return { modulo_id: modId, titulo: v.titulo, vimeo_id: v.id, vimeo_hash: v.hash || null, duracao_seg: v.dur || null, ordem: base + k + 1, publicado: pub }; });
+        return sb.from('aulas').insert(linhas).select('id, vimeo_id').then(ok);
+      }).then(function (novas) {
+        st.modExp = st.modExp || {}; st.modExp[modId] = true;
+        stt.textContent = novas.length + ' aulas criadas · liberando os vídeos no site…';
+        var vids = novas.map(function (a) { return a.vimeo_id; });
+        return liberarVideos(vids, stt).then(function () {
+          if (!prep) { stt.textContent = novas.length + ' aulas criadas e vídeos liberados. Pode fechar.'; return; }
+          return prepararLote(novas.map(function (a) { return a.id; }), stt, novas.length);
+        });
+      }).then(function () { btn.textContent = 'Concluído'; desenhar(); })
+        .catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (B.msg ? B.msg(e) : (e && e.message || e)); });
+    }
+  }
+  function liberarVideos(vids, stt) {
+    var i = 0;
+    function lote() {
+      if (i >= vids.length) return Promise.resolve();
+      var parte = vids.slice(i, i + 40);
+      return sb.functions.invoke('vimeo', { body: { acao: 'dominio', videos: parte, limite: 40 } }).then(function (r) {
+        var d = r.data || {};
+        if (d.limite) { stt.textContent = 'Aguardando o limite do Vimeo (1 min)…'; return new Promise(function (ok2) { setTimeout(ok2, 60000); }).then(lote); }
+        i += parte.length; return lote();
+      }).catch(function () { i += parte.length; return lote(); });
+    }
+    return lote();
+  }
+  function prepararLote(ids, stt, total) {
+    var i = 0, prontas = 0, semLeg = 0, semInd = 0;
+    function prox() {
+      if (i >= ids.length) {
+        stt.textContent = total + ' aulas criadas · ' + prontas + ' preparadas' + (semLeg ? ' · ' + semLeg + ' ainda sem legenda no Vimeo (clique em “⚡ Preparar aula” nelas mais tarde)' : '') + (semInd ? ' · ' + semInd + ' sem índice' : '') + '.';
+        return Promise.resolve();
+      }
+      var id = ids[i++];
+      stt.textContent = 'Preparando ' + i + ' de ' + ids.length + ' (legenda, filtros e índice)…';
+      return sb.functions.invoke('vimeo', { body: { acao: 'legendas', aulas: [id], intervalo: 60, salvar: true } }).then(function (r) {
+        var d = r.data || {}, a = d.aulas && d.aulas[0];
+        if (d.limite) { i--; stt.textContent = 'Aguardando o limite do Vimeo (1 min)…'; return new Promise(function (ok2) { setTimeout(ok2, 60000); }); }
+        if (!a || a.erro) { semLeg++; return; }
+        return sb.rpc('admin_sugerir_filtros', { a: id }).then(function () {
+          return sb.functions.invoke('ia', { body: { acao: 'indice', aula: id } });
+        }).then(function (x) { var dd = x && x.data || {}; if (x.error || (dd.erro && dd.erro !== 'ja_tem_indice')) semInd++; prontas++; });
+      }).catch(function () { semLeg++; }).then(prox);
+    }
+    return prox();
   }
 
   // Acrescenta o domínio novo em lotes, respeitando o limite da API do Vimeo

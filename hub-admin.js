@@ -18,7 +18,7 @@
     '.ha-mod{border:1px solid #E2E2E2;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#FAFAFA}' +
     '.ha-mod{border-left-width:6px}.ha-modh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-radius:8px;padding:8px 10px;margin:-4px -4px 0}.ha-tag{font-size:12px;font-weight:700;padding:3px 8px;border-radius:99px;background:#111111;color:#FFFFFF}' +
     '.ha-aula.ha-sel{outline:2px solid #2F6FB5;outline-offset:1px}.ha-aula.ha-nova{box-shadow:0 0 0 3px #A1C4E6}.ha-ck{display:inline-flex;align-items:center;justify-content:center;width:34px}.ha-ck input{width:18px;height:18px;cursor:pointer}' +
-    '[data-resto][hidden]{display:none!important}.ha-mais{align-self:flex-start}.ha-barsel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:60;background:#111111;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:15px}.ha-barsel[hidden]{display:none}.ha-barsel .ha-b{background:#2A3038;color:#FFFFFF;border-color:#3A424C}.ha-barsel .ha-x{color:#FF8A75}' +
+    '[data-resto][hidden]{display:none!important}.ha-mais{align-self:flex-start}.ha-barsel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:96vw;z-index:60;background:#111111;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:15px}.ha-barsel[hidden]{display:none}.ha-barsel .ha-b{background:#2A3038;color:#FFFFFF;border-color:#3A424C}.ha-barsel .ha-x{color:#FF8A75}' +
     '.ha-aula{background:#FFFFFF;border:1px solid #E8E8E8;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}' +
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
@@ -104,7 +104,7 @@
           (as.length > VIS ? '<div data-resto="' + m.id + '"' + (ab ? '' : ' hidden') + ' style="display:flex;flex-direction:column;gap:10px">' + as.slice(VIS).map(aulaHtml).join('') + '</div>' +
             '<button type="button" class="ha-b ha-mais" data-maisaulas="' + m.id + '">' + (ab ? 'Esconder as aulas antigas' : 'Mostrar as outras ' + (as.length - VIS) + ' aulas') + '</button>' : '') + '</div>';
       }).join('');
-      html += '<div class="ha-barsel" data-barsel hidden role="region" aria-label="Aulas selecionadas"><b data-nsel></b><button type="button" class="ha-b" data-lote="publicar">Publicar</button><button type="button" class="ha-b" data-lote="despublicar">Despublicar</button><button type="button" class="ha-b ha-x" data-lote="apagar">Apagar</button><button type="button" class="ha-b" data-lote="limpar">Limpar seleção</button></div>';
+      html += '<div class="ha-barsel" data-barsel hidden role="region" aria-label="Aulas selecionadas"><b data-nsel></b><button type="button" class="ha-b" data-lote="publicar">Publicar</button><button type="button" class="ha-b" data-lote="despublicar">Despublicar</button><span style="display:inline-flex;gap:6px;align-items:center;border-left:1px solid #3A424C;padding-left:10px">Mover para <select class="ha-in" data-lote-dest aria-label="Módulo de destino" style="max-width:260px"><option value="">Escolha o módulo…</option>' + mods.map(function (m) { return '<option value="' + m.id + '">' + esc(m.titulo) + (m.oculto ? ' (oculto)' : '') + '</option>'; }).join('') + '</select><button type="button" class="ha-b" data-lote="mover">Mover</button></span><button type="button" class="ha-b ha-x" data-lote="apagar">Apagar</button><button type="button" class="ha-b" data-lote="limpar">Limpar seleção</button></div>';
       c.innerHTML = html;
       if (st.novaAula) { var na = c.querySelector('[data-aula="' + st.novaAula + '"]'); st.novaAula = null; if (na) { na.classList.add('ha-nova'); na.scrollIntoView({ block: 'center' }); var vi = na.querySelector('[data-f="vimeo_id"]'); if (vi) vi.focus(); } }
     }).catch(falha);
@@ -118,6 +118,17 @@
   function lote(acao) {
     var ids = selecionadas();
     if (acao === 'limpar' || !ids.length) { raiz.querySelectorAll('[data-selaula]:checked, [data-selmod]:checked').forEach(function (i) { i.checked = false; }); return atualizaSel(); }
+    if (acao === 'mover') {
+      var sel = raiz.querySelector('[data-lote-dest]'), dest = +sel.value, nomeD = sel.options[sel.selectedIndex].text;
+      if (!dest) { sel.focus(); return aviso('Escolha o módulo de destino.'); }
+      var jaLa = ids.filter(function (i) { var a = raiz.querySelector('[data-aula="' + i + '"]'); return a && +a.closest('[data-mod]').getAttribute('data-mod') === dest; });
+      ids = ids.filter(function (i) { return jaLa.indexOf(i) < 0; }); if (!ids.length) return aviso('As aulas selecionadas já estão nesse módulo.');
+      if (!confirm('Mover ' + ids.length + (ids.length === 1 ? ' aula' : ' aulas') + ' para “' + nomeD + '”? Progresso, comentários, índice e filtros vão junto.')) return;
+      var ords = [].map.call(raiz.querySelectorAll('[data-mod="' + dest + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), base = ords.length ? Math.max.apply(null, ords) : 0;
+      st.modAberto = st.modAberto || {}; st.modAberto[dest] = true;
+      return Promise.all(ids.map(function (id, k) { return sb.from('aulas').update({ modulo_id: dest, ordem: base + k + 1 }).eq('id', id).then(ok); }))
+        .then(function () { aviso(ids.length + ' aula(s) movida(s) para ' + nomeD); }).then(desenhar).catch(falha);
+    }
     if (acao === 'apagar') { if (!confirm('Apagar ' + ids.length + (ids.length === 1 ? ' aula' : ' aulas') + '? O progresso e os comentários delas também somem. Não dá para desfazer.')) return;
       return sb.from('aulas').delete().in('id', ids).then(ok).then(function () { aviso(ids.length + ' aula(s) apagada(s)'); }).then(desenhar).catch(falha); }
     return sb.from('aulas').update({ publicado: acao === 'publicar' }).in('id', ids).then(ok).then(function () { aviso(ids.length + ' aula(s) ' + (acao === 'publicar' ? 'publicada(s)' : 'despublicada(s)')); }).then(desenhar).catch(falha);

@@ -151,6 +151,7 @@
       '.pr.pr-max .pr-st{color:#CFCFCF}.pr.pr-max .pr-edit{border:0}' +
       '.pr.pr-max .pr-flut{display:flex;gap:8px;position:absolute;right:8px;top:8px}.pr.pr-max .pr-flut .pr-b{background:rgba(17,17,17,.75);color:#FFFFFF;border-color:#3A424C}' +
       '.pr.pr-max.pr-sem .pr-dk{display:none!important}' +
+      '[data-edit][hidden]{display:none!important}.pr.pr-max .pr-b{padding:7px 10px;font-size:13px}.pr.pr-max .pr-sel{padding-top:6px;padding-bottom:6px;font-size:13px}.pr.pr-max .pr-dk{flex-wrap:wrap;gap:6px}' +
       '.pr-lista{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}.pr-lista li{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#FFFFFF;border:1px solid #E2E2E2;border-radius:10px;padding:10px 12px}';
     var OPS = function (o) { return Object.keys(FORM).map(function (k) { return '<option>' + k + '</option>'; }).join(''); };
     raiz.innerHTML = '<style>' + css + '</style><div class="pr">' +

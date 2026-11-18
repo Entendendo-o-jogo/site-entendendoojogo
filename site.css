@@ -160,7 +160,7 @@ details:not(.eoj-faq)[open]>summary::after{transform:rotate(-135deg) translate(-
 @media (prefers-reduced-motion: reduce){.eoj-faq,.eoj-faq summary i,.eoj-faq::details-content{transition:none}}
 
 /* EOJHub · A plataforma — 3 opções (#pl1 padrão, #pl2, #pl3) */
-.plo{display:none}#pl1{display:block}.plw:has(.plo:target) #pl1:not(:target){display:none}.plo:target{display:block}
+.plo{display:block}
 .pm{display:flex;flex-direction:column;gap:7px;background:#0F1317;border:1px solid #2A3038;border-radius:12px;padding:12px;height:150px;overflow:hidden;box-sizing:border-box;color:#FFFFFF;font-size:12px}
 .pm-in{display:flex;align-items:center;gap:7px;background:#FFFFFF;color:#111111;border-radius:8px;padding:7px 9px;font-weight:600}
 .pm-row{display:flex;align-items:center;gap:8px;background:#1A1F24;border-radius:7px;padding:6px 8px;color:#CFD6DE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

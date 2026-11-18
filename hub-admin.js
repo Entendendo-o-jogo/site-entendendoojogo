@@ -84,8 +84,8 @@
         '<li>Envie o vídeo para o <b>Vimeo</b> (na conta do EOJ, pasta das aulas). O vídeo não sobe aqui no site: ele fica no Vimeo e o site só mostra.</li>' +
         '<li>Aqui embaixo, no módulo certo, clique em <b>+ Aula</b>. Se for um módulo novo, crie antes com <b>+ Novo módulo</b>.</li>' +
         '<li>Preencha o <b>título</b> e cole o <b>link do vídeo no Vimeo</b> (ou só o número dele) no campo “ID ou link do Vimeo”. A duração pode ficar vazia.</li>' +
-        '<li>Marque <b>Publicada</b> e clique em <b>Salvar aula</b>.</li>' +
-        '<li>Clique em <b>⚡ Preparar aula</b>: ele preenche a duração, lê a legenda, sugere os filtros e cria o índice.</li>' +
+        '<li>Marque <b>Publicada</b> e clique em <b>Salvar aula</b>. Ao salvar com o vídeo e sem duração, o painel prepara a aula sozinho: preenche a duração, lê a legenda, sugere os filtros e cria o índice (o andamento aparece ao lado dos botões da aula).</li>' +
+        '<li>Se o Vimeo ainda não tiver gerado a legenda (vídeo recém-enviado), espere um pouco e clique em <b>⚡ Preparar aula</b> para tentar de novo. O índice automático depende da chave da IA no Supabase.</li>' +
         '<li>Se o vídeo não abrir para os alunos, use <b>Liberar vídeos no site novo</b> na lista de cursos (caixa “Vídeos das aulas no Vimeo”).</li>' +
         '<li>Para PDFs e materiais extras, use o botão <b>Materiais</b> da aula.</li></ol>' +
         '<p style="margin:10px 0 0;font-size:14px;color:#555555">A aula nova aparece sozinha em “Mais recentes” no /hub e na busca.</p></details>' +
@@ -321,6 +321,8 @@
         passo('Sugerindo os filtros…'); return sb.rpc('admin_sugerir_filtros', { a: id }); })
       .then(function (r) { var f = (r && r.data) || ''; passo('Filtros: ' + f + ' · gerando o índice…');
         return sb.functions.invoke('ia', { body: { acao: 'indice', aula: id } }).then(function (x) { var d = x && x.data || {};
+          if (d.erro === 'sem_chave') return 'Duração, legenda e filtros prontos (' + f + ') · o índice automático só funciona depois que a chave da IA for colocada no Supabase';
+          if (d.erro === 'ja_tem_indice') return 'Pronto · filtros: ' + f + ' · a aula já tinha índice (' + (d.marcadores || 0) + ' marcadores)';
           if (x.error || d.erro) return 'Filtros: ' + f + ' · índice automático indisponível (' + (d.erro || 'função de IA não configurada') + ')';
           return 'Pronto · filtros: ' + f + ' · índice: ' + (d.marcadores || 0) + ' marcadores'; }).catch(function () { return 'Filtros: ' + f + ' · índice automático indisponível'; }); })
       .then(function (msg) { passo(msg); btn.disabled = false; })
@@ -562,7 +564,9 @@
     if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = (ords.length ? Math.max.apply(null, ords) : 0) + 1; st.modExp = st.modExp || {}; st.modExp[mN] = true;
       return sb.from('aulas').insert({ modulo_id: mN, titulo: ta, ordem: prox, publicado: false }).select('id').single().then(ok).then(function (r) { st.novaAula = r && r.id; }).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
-      return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva'); }).catch(falha); }
+      return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva');
+        var idA = +x.getAttribute('data-salvar-aula'), pb = ab.querySelector('[data-preparar]');
+        if (da.vimeo_id && !da.duracao_seg && pb && !pb.disabled) prepararAula(idA, pb); }).catch(falha); }
     if ((x = t.closest('[data-apagar-aula]'))) { if (!confirm('Apagar esta aula? Não dá para desfazer.')) return; return sb.from('aulas').delete().eq('id', +x.getAttribute('data-apagar-aula')).then(ok).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-materiais]'))) { return materiais(+x.getAttribute('data-materiais')); }
     if ((x = t.closest('[data-add-mat]'))) { return addMaterial(+x.getAttribute('data-add-mat')); }

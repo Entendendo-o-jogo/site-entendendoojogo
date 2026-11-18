@@ -269,6 +269,7 @@
   B.avisos = function () { return B.user ? sb.from('avisos').select('*').eq('usuario_id', B.user.id).order('criado_em', { ascending: false }).limit(30).then(ok) : Promise.resolve([]); };
   B.naoLidos = function () { return B.user ? sb.from('avisos').select('id', { count: 'exact', head: true }).eq('usuario_id', B.user.id).eq('lido', false).then(function (r) { return r.count || 0; }) : Promise.resolve(0); };
   B.lerAvisos = function () { return B.user ? sb.from('avisos').update({ lido: true }).eq('usuario_id', B.user.id).eq('lido', false).then(ok) : Promise.resolve(); };
+  B.publicarClipes = function (ids) { return sb.from('clipes').update({ publicado: true }).in('id', ids).then(ok); };
   B.inserirVarios = function (lista) { return sb.from('clipes').insert(lista).select('id').then(ok); };
   B.excluirClipe = function (id) { return sb.from('clipes').delete().eq('id', id).then(ok); };
 

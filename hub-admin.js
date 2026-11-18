@@ -91,7 +91,7 @@
       '<input class="ha-in" data-f="duracao_seg" type="number" value="' + esc(a.duracao_seg) + '" placeholder="seg" style="width:80px" aria-label="Duração em segundos">' +
       '<label class="ha-chk"><input type="checkbox" data-f="publicado"' + (a.publicado ? ' checked' : '') + '>Publicada</label></div>' +
       '<textarea class="ha-in" data-f="descricao" rows="2" placeholder="Descrição da aula" aria-label="Descrição">' + esc(a.descricao) + '</textarea>' +
-      '<div class="ha-row"><button type="button" class="ha-b" data-salvar-aula="' + a.id + '">Salvar aula</button><button type="button" class="ha-b" data-materiais="' + a.id + '">Materiais</button><button type="button" class="ha-b" data-marcs="' + a.id + '">Índice (marcadores)</button><button type="button" class="ha-b ha-x" data-apagar-aula="' + a.id + '">Apagar</button></div>' +
+      '<div class="ha-row"><button type="button" class="ha-b" data-salvar-aula="' + a.id + '">Salvar aula</button><button type="button" class="ha-b" data-materiais="' + a.id + '">Materiais</button><button type="button" class="ha-b" data-marcs="' + a.id + '">Índice (marcadores)</button><button type="button" class="ha-b" data-preparar="' + a.id + '" title="Depois de salvar com o ID do Vimeo: busca a duração, lê a legenda, sugere os filtros e o índice">⚡ Preparar aula</button><span data-prep-st="' + a.id + '" style="font-size:13px;color:#555555"></span><button type="button" class="ha-b ha-x" data-apagar-aula="' + a.id + '">Apagar</button></div>' +
       '<div class="ha-mats" data-mats="' + a.id + '" style="display:none"></div><div data-marcbox="' + a.id + '" style="display:none"></div></div>';
   }
   function vals(box) {
@@ -257,6 +257,23 @@
       });
     }
     lote().catch(function (e) { btn.disabled = false; stt.textContent = 'Erro: ' + (e && e.message || e) + ' — clique de novo para continuar de onde parou.'; });
+  }
+
+  // Aula nova: duração (Vimeo) → legenda → filtros sugeridos → índice pela IA (se a chave estiver configurada)
+  function prepararAula(id, btn) {
+    var stt = raiz.querySelector('[data-prep-st="' + id + '"]'); btn.disabled = true;
+    function passo(t) { stt.textContent = t; }
+    passo('Buscando a duração…');
+    sb.functions.invoke('vimeo', { body: { acao: 'duracoes' } }).catch(function () {})
+      .then(function () { passo('Lendo a legenda…'); return sb.functions.invoke('vimeo', { body: { acao: 'legendas', aulas: [id], intervalo: 60, salvar: true } }); })
+      .then(function (r) { var a = r && r.data && r.data.aulas && r.data.aulas[0]; if (!a || a.erro) throw new Error(a && a.erro === 'sem_legenda' ? 'o Vimeo ainda não gerou a legenda (tente de novo mais tarde)' : (a && a.erro) || 'falha ao ler a legenda');
+        passo('Sugerindo os filtros…'); return sb.rpc('admin_sugerir_filtros', { a: id }); })
+      .then(function (r) { var f = (r && r.data) || ''; passo('Filtros: ' + f + ' · gerando o índice…');
+        return sb.functions.invoke('ia', { body: { acao: 'indice', aula: id } }).then(function (x) { var d = x && x.data || {};
+          if (x.error || d.erro) return 'Filtros: ' + f + ' · índice automático indisponível (' + (d.erro || 'função de IA não configurada') + ')';
+          return 'Pronto · filtros: ' + f + ' · índice: ' + (d.marcadores || 0) + ' marcadores'; }).catch(function () { return 'Filtros: ' + f + ' · índice automático indisponível'; }); })
+      .then(function (msg) { passo(msg); btn.disabled = false; })
+      .catch(function (e) { passo('Parou: ' + (e && e.message || e)); btn.disabled = false; });
   }
 
   // ---------- Trilhas ----------
@@ -455,6 +472,7 @@
     if ((x = t.closest('[data-duracoes]'))) return buscarDuracoes(x);
     if ((x = t.closest('[data-transcricoes-todas]'))) return transcreverTodas(x);
     if ((x = t.closest('[data-sumidos]'))) return baixarSumidos(x);
+    if ((x = t.closest('[data-preparar]'))) return prepararAula(+x.getAttribute('data-preparar'), x);
     if ((x = t.closest('[data-transcricoes]'))) return prepararTranscricoes(x);
     if ((x = t.closest('[data-marcs]'))) return marcadores(+x.getAttribute('data-marcs'));
     if ((x = t.closest('[data-salvar-marcs]'))) return salvarMarcadores(+x.getAttribute('data-salvar-marcs'));

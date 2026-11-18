@@ -484,7 +484,7 @@
       reduzir(f).then(function (b64) { return B.sb.functions.invoke('ia', { body: { acao: 'prancheta_foto', imagem: b64 } }); })
         .then(function (r) {
           var d = r.data || {}; if (r.error) throw r.error;
-          var M = { sem_chave: 'A leitura de fotos está sendo ativada. Tente de novo em breve.', limite: L('Você já usou as leituras de foto de hoje (') + (d.limite || '') + L(' por dia). Amanhã tem mais.'), login: 'Entre na sua conta para enviar fotos.', imagem: 'A imagem é grande demais. Tente uma foto menor.', nada: 'Não encontrei um campo com jogadores nessa foto. Tente uma foto mais de perto, com boa luz e o papel inteiro.' };
+          var M = { sem_chave: 'A leitura de fotos está sendo ativada. Tente de novo em breve.', desligada: 'A leitura de fotos está sendo ativada. Tente de novo em breve.', limite: L('Você já usou as leituras de foto de hoje (') + (d.limite || '') + L(' por dia). Amanhã tem mais.'), login: 'Entre na sua conta para enviar fotos.', imagem: 'A imagem é grande demais. Tente uma foto menor.', nada: 'Não encontrei um campo com jogadores nessa foto. Tente uma foto mais de perto, com boa luz e o papel inteiro.' };
           if (d.erro) return status(M[d.erro] || ('Não foi possível ler a foto: ' + d.erro));
           montar(d.desenho || {}); ev('prancheta_foto');
           stEl.textContent = L('Pronto! Montei o quadro a partir da foto') + (d.restantes != null ? L(' (restam ') + d.restantes + L(' leituras hoje)') : '') + L('. Confira e ajuste o que precisar.');

@@ -367,6 +367,7 @@
   var POS = ['goleiro', 'zagueiro', 'lateral', 'ala', 'volante', 'meia', 'meio-campista', 'ponta', 'extremo', 'atacante', 'centroavante', 'segundo atacante'];
   var PLURAL = { goleiros: 'goleiro', zagueiros: 'zagueiro', laterais: 'lateral', alas: 'ala', volantes: 'volante', meias: 'meia', 'meio-campistas': 'meio-campista', pontas: 'ponta', extremos: 'extremo', atacantes: 'atacante', centroavantes: 'centroavante' };
   function semAcento(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  B.semAcento = function (t) { return semAcento(String(t || '')); };
   B.lerNome = function (nome, jogadores) {
     var base = String(nome || '').replace(/\.(mp4|mov|m4v|avi|mkv)$/i, '');
     var partes = base.split('_').map(function (x) { return x.replace(/\s+/g, ' ').trim(); }).filter(Boolean);

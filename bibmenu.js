@@ -39,6 +39,7 @@
     var a = e.target.closest && e.target.closest('a');
     if (menu && !menu.contains(e.target) && a !== dono) fechar();
     if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+    if (menu && menu.contains(a)) return; // clique numa das opções: segue o link normalmente
     if (menu && a === dono) { e.preventDefault(); fechar(); return; }
     // o botão "Acessar Biblioteca EOJ" e o item "Biblioteca EOJ" do menu do topo (qualquer idioma)
     var txt = (a.textContent || '').trim(), href = a.getAttribute('href') || '';

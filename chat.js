@@ -6,7 +6,7 @@
   if (window.__eojChat) return; window.__eojChat = 1;
   var URL = 'https://ragqlotjxwfdzggrhlez.supabase.co', KEY = 'sb_publishable_-Rwplnf-81gMXQij5sOwGQ_wCH1QvmR';
   var CHAVE = 'sb-ragqlotjxwfdzggrhlez-auth-token';
-  if (/^\/(es\/|en\/)?(hub\/certificado|biblioteca\/editor)/.test(location.pathname)) return;
+  if (!/^\/(es\/|en\/)?(hub|biblioteca)(\/|$)/.test(location.pathname) || /^\/(es\/|en\/)?(hub\/certificado|biblioteca\/editor)/.test(location.pathname)) return;
   var LG = (/^\/(es|en)(\/|$)/.exec(location.pathname) || [])[1] || 'pt';
   var T = {
     pt: { abrir: 'Conversar com o EOJ', titulo: 'Fale com o EOJ', sub: 'Respondemos por aqui assim que possível.', ola: 'Olá! Aqui você fala direto com a equipe do Entendendo o Jogo: dúvidas, pedidos de vídeos, sugestões. Escreva sua mensagem.', ph: 'Escreva sua mensagem…', env: 'Enviar', conv: 'Conversas', busca: 'Buscar aluno por nome ou e-mail para iniciar conversa', sem: 'Nenhuma conversa ainda.', voltar: 'Voltar', vc: 'Você', eoj: 'EOJ', erro: 'Não foi possível enviar. Tente de novo.', nada: 'Nenhum aluno encontrado.' },
@@ -39,7 +39,7 @@
   // ---------- Interface ----------
   var css = document.createElement('style');
   css.textContent =
-    '#eoj-chat-b{position:fixed;right:24px;bottom:112px;z-index:85;width:60px;height:60px;border-radius:50%;border:0;background:#111111;color:#FFFFFF;box-shadow:0 6px 20px rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center}' +
+    '#eoj-chat-b{position:fixed;right:24px;bottom:24px;z-index:85;width:60px;height:60px;border-radius:50%;border:0;background:#111111;color:#FFFFFF;box-shadow:0 6px 20px rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center}' +
     '#eoj-chat-b:focus-visible{outline:3px solid #A1C4E6;outline-offset:3px}' +
     '#eoj-chat-n{position:absolute;top:-2px;right:-2px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#C62828;color:#FFFFFF;font:700 12px/22px Montserrat,Inter,system-ui,sans-serif;text-align:center}' +
     '#eoj-chat-p{position:fixed;right:20px;bottom:20px;z-index:96;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 40px);background:#FFFFFF;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;font-family:Montserrat,Inter,system-ui,sans-serif;color:#111111}' +
@@ -63,7 +63,7 @@
     '.ec-i i{font-style:normal;background:#C62828;color:#FFFFFF;border-radius:10px;font-size:11px;font-weight:700;padding:2px 7px}' +
     '.ec-s{padding:10px 12px;border-bottom:1px solid #E2E2E2}.ec-s input{width:100%;box-sizing:border-box;border:1.5px solid #CCCCCC;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;outline:none}' +
     '.ec-vz{padding:24px 16px;color:#666666;font-size:14px;text-align:center}' +
-    '@media (max-width:560px){#eoj-chat-p{right:8px;left:8px;bottom:8px;width:auto;height:calc(100vh - 16px);max-height:none}#eoj-chat-b{right:20px;bottom:108px;width:54px;height:54px}}';
+    '@media (max-width:560px){#eoj-chat-p{right:8px;left:8px;bottom:8px;width:auto;height:calc(100vh - 16px);max-height:none}#eoj-chat-b{right:16px;bottom:16px;width:54px;height:54px}}';
   document.head.appendChild(css);
 
   var botao = el('button'); botao.id = 'eoj-chat-b'; botao.type = 'button'; botao.setAttribute('aria-label', T.abrir); botao.title = T.abrir;

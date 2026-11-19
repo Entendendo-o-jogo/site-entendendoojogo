@@ -112,7 +112,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { q: '', m: '\u0054odos', s: '\u0054odos', e: '\u0054odas', j: '\u0054odos', v: '\u0054odos', r: '\u0054odos', cam: '\u0054odas', ordem: 'recentes', all: null, favs: {}, esc: {}, toast: '', erro: '', gate: null };
+    this.state = { q: '', m: '\u0054odos', s: '\u0054odos', e: '\u0054odas', p: '\u0054odas', j: '\u0054odos', v: '\u0054odos', r: '\u0054odos', cam: '\u0054odas', ordem: 'recentes', all: null, favs: {}, esc: {}, toast: '', erro: '', gate: null };
   }
   componentDidMount() {
     var self = this;
@@ -147,7 +147,9 @@ class Component extends DCLogic {
       group('Cámara', 'cam', '\u0054odas', ['\u0043âmera tática', '\u0043âmera da TV']),
       group('Momento del juego', 'm', '\u0054odos', ['\u004frg. ofensiva', '\u004frg. defensiva', '\u0054ransição ofensiva', '\u0054ransição defensiva', '\u0042olas paradas'])
     ];
-    if (times.length) groups.push(group('Equipo', 'e', '\u0054odas', times, st.esc));
+    var clubes = times.filter(function (t) { return !EOJB.ehPais(t); }), selecoes = times.filter(function (t) { return EOJB.ehPais(t); });
+    if (clubes.length) groups.push(group('Equipo', 'e', '\u0054odas', clubes, st.esc));
+    if (selecoes.length) groups.push(group('Selección', 'p', '\u0054odas', selecoes, st.esc));
     var jogs = all.map(function (c) { return (c.jogador || '').trim(); }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }).sort(function (a, b) { return a.localeCompare(b, 'pt'); });
     if (jogs.length) groups.push(group('Jugador', 'j', '\u0054odos', jogs));
     var q = (st.q || '').toLowerCase().trim();
@@ -155,6 +157,7 @@ class Component extends DCLogic {
       if (st.m !== '\u0054odos' && c.momento !== st.m) return false;
       if (st.s !== '\u0054odos' && c.subtema !== st.s) return false;
       if (st.e !== '\u0054odas' && EOJB.times(c.equipe).indexOf(st.e) < 0) return false;
+      if (st.p !== '\u0054odas' && EOJB.times(c.equipe).indexOf(st.p) < 0) return false;
       if (st.j !== '\u0054odos' && (c.jogador || '').trim() !== st.j) return false;
       if (st.v !== '\u0054odos' && c.tipo !== st.v) return false;
       if (st.r !== '\u0054odos' && c.resultado !== st.r) return false;
@@ -186,7 +189,7 @@ class Component extends DCLogic {
       q: st.q, ordem: st.ordem, loading: loading, erro: st.erro, pronto: !loading && all.length > 0,
       onSearch: function (e) { self.setState({ q: e.target.value }); },
       onOrdem: function (e) { self.setState({ ordem: e.target.value }); },
-      clearAll: function () { self.setState({ q: '', m: '\u0054odos', s: '\u0054odos', e: '\u0054odas', j: '\u0054odos', v: '\u0054odos', r: '\u0054odos', cam: '\u0054odas' }); },
+      clearAll: function () { self.setState({ q: '', m: '\u0054odos', s: '\u0054odos', e: '\u0054odas', p: '\u0054odas', j: '\u0054odos', v: '\u0054odos', r: '\u0054odos', cam: '\u0054odas' }); },
       groups: groups, clips: cards, count: clips.length, countLabel: clips.length === 1 ? 'clip encontrado' : 'clips encontrados',
       temClipes: !loading && all.length > 0, empty: !loading && all.length > 0 && clips.length === 0, vazioAcervo: !loading && !st.erro && all.length === 0,
       logged: logged, anon: !logged, nome: EOJB.nome(), admin: EOJB.isAdmin(),
@@ -196,7 +199,7 @@ class Component extends DCLogic {
       verTutorial: function () { EOJB.tutorial('/media/biblioteca.mp4?v=4', '/media/biblioteca.jpg', 'Cómo funciona la Biblioteca EOJ'); },
       toast: st.toast
     };
-    EOJB.filtros({ q: st.q, momento: st.m, tema: st.s, equipe: st.e, jogador: st.j, tipo: st.v, resultado: st.r, camera: st.cam }, clips.length);
+    EOJB.filtros({ q: st.q, momento: st.m, tema: st.s, equipe: st.e, selecao: st.p, jogador: st.j, tipo: st.v, resultado: st.r, camera: st.cam }, clips.length);
     for (var k in g) v[k] = g[k];
     return v;
   }

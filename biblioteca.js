@@ -203,8 +203,7 @@
   B.normEquipe = function (t) { return String(t || '').trim().replace(/\s+\d+$/, '').trim(); };
   B.times = function (eq) { return String(eq || '').split(/\s+vs\.?\s+|\s+x\s+|\s*\/\s*/i).map(B.normEquipe).filter(Boolean); };
   B.limparEquipe = function (eq) { return String(eq || '').replace(/([^\s\/])\s+\d+(?=\s+vs\.?\s|\s+x\s|\s*\/|\s*$)/gi, '$1').trim(); };
-  var PAISES = ['alemanha','argentina','arabia saudita','australia','austria','belgica','bolivia','bosnia','brasil','camaroes','canada','catar','chile','china','colombia','coreia do sul','costa do marfim','costa rica','croacia','dinamarca','egito','equador','escocia','eslovaquia','eslovenia','espanha','estados unidos','eua','franca','gales','gana','grecia','holanda','paises baixos','hungria','inglaterra','ira','irlanda','irlanda do norte','islandia','italia','jamaica','japao','marrocos','mexico','nigeria','noruega','nova zelandia','panama','paraguai','peru','polonia','portugal','republica tcheca','tchequia','romenia','russia','senegal','servia','suecia','suica','tunisia','turquia','ucrania','uruguai','venezuela'];
-  B.ehPais = function (nome) { return PAISES.indexOf(semAcento(B.normEquipe(nome))) >= 0; };
+  B.ehPais = function (nome) { return !!B.bandeira(B.normEquipe(nome)); };
   B.estiloEscudo = function (eq, tam) { tam = tam || 16; var ts = B.times(eq), p = ts.length && B.ehPais(ts[0]);
     return p ? 'width: ' + Math.round(tam * 1.4) + 'px; height: ' + tam + 'px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.15); flex: 0 0 auto'
              : 'width: ' + tam + 'px; height: ' + tam + 'px; object-fit: contain; flex: 0 0 auto'; };

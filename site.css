@@ -193,3 +193,12 @@ details:not(.eoj-faq)[open]>summary::after{transform:rotate(-135deg) translate(-
 @keyframes pl3l{0%,16.6%{background:#FFFFFF;border-left-color:#4A79A6;box-shadow:0 6px 18px rgba(0,0,0,.06)}17%,100%{background:transparent;border-left-color:transparent;box-shadow:none}}
 @media (max-width:860px){.pl3{grid-template-columns:1fr}.pl3s{height:260px}}
 @media (prefers-reduced-motion:reduce){.pl3m{animation:none}.pl3m:first-child{opacity:1}.pl3l li{animation:none}}
+
+/* Setas dos menus (select) iguais e centralizadas em todo o site */
+select:not([multiple]):not([size]) {
+  -webkit-appearance: none !important; -moz-appearance: none !important; appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23808080' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important; background-position: right 14px center !important; background-size: 12px 8px !important;
+  padding-right: 40px !important;
+}
+select::-ms-expand { display: none; }

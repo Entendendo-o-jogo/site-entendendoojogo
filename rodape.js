@@ -29,7 +29,7 @@
     { url: PF + '/aulas-gratuitas', img: CAPA + 'modulo-4-600.jpg' },
     { url: PF + '/biblioteca/acervo', img: '/assets/007b5d7d533aa9647d741117e78c55d5.jpg' },
     { url: PF + '/eojhub', img: '/assets/9527a9f19ac2a623eaa3f9c35ae66cc1.jpg' },
-    { url: PF + '/cursos/indicadores', img: '/assets/3a25eff83b4ee32e892140a51591be64.jpg' },
+    { url: PF + '/cursos/indicadores', img: '/assets/b6191f9b17aca187400ff31c996a0e99.jpg' },
     { url: PF + '/livros/sistemas-taticos', img: '/assets/b1bd5708d475ba65092ac50c631b0e85.jpg' },
     { url: PF + '/mentoria' }
   ];

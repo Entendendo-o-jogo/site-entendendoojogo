@@ -598,15 +598,15 @@
     if ((x = t.closest('[data-sumidos]'))) return baixarSumidos(x);
     if ((x = t.closest('[data-copiar]'))) { var ta = document.getElementById(x.getAttribute('data-copiar')); ta.select(); (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { aviso('Copiado'); }).catch(function () { document.execCommand('copy'); aviso('Copiado'); }); return; }
     if ((x = t.closest('[data-rs-status]')) || (x = t.closest('[data-rs-teste]'))) {
-      var st = document.querySelector('[data-rs-st]'), teste = x.hasAttribute('data-rs-teste'), para = (document.querySelector('[data-rs-para]') || {}).value || '';
-      if (teste && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(para.trim())) { st.textContent = 'Digite seu e-mail'; return; }
-      if (teste && !confirm('Enviar os 4 e-mails de boas-vindas para ' + para.trim() + '?')) return;
-      st.textContent = teste ? 'Enviando…' : 'Consultando…';
-      return sb.functions.invoke('emails', { body: teste ? { acao: 'teste', para: para.trim() } : { acao: 'status' } }).then(function (r) {
+      var rsSt = document.querySelector('[data-rs-st]'), rsTeste = x.hasAttribute('data-rs-teste'), rsPara = (document.querySelector('[data-rs-para]') || {}).value || '';
+      if (rsTeste && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(rsPara.trim())) { rsSt.textContent = 'Digite seu e-mail'; return; }
+      if (rsTeste && !confirm('Enviar os 4 e-mails de boas-vindas para ' + rsPara.trim() + '?')) return;
+      rsSt.textContent = rsTeste ? 'Enviando…' : 'Consultando…';
+      return sb.functions.invoke('emails', { body: rsTeste ? { acao: 'teste', para: rsPara.trim() } : { acao: 'status' } }).then(function (r) {
         if (r.error) throw r.error; var d = r.data || {};
-        if (teste) { var rs = d.resultado || []; var okN = rs.filter(function (z) { return z && (z.ok || z.id); }).length; st.textContent = okN + ' de ' + rs.length + ' enviados' + (okN < rs.length ? ' · ' + JSON.stringify(rs.filter(function (z) { return !(z && (z.ok || z.id)); })[0]).slice(0, 160) : ''); }
-        else { var ds = d.dominios || []; st.textContent = ds.length ? ds.map(function (z) { return z.nome + ': ' + (z.status === 'verified' ? 'verificado ✓' : z.status); }).join(' · ') : 'Nenhum domínio cadastrado na Resend'; }
-      }).catch(function (e) { st.textContent = 'Erro: ' + ((e && e.message) || e); });
+        if (rsTeste) { var rs = d.resultado || []; var okN = rs.filter(function (z) { return z && (z.ok || z.id); }).length; rsSt.textContent = okN + ' de ' + rs.length + ' enviados' + (okN < rs.length ? ' · ' + JSON.stringify(rs.filter(function (z) { return !(z && (z.ok || z.id)); })[0]).slice(0, 160) : ''); }
+        else { var ds = d.dominios || []; rsSt.textContent = ds.length ? ds.map(function (z) { return z.nome + ': ' + (z.status === 'verified' ? 'verificado ✓' : z.status); }).join(' · ') : 'Nenhum domínio cadastrado na Resend'; }
+      }).catch(function (e) { rsSt.textContent = 'Erro: ' + ((e && e.message) || e); });
     }
     if ((x = t.closest('[data-lista]'))) { var tp = x.getAttribute('data-lista'); return sb.rpc('admin_lista_emails', { tipo: tp, dias: 7 }).then(ok).then(function (rs) { csv(rs, (tp === 'resumo' ? 'lista-resumo-semanal-' : 'cadastros-7-dias-') + new Date().toISOString().slice(0, 10) + '.csv'); aviso(rs.length + ' e-mails na lista'); }).catch(falha); }
     if ((x = t.closest('[data-indices-todos]'))) return indicesTodos(x);

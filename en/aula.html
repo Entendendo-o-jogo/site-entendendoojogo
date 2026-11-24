@@ -373,6 +373,7 @@ function tocarLinha(li, ci) {
   var c = R.linhas[li] && R.linhas[li].clips[ci]; if (!c) return;
   pausadoNoFim = false; toc = { l: li, c: ci }; sel = { l: li, c: ci }; limparTela();
   var usar = precarregado && precarregado.id === c.id ? 1 - ativo : ativo;
+  V.forEach(function (v, k) { if (k !== usar) v.pause(); });
   carregar(V[usar], c, true).then(function () { mostrar(usar); precarregar(); atualizarHud(); }).catch(function (e) { toast('Não consegui abrir: ' + c.nome); $('bReco').hidden = false; });
   desenharLinhas(); painel();
 }
@@ -391,11 +392,11 @@ function playPause() {
 }
 V.forEach(function (v, k) {
   v.addEventListener('timeupdate', function () {
-    if (k !== ativo || !toc) return; var c = clipDe(toc); if (!c) return;
+    if (k !== ativo || !toc) return; var c = clipDe(toc); if (!c || v.dataset.cid !== c.id) return;
     if (c.fim && v.currentTime >= c.fim - 0.03) fimDoClipe(c);
     atualizarBarra();
   });
-  v.addEventListener('ended', function () { if (k === ativo && toc) fimDoClipe(clipDe(toc)); });
+  v.addEventListener('ended', function () { var c = toc && clipDe(toc); if (k === ativo && c && v.dataset.cid === c.id) fimDoClipe(c); });
   v.addEventListener('play', atualizarPlay); v.addEventListener('pause', atualizarPlay);
 });
 function fimDoClipe(c) { if (c.pausar) { if (!pausadoNoFim) { pausadoNoFim = true; va().pause(); toast('Pausado · espaço continua'); } return; } avancar(); }

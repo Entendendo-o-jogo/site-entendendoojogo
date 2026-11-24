@@ -4,7 +4,7 @@
   var FIM = new Date('2026-12-08T00:00:00-03:00'); // último dia: 07/12
   // Cupom dos cursos (50%, exceto Indicadores). Vazio = botão dos cursos abre o WhatsApp.
   var CUPOM = '';
-  var OFERTAS_CURSOS = ['npblpgqb', 'mrzr2huv', 'z3eyd3rs', 'jqzqajq3', 'mktm71ps', 'hgb4v9ai'];
+  var OFERTAS_CURSOS = ['npblpgqb', 'mrzr2huv', 'z3eyd3rs', 'jqzqajq3', 'mktm71ps', 'hgb4v9ai', 'f10fzg6x'];
   if (Date.now() >= FIM.getTime() || window.__eojBF) return; window.__eojBF = 1;
   // aplica o cupom sozinho nos links de compra dos cursos em promoção
   if (CUPOM) document.addEventListener('click', function (ev) {

@@ -188,9 +188,20 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 <sc-if value="{{anual}}" hint-placeholder-val="{{ true }}"><a href="https://pay.hotmart.com/T89761885Q?off=4kfotxvj" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #D4AF37; color: #111111">Assinar Premium anual</a></sc-if>
 <sc-if value="{{mensal}}" hint-placeholder-val="{{ false }}"><a href="https://pay.hotmart.com/T89761885Q?off=foqitieg&bid=1704899286192" style="display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 16px; padding: 15px 24px; border-radius: 8px; background: #D4AF37; color: #111111">Assinar Premium mensal</a></sc-if>
 <p style="margin: 2px 0 0; font-size: 13px; line-height: 1.45; color: #D7DCE2">Já é Basic? Depois de assinar o Premium, cancele o Basic na Hotmart (ele não é cancelado sozinho) ou fale com a gente.</p>
+<p style="margin: 0; font-size: 13px; line-height: 1.45; color: #D7DCE2">Já é Premium mensal? Você pode trocar para o anual pela Hotmart, sem nova assinatura. <a href="#mensal-anual" style="color: #D4AF37; font-weight: 700">Veja como</a><span data-bf-anual></span></p>
 </div>
 </div>
 
+</div>
+<div id="mensal-anual" style="margin-top: 28px; background: #FFFFFF; border: 1px solid #E2E2E2; border-radius: 16px; padding: 26px 28px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 110px">
+<h3 style="margin: 0; font-size: 20px; font-weight: 800; text-transform: uppercase">Já assino o Premium mensal. Como passo para o anual?</h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #333333">Não precisa cancelar nem fazer uma assinatura nova: a troca de plano é feita na própria Hotmart e vale na hora. A Hotmart calcula o valor proporcional e o seu acesso continua sem interrupção.</p>
+<ol style="margin: 0; padding-left: 22px; font-size: 15px; line-height: 1.7; color: #333333">
+<li>Entre em <a href="https://consumer.hotmart.com" target="_blank" rel="noopener" style="color: #3A6894; font-weight: 700">consumer.hotmart.com</a> com o e-mail da sua assinatura.</li>
+<li>No menu, abra <b>Minhas compras</b> e clique em <b>Assinatura EOJHub</b>.</li>
+<li>Escolha a opção de <b>trocar de plano</b>, selecione <b>Premium - Anual</b> e confirme.</li>
+</ol>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #333333">Não encontrou a opção? <a href="https://api.whatsapp.com/send?phone=6282113761580&text=Ol%C3%A1!%20Sou%20assinante%20do%20Premium%20mensal%20e%20quero%20trocar%20para%20o%20anual." target="_blank" rel="noopener" style="color: #3A6894; font-weight: 700">Fale com a gente no WhatsApp</a> que enviamos o convite de troca para o seu e-mail.<span data-bf-anual2></span></p>
 </div>
 </div>
 </section>
@@ -240,7 +251,7 @@ a{color:#4A79A6}a:hover{color:#3A6894}
 </template>
 <script src="/eoj-runtime.js?v=6476652e"></script>
 <script src="/bibmenu.js?v=45c1a349" defer></script>
-<script src="/bf.js?v=a12f6fc4" defer></script>
+<script src="/bf.js?v=06de3e09" defer></script>
 
 <script>
 class Component extends DCLogic {

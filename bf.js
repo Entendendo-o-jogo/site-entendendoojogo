@@ -34,6 +34,13 @@
   varrer(); var nV = 0, iv = setInterval(function () { varrer(); if (++nV > 40) clearInterval(iv); }, 500);
   if (window.MutationObserver) new MutationObserver(function () { varrer(); }).observe(document.documentElement, { childList: true, subtree: true });
 
+  // aviso no "mensal → anual" da página de planos: a troca de plano usa o preço cheio; o promocional é por link
+  function avisoAnual() {
+    var msg = 'https://api.whatsapp.com/send?phone=6281385430917&text=' + encodeURIComponent('Olá! Sou assinante do Premium mensal e quero o link promocional do Premium anual da Black Friday.');
+    [].forEach.call(document.querySelectorAll('[data-bf-anual],[data-bf-anual2]'), function (el) { if (el.__bf) return; el.__bf = 1;
+      el.innerHTML = ' <b style="color:inherit">Black Friday (até 07/12):</b> o anual está por menos de R$ 100/mês. Antes de trocar, <a href="' + msg + '" target="_blank" rel="noopener" style="color:inherit;font-weight:700;text-decoration:underline">peça o link promocional no WhatsApp</a>.'; });
+  }
+  avisoAnual(); if (window.MutationObserver) new MutationObserver(avisoAnual).observe(document.documentElement, { childList: true, subtree: true });
   if (/^\/(es\/|en\/)?(hub\/(admin|certificado)|biblioteca\/(admin|editor))/.test(location.pathname)) return;
   var LG = (/^\/(es|en)(\/|$)/.exec(location.pathname) || [])[1] || 'pt';
   var T = {

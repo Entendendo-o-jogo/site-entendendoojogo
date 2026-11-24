@@ -90,7 +90,7 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 #palco{position:relative;aspect-ratio:16/9;max-height:62vh;background:#000000;border-radius:14px;overflow:hidden;border:1px solid #262626;touch-action:none}
 #palco video.v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000000;opacity:0}
 #palco video.v.ativo{opacity:1}
-#tela{position:absolute;inset:0;width:100%;height:100%}
+#tela{position:absolute;inset:0;width:100%;height:100%;z-index:2;touch-action:none}
 #palco.desenhar #tela{cursor:crosshair}
 #palco:not(.desenhar) #tela{pointer-events:none}
 .ferr{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:5px;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:12px;padding:5px;z-index:3}
@@ -102,7 +102,7 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 .hud{position:absolute;right:12px;top:12px;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;z-index:3}
 .toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(17,17,17,.88);border-radius:12px;padding:12px 18px;font-size:22px;font-weight:900;z-index:4;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
-.vaz{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#A6A6A6;text-align:center;padding:20px;z-index:2}
+.vaz{pointer-events:none;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#A6A6A6;text-align:center;padding:20px;z-index:2}
 .vaz b{color:#FFFFFF;font-size:18px}
 .tc{position:absolute;right:12px;bottom:12px;z-index:3;width:44px;height:44px;border-radius:10px;border:1px solid #333333;background:rgba(17,17,17,.85);color:#FFFFFF;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
 .tc:hover{background:#2A2A2A}
@@ -178,7 +178,7 @@ aside .ck input{width:18px;height:18px}
 <div class="ferr" role="toolbar" aria-label="Caneta" id="ferr"></div>
 <div class="hud" id="hud" hidden></div>
 <div class="toast" id="toast"></div>
-<div class="fsbar"><button class="rd" id="fsPrev" aria-label="Vídeo anterior">⏮</button><button class="rd big" id="fsPlay" aria-label="Tocar ou pausar">▶</button><button class="rd" id="fsNext" aria-label="Próximo vídeo">⏭</button><span class="tempo" id="fsTempo"></span><button class="rd" id="fsSair" aria-label="Sair da tela cheia">✕</button></div>
+<div class="fsbar"><button class="rd" id="fsPrev" aria-label="Vídeo anterior">⏮</button><button class="rd big" id="fsPlay" aria-label="Tocar ou pausar">▶</button><button class="rd" id="fsNext" aria-label="Próximo vídeo">⏭</button><span class="tempo" id="fsTempo"></span><button class="rd" id="fsSom" aria-label="Som">🔊</button><button class="rd" id="fsSair" aria-label="Sair da tela cheia">✕</button></div>
 </div>
 <div class="ctrl">
 <div class="barra" id="barra" role="slider" aria-label="Posição do vídeo" tabindex="0"><div class="tr"></div><div class="rc" id="rc"></div><div class="pr" id="pr"></div><div class="mk" id="mkI"></div><div class="mk" id="mkO"></div><div class="cab2" id="cab2"></div></div>
@@ -187,6 +187,7 @@ aside .ck input{width:18px;height:18px}
 <button class="rd big" id="bPlay" aria-label="Tocar">▶</button>
 <button class="rd" id="bNext" aria-label="Próximo vídeo">⏭</button>
 <span class="tempo" id="tempo">0:00 / 0:00</span>
+<button class="rd" id="bSom" aria-label="Tirar o som de todos os vídeos" title="Som (M)">🔊</button>
 <div class="vels" role="group" aria-label="Velocidade"><span>Velocidade</span></div>
 </div>
 </div>
@@ -197,7 +198,7 @@ aside .ck input{width:18px;height:18px}
 <div class="atalhos"><b style="color:#CCCCCC">Atalhos</b><br>
 <kbd>espaço</kbd> tocar/pausar · <kbd>←</kbd><kbd>→</kbd> 5 s (<kbd>shift</kbd> 1 s)<br>
 <kbd>↑</kbd><kbd>↓</kbd> velocidade · <kbd>N</kbd>/<kbd>P</kbd> próximo/anterior<br>
-<kbd>I</kbd>/<kbd>O</kbd> marcar início/fim · <kbd>D</kbd> caneta · <kbd>C</kbd> limpar desenho · <kbd>F</kbd> tela cheia<br>
+<kbd>I</kbd>/<kbd>O</kbd> marcar início/fim · <kbd>D</kbd> caneta · <kbd>C</kbd> limpar desenho · <kbd>M</kbd> som · <kbd>F</kbd> tela cheia<br>
 Trackpad no vídeo: dois dedos para os lados = avançar/voltar · pinça = velocidade</div>
 </aside>
 </div>
@@ -221,7 +222,7 @@ function tx(modo) { return db.transaction('roteiros', modo).objectStore('roteiro
 function todos() { return new Promise(function (ok) { var r = tx('readonly').getAll(); r.onsuccess = function () { ok(r.result || []); }; r.onerror = function () { ok([]); }; }); }
 var salvarT;
 function salvar() { clearTimeout(salvarT); salvarT = setTimeout(function () {
-  var copia = { id: R.id, nome: R.nome, atualizado: Date.now(), linhas: R.linhas.map(function (l) { return { id: l.id, nome: l.nome, clips: l.clips.map(function (c) { return { id: c.id, nome: c.nome, handle: c.handle || null, ini: c.ini, fim: c.fim, vel: c.vel, pausar: c.pausar, mudo: c.mudo, dur: c.dur }; }) }; }) };
+  var copia = { id: R.id, nome: R.nome, semSom: !!R.semSom, atualizado: Date.now(), linhas: R.linhas.map(function (l) { return { id: l.id, nome: l.nome, clips: l.clips.map(function (c) { return { id: c.id, nome: c.nome, handle: c.handle || null, ini: c.ini, fim: c.fim, vel: c.vel, pausar: c.pausar, mudo: c.mudo, dur: c.dur }; }) }; }) };
   try { tx('readwrite').put(copia); } catch (e) { console.warn(e); }
 }, 300); }
 
@@ -368,7 +369,7 @@ function va() { return V[ativo]; }
 function carregar(v, c, tocar) {
   return urlDe(c).then(function (u) {
     return new Promise(function (ok) {
-      var pronto = function () { try { v.currentTime = c.ini || 0; } catch (e) {} v.playbackRate = c.vel || 1; v.muted = !!c.mudo; ok(); };
+      var pronto = function () { try { v.currentTime = c.ini || 0; } catch (e) {} v.playbackRate = c.vel || 1; v.muted = !!c.mudo || !!(R && R.semSom); ok(); };
       if (v.dataset.cid === c.id && v.readyState >= 1) return pronto();
       v.dataset.cid = c.id; v.src = u; v.load();
       v.addEventListener('loadedmetadata', function () { if (!c.dur && isFinite(v.duration)) { c.dur = v.duration; salvar(); } pronto(); }, { once: true });
@@ -437,6 +438,11 @@ function desenharVels() {
   [].forEach.call(box.querySelectorAll('.vb'), function (b) { b.remove(); });
   VELS.forEach(function (x) { var b = document.createElement('button'); b.className = 'vb' + (Math.abs(r - x) < 0.01 ? ' on' : ''); b.textContent = String(x).replace('.', ',') + '×'; b.setAttribute('aria-pressed', Math.abs(r - x) < 0.01 ? 'true' : 'false'); b.onclick = function () { setVel(x, true); }; box.appendChild(b); });
 }
+
+function atualizarSom() { var m = !!(R && R.semSom); ['bSom', 'fsSom'].forEach(function (id) { var b = $(id); b.textContent = m ? '🔇' : '🔊'; b.setAttribute('aria-label', m ? 'Ligar o som dos vídeos' : 'Tirar o som de todos os vídeos'); b.setAttribute('aria-pressed', m ? 'true' : 'false'); });
+  var c = clipDe(toc); V.forEach(function (v) { v.muted = m || !!(c && c.mudo && v === va()); }); }
+function alternarSom() { R.semSom = !R.semSom; salvar(); atualizarSom(); toast(R.semSom ? 'Sem som' : 'Som ligado'); }
+$('bSom').onclick = alternarSom; $('fsSom').onclick = alternarSom;
 $('bPlay').onclick = playPause; $('fsPlay').onclick = playPause;
 $('bNext').onclick = $('fsNext').onclick = function () { pausadoNoFim = false; avancar(); };
 $('bPrev').onclick = $('fsPrev').onclick = voltar;
@@ -480,7 +486,7 @@ function painel() {
   $('pLimpa').onclick = function () { c.ini = 0; c.fim = null; salvar(); painel(); desenharLinhas(); atualizarBarra(); };
   $('pVel').onchange = function () { c.vel = +this.value; if (ehTocando()) va().playbackRate = c.vel; salvar(); desenharLinhas(); atualizarHud(); };
   $('pPausa').onchange = function () { c.pausar = this.checked; salvar(); desenharLinhas(); };
-  $('pMudo').onchange = function () { c.mudo = this.checked; if (ehTocando()) va().muted = c.mudo; salvar(); };
+  $('pMudo').onchange = function () { c.mudo = this.checked; if (ehTocando()) va().muted = c.mudo || !!R.semSom; salvar(); };
   $('pRem').onclick = function () { var l = R.linhas[sel.l], era = ehTocando(); l.clips.splice(sel.c, 1); if (era) parar(); else { var t = clipDe(toc); toc = acharPos(t); } sel = null; precarregado = null; salvar(); desenharLinhas(); painel(); };
 }
 
@@ -536,13 +542,14 @@ document.addEventListener('keydown', function (e) {
   else if (k === 'f' || k === 'F') telaCheia();
   else if (k === 'd' || k === 'D') { FER = FER === 'cursor' ? 'caneta' : 'cursor'; $('palco').classList.toggle('desenhar', FER !== 'cursor'); desenharFerr(); toast(FER === 'cursor' ? 'Caneta desligada' : 'Caneta'); }
   else if (k === 'c' || k === 'C') limparTela();
+  else if (k === 'm' || k === 'M') alternarSom();
   else if ((k === 'i' || k === 'I') && $('pMI')) $('pMI').click();
   else if ((k === 'o' || k === 'O') && $('pMO')) $('pMO').click();
 });
 
 // ---------- roteiros ----------
 function desenharRots() { var s = $('rotSel'); s.innerHTML = ROTS.map(function (r) { return '<option value="' + r.id + '"' + (R && r.id === R.id ? ' selected' : '') + '>' + esc(r.nome) + '</option>'; }).join(''); $('tit').textContent = R ? R.nome : 'EOJ'; document.title = (R ? R.nome + ' — ' : '') + 'Modo aula EOJ'; }
-function abrirRot(r) { parar(); Object.keys(URLS).forEach(function (k) { URL.revokeObjectURL(URLS[k]); }); URLS = {}; FILES = {}; R = r; sel = null; try { localStorage.setItem('eojAulaUlt', r.id); } catch (e) {} desenharRots(); desenharLinhas(); painel();
+function abrirRot(r) { parar(); Object.keys(URLS).forEach(function (k) { URL.revokeObjectURL(URLS[k]); }); URLS = {}; FILES = {}; R = r; sel = null; try { localStorage.setItem('eojAulaUlt', r.id); } catch (e) {} desenharRots(); desenharLinhas(); painel(); atualizarSom();
   checarPerm().then(function (ok) { if (ok) { var p = Promise.resolve(); R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (c.handle) p = p.then(function () { return urlDe(c).catch(function () {}); }); }); }); p.then(function () { desenharLinhas(); prepararPrimeiro(); }); } }); }
 $('rotSel').onchange = function () { var r = ROTS.filter(function (x) { return x.id === $('rotSel').value; })[0]; if (r) abrirRot(r); };
 $('bNovoRot').onclick = function () { var n = prompt('Nome do novo roteiro (ex.: Aula 13 · Bolas paradas):'); if (!n || !n.trim()) return; var r = novoRot(n.trim()); ROTS.unshift(r); R = r; salvar(); abrirRot(r); };

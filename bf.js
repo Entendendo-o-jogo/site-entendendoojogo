@@ -42,8 +42,9 @@
       if (!box || n > 7 || box.tagName === 'BODY' || box.tagName === 'MAIN' || box.tagName === 'SECTION') return;
       var outros = [].filter.call(box.querySelectorAll('a[href*="/cursos/"], a[href*="Curso-"]'), function (x) { var mm = /(?:\/cursos\/|Curso-)([a-z0-9-]+)/.exec(x.getAttribute('href') || ''); return mm && mm[1].replace(/\.dc$/, '') !== m[1]; });
       if (outros.length) return;
-      var img = box.querySelector('img');
-      if (img && !box.__bfTag && box.contains(a)) { box.__bfTag = 1; var pai = img.parentElement; if (getComputedStyle(pai).position === 'static') pai.style.position = 'relative';
+      var img = [].filter.call(box.querySelectorAll('img'), function (i) { return (i.width || i.naturalWidth) >= 120; })[0], up = box, k2 = 0;
+      while (up && k2++ < 4) { if (up.querySelector && up.querySelector('.bf-etq')) { img = null; break; } up = up.parentElement; }
+      if (img && !box.__bfTag) { box.__bfTag = 1; var pai = img.parentElement; if (getComputedStyle(pai).position === 'static') pai.style.position = 'relative';
         var tag = document.createElement('span'); tag.className = 'bf-etq'; tag.textContent = 'Black Friday · 50% OFF'; pai.appendChild(tag); }
       [].forEach.call(box.querySelectorAll('span, b, strong, p, div'), function (el) {
         if (el.children.length) return; var t = el.textContent.trim();

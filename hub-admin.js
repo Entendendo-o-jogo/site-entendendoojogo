@@ -449,6 +449,8 @@
         '<div class="ha-row"><button type="button" class="ha-p" data-copiar="tx-resumo">Copiar texto</button><button type="button" class="ha-b" data-copiar="html-resumo">Copiar HTML</button><button type="button" class="ha-b" data-lista="resumo">Baixar lista (CSV)</button><span data-em-st style="font-size:14px"></span></div>' +
         '<label>Texto<br><textarea class="ha-in" id="tx-resumo" rows="8" style="width:100%">' + esc(texto) + '</textarea></label>' +
         '<details><summary style="cursor:pointer;font-weight:600">HTML e prévia</summary><textarea class="ha-in" id="html-resumo" rows="6" style="width:100%">' + esc(html) + '</textarea><div style="border:1px solid #E2E2E2;border-radius:8px;padding:12px;margin-top:8px;background:#FFFFFF">' + html + '</div></details></div>' +
+        '<div class="ha-box"><b style="font-size:18px">Envio automático (Resend)</b><p style="margin:0;font-size:14px;color:#555555">Remetente: hub@entendendoojogo.com.br. Primeiro confira se o domínio está verificado; depois envie os 4 e-mails de teste só para você.</p>' +
+        '<div class="ha-row"><button type="button" class="ha-b" data-rs-status>Ver status do domínio</button><input class="ha-in" type="email" data-rs-para placeholder="seu e-mail" style="flex:0 1 260px"><button type="button" class="ha-p" data-rs-teste>Enviar teste para mim</button><span data-rs-st style="font-size:14px"></span></div></div>' +
         '<div class="ha-box"><b style="font-size:18px">Sequência de boas-vindas</b><p style="margin:0;font-size:14px;color:#555555">4 e-mails para configurar como automação no seu serviço de e-mail, a partir do cadastro. Troque {nome} pelo campo de nome do seu serviço. Baixe também a lista de quem se cadastrou nos últimos 7 dias.</p>' +
         '<div class="ha-row"><button type="button" class="ha-b" data-lista="novos">Baixar cadastros dos últimos 7 dias (CSV)</button></div>' +
         BOAS.map(function (m, i) { return '<div class="ha-mod"><div class="ha-row" style="justify-content:space-between"><b>' + (i + 1) + '. ' + esc(m.assunto) + '</b><span style="font-size:13px;color:#555555">' + esc(m.dia) + '</span></div>' +
@@ -595,6 +597,17 @@
     if ((x = t.closest('[data-transcricoes-todas]'))) return transcreverTodas(x);
     if ((x = t.closest('[data-sumidos]'))) return baixarSumidos(x);
     if ((x = t.closest('[data-copiar]'))) { var ta = document.getElementById(x.getAttribute('data-copiar')); ta.select(); (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).then(function () { aviso('Copiado'); }).catch(function () { document.execCommand('copy'); aviso('Copiado'); }); return; }
+    if ((x = t.closest('[data-rs-status]')) || (x = t.closest('[data-rs-teste]'))) {
+      var st = document.querySelector('[data-rs-st]'), teste = x.hasAttribute('data-rs-teste'), para = (document.querySelector('[data-rs-para]') || {}).value || '';
+      if (teste && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(para.trim())) { st.textContent = 'Digite seu e-mail'; return; }
+      if (teste && !confirm('Enviar os 4 e-mails de boas-vindas para ' + para.trim() + '?')) return;
+      st.textContent = teste ? 'Enviando…' : 'Consultando…';
+      return sb.functions.invoke('emails', { body: teste ? { acao: 'teste', para: para.trim() } : { acao: 'status' } }).then(function (r) {
+        if (r.error) throw r.error; var d = r.data || {};
+        if (teste) { var rs = d.resultado || []; var okN = rs.filter(function (z) { return z && (z.ok || z.id); }).length; st.textContent = okN + ' de ' + rs.length + ' enviados' + (okN < rs.length ? ' · ' + JSON.stringify(rs.filter(function (z) { return !(z && (z.ok || z.id)); })[0]).slice(0, 160) : ''); }
+        else { var ds = d.dominios || []; st.textContent = ds.length ? ds.map(function (z) { return z.nome + ': ' + (z.status === 'verified' ? 'verificado ✓' : z.status); }).join(' · ') : 'Nenhum domínio cadastrado na Resend'; }
+      }).catch(function (e) { st.textContent = 'Erro: ' + ((e && e.message) || e); });
+    }
     if ((x = t.closest('[data-lista]'))) { var tp = x.getAttribute('data-lista'); return sb.rpc('admin_lista_emails', { tipo: tp, dias: 7 }).then(ok).then(function (rs) { csv(rs, (tp === 'resumo' ? 'lista-resumo-semanal-' : 'cadastros-7-dias-') + new Date().toISOString().slice(0, 10) + '.csv'); aviso(rs.length + ' e-mails na lista'); }).catch(falha); }
     if ((x = t.closest('[data-indices-todos]'))) return indicesTodos(x);
     if ((x = t.closest('[data-preparar]'))) return prepararAula(+x.getAttribute('data-preparar'), x);

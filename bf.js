@@ -7,13 +7,13 @@
 
   // oferta normal -> [oferta Black Friday, preço normal, preço promocional]
   var PROMO = {
-    npblpgqb: ['lyiu66nw', 'R$ 429,00', 'R$ 214,50'],  // Jogo de Posição
-    mrzr2huv: ['sxf92srw', 'R$ 499,99', 'R$ 250,00'],  // Treinamento tático 1
+    npblpgqb: ['lyiu66nw', 'R$ 429,00', 'R$ 214,50', '12x de R$ 44,37', '12x de R$ 22,18'],  // Jogo de Posição
+    mrzr2huv: ['sxf92srw', 'R$ 499,99', 'R$ 250,00', '3x de R$ 178,43', '3x de R$ 89,22'],  // Treinamento tático 1
     z3eyd3rs: ['ireybyzg', 'R$ 499,99', 'R$ 250,00'],  // Treinamento tático 2
-    jqzqajq3: ['sphdd0hc', 'R$ 399,99', 'R$ 200,00'],  // Bolas paradas
-    mktm71ps: ['o2gcf3l5', 'R$ 299,99', 'R$ 150,00'],  // Sistemas táticos
-    hgb4v9ai: ['16gxwqro', 'R$ 299,99', 'R$ 150,00'],  // Tática individual
-    f10fzg6x: ['jfgd8fi4', 'R$ 299,99', 'R$ 150,00']   // Consultoria
+    jqzqajq3: ['sphdd0hc', 'R$ 399,99', 'R$ 200,00', '3x de R$ 142,74', '3x de R$ 71,37'],  // Bolas paradas
+    mktm71ps: ['o2gcf3l5', 'R$ 299,99', 'R$ 150,00', '3x de R$ 107,06', '3x de R$ 53,53'],  // Sistemas táticos
+    hgb4v9ai: ['16gxwqro', 'R$ 299,99', 'R$ 150,00', '3x de R$ 107,06', '3x de R$ 53,53'],  // Tática individual
+    f10fzg6x: ['jfgd8fi4', 'R$ 299,99', 'R$ 150,00', '3x de R$ 107,06', '3x de R$ 53,53']   // Consultoria
   };
   function trocar(a) {
     if (a.__bf) return;
@@ -23,6 +23,10 @@
       if (a.textContent.indexOf(p[1]) >= 0) a.innerHTML = a.innerHTML.split(p[1]).join(p[2] + ' (50% OFF)');
       var sec = a.closest('section, #precos'); if (sec) [].forEach.call(sec.querySelectorAll('span, b, strong, p'), function (el) {
         if (!el.__bf && el.children.length === 0 && el.textContent.trim() === p[1]) { el.__bf = 1; el.innerHTML = '<s style="opacity:.55;font-size:.55em;margin-right:8px">' + p[1] + '</s>' + p[2]; } });
+        [].forEach.call(sec.querySelectorAll('span, p, small, div'), function (el) { if (el.__bf2 || el.children.length) return; var t = el.textContent.trim();
+          if (/^De R\$/.test(t)) { el.__bf2 = 1; el.style.display = 'none'; }
+          else if (p[3] && t.indexOf(p[3]) >= 0) { el.__bf2 = 1; el.textContent = el.textContent.split(p[3]).join(p[4]); }
+          else if (!p[3] && /\d+x de R\$/.test(t)) { el.__bf2 = 1; el.textContent = 'à vista'; } });
     } catch (e) {}
   }
   function varrer() { [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), trocar); }

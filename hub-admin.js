@@ -24,7 +24,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['emails', 'E-mails'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['emails', 'E-mails'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento'], ['clubes', 'Clubes']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -39,6 +39,7 @@
     if (st.aba === 'almanaque') return almanaque(c);
     if (st.aba === 'filtros') return filtrosMc(c);
     if (st.aba === 'emails') return emails(c);
+    if (st.aba === 'clubes') return clubes(c);
   }
 
   // ---------- Cursos ----------
@@ -54,7 +55,7 @@
       '<p style="margin:0;font-size:13px;color:#555555">Só aparecem para os alunos os cursos marcados como publicados. "Basic" = incluído no plano Basic. "Grátis" = aberto para qualquer conta.</p>' +
       '<table><thead><tr><th>Curso</th><th>Tipo</th><th>Publicado</th><th>Grátis</th><th>Basic</th><th></th></tr></thead><tbody>' +
       st.cursos.map(function (k) {
-        return '<tr data-curso="' + k.id + '"><td><input class="ha-in" data-f="titulo" value="' + esc(k.titulo) + '" style="width:100%"><div style="font-size:12px;color:#777777;margin-top:3px">/hub/curso?c=' + esc(k.slug) + (k.memberkit_cat ? ' · do MemberKit' : '') + '</div></td>' +
+        return '<tr data-curso="' + k.id + '"><td><input class="ha-in" data-f="titulo" value="' + esc(k.titulo) + '" style="width:100%"><div style="font-size:12px;color:#777777;margin-top:3px">/hub/curso?c=' + esc(k.slug) + (k.memberkit_cat ? ' · do MemberKit' : '') + (k.clube_id ? ' · <b style="color:#8A6A12">curso de clube (só o clube vê)</b>' : '') + '</div></td>' +
           '<td><select class="ha-in" data-f="tipo">' + ['curso', 'aula_avulsa', 'live', 'podcast'].map(function (t) { return '<option' + (k.tipo === t ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></td>' +
           '<td><input type="checkbox" data-f="publicado"' + (k.publicado ? ' checked' : '') + '></td><td><input type="checkbox" data-f="gratuito"' + (k.gratuito ? ' checked' : '') + '></td><td><input type="checkbox" data-f="plano_basic"' + (k.plano_basic ? ' checked' : '') + '></td>' +
           '<td style="white-space:nowrap"><button type="button" class="ha-b" data-salvar-curso="' + k.id + '">Salvar</button> <button type="button" class="ha-p" data-abrir="' + k.id + '">Abrir</button></td></tr>';
@@ -494,6 +495,87 @@
       .catch(function (e) { stt.textContent = ''; falha(e); });
   }
 
+  // ---------- Clubes parceiros ----------
+  function clubes(c) {
+    c.innerHTML = 'Carregando…';
+    Promise.all([sb.from('clubes').select('*').order('nome').then(ok), sb.from('cursos').select('id,titulo,slug,publicado,clube_id').not('clube_id', 'is', null).order('titulo').then(ok)]).then(function (r) {
+      var ks = r[0], cs = r[1];
+      if (!st.clube || !ks.some(function (k) { return k.id === st.clube; })) st.clube = ks[0] ? ks[0].id : null;
+      var k = ks.filter(function (x) { return x.id === st.clube; })[0];
+      var topo = '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Clubes parceiros (' + ks.length + ')</b><button type="button" class="ha-p" data-clube-novo>+ Novo clube</button></div>' +
+        '<p style="margin:0;font-size:14px;color:#555555">Cada clube ganha uma aba própria na área do aluno, visível só para os e-mails cadastrados aqui (e para você). Esses e-mails também ganham acesso Premium enquanto estiverem na lista e o clube estiver ativo.</p>' +
+        (ks.length ? '<div class="ha-row">' + ks.map(function (x) { return '<button type="button" class="' + (x.id === st.clube ? 'ha-p' : 'ha-b') + '" data-clube-sel="' + x.id + '">' + esc(x.nome) + (x.ativo ? '' : ' (inativo)') + '</button>'; }).join('') + '</div>' : '') + '</div>';
+      if (!k) { c.innerHTML = topo; return; }
+      c.innerHTML = topo + '<div class="ha-box" data-clube="' + k.id + '">Carregando o clube…</div>';
+      Promise.all([
+        sb.from('clube_membros').select('email,criado_em').eq('clube_id', k.id).order('email').then(ok),
+        sb.from('clube_recados').select('*').eq('clube_id', k.id).order('criado_em', { ascending: false }).then(ok),
+        sb.from('clube_arquivos').select('*').eq('clube_id', k.id).order('criado_em', { ascending: false }).then(ok)
+      ]).then(function (d) {
+        var ms = d[0], rs = d[1], as = d[2], meus = cs.filter(function (x) { return x.clube_id === k.id; });
+        c.querySelector('[data-clube]').outerHTML =
+          '<div class="ha-box"><b style="font-size:18px">' + esc(k.nome) + '</b>' +
+          '<div class="ha-row"><label style="flex:1 1 280px">Nome do clube<br><input class="ha-in" data-clube-nome value="' + esc(k.nome) + '" style="width:100%"></label>' +
+          '<label style="display:flex;align-items:center;gap:6px"><input type="checkbox" data-clube-ativo' + (k.ativo ? ' checked' : '') + '> Ativo</label>' +
+          '<button type="button" class="ha-b" data-clube-salvar>Salvar</button><button type="button" class="ha-b ha-x" data-clube-apagar>Apagar clube</button></div>' +
+          '<p style="margin:0;font-size:13px;color:#555555">Desmarcar "Ativo" esconde a aba e tira o Premium de todos do clube, sem apagar nada.</p></div>' +
+          '<div class="ha-box"><b style="font-size:18px">Profissionais do clube (' + ms.length + ')</b>' +
+          '<p style="margin:0;font-size:14px;color:#555555">Cole os e-mails (um por linha ou separados por vírgula). Tem que ser o mesmo e-mail que a pessoa usa para entrar no EOJHub.</p>' +
+          '<textarea class="ha-in" data-clube-emails rows="4" style="width:100%" placeholder="nome@clube.com.br"></textarea>' +
+          '<div class="ha-row"><button type="button" class="ha-p" data-clube-add>Adicionar e-mails</button></div>' +
+          (ms.length ? '<table><tbody>' + ms.map(function (m) { return '<tr><td>' + esc(m.email) + '</td><td style="text-align:right"><button type="button" class="ha-b ha-x" data-clube-rem="' + esc(m.email) + '">Tirar</button></td></tr>'; }).join('') + '</tbody></table>' : '<p style="margin:0;color:#777777">Nenhum e-mail ainda.</p>') + '</div>' +
+          '<div class="ha-box"><div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Aulas do clube</b><button type="button" class="ha-p" data-clube-curso>+ Criar curso do clube</button></div>' +
+          '<p style="margin:0;font-size:14px;color:#555555">Cada curso do clube funciona como os outros (módulos, aulas, importar do Vimeo), mas só o clube enxerga. Marque "Publicado" no curso e nas aulas para aparecerem.</p>' +
+          (meus.length ? '<table><tbody>' + meus.map(function (x) { return '<tr><td><b>' + esc(x.titulo) + '</b>' + (x.publicado ? '' : ' <span style="color:#8A6A12">(não publicado)</span>') + '</td><td style="text-align:right"><button type="button" class="ha-p" data-abrir-curso-clube="' + x.id + '">Abrir no editor</button></td></tr>'; }).join('') + '</tbody></table>' : '<p style="margin:0;color:#777777">Nenhum curso do clube ainda.</p>') + '</div>' +
+          '<div class="ha-box"><b style="font-size:18px">Recados</b>' +
+          '<textarea class="ha-in" data-clube-recado rows="3" style="width:100%" placeholder="Escreva um aviso para os profissionais do clube"></textarea>' +
+          '<div class="ha-row"><button type="button" class="ha-p" data-clube-publicar>Publicar recado</button></div>' +
+          rs.map(function (x) { return '<div class="ha-mod"><div style="font-size:12px;color:#777777">' + new Date(x.criado_em).toLocaleString('pt-BR') + '</div><div style="white-space:pre-wrap">' + esc(x.texto) + '</div><div><button type="button" class="ha-b ha-x" data-clube-recado-apagar="' + x.id + '">Apagar</button></div></div>'; }).join('') + '</div>' +
+          '<div class="ha-box"><b style="font-size:18px">Arquivos</b>' +
+          '<div class="ha-row"><label style="flex:1 1 280px">Título<br><input class="ha-in" data-clube-arq-tit style="width:100%" placeholder="Ex.: Relatório do jogo contra X"></label>' +
+          '<label style="flex:1 1 260px">Arquivo (PDF, PPT, planilha…)<br><input type="file" data-clube-arq></label><button type="button" class="ha-p" data-clube-enviar>Enviar</button><span data-clube-arq-st style="font-size:14px"></span></div>' +
+          (as.length ? '<table><tbody>' + as.map(function (x) { return '<tr><td><b>' + esc(x.titulo) + '</b><div style="font-size:12px;color:#777777">' + new Date(x.criado_em).toLocaleDateString('pt-BR') + (x.tamanho ? ' · ' + Math.max(1, Math.round(x.tamanho / 1024)) + ' KB' : '') + '</div></td><td style="text-align:right;white-space:nowrap"><button type="button" class="ha-b" data-clube-arq-ver="' + x.id + '">Abrir</button> <button type="button" class="ha-b ha-x" data-clube-arq-apagar="' + x.id + '">Apagar</button></td></tr>'; }).join('') + '</tbody></table>' : '<p style="margin:0;color:#777777">Nenhum arquivo ainda.</p>') + '</div>';
+        st.clubeArqs = as;
+      }).catch(falha);
+    }).catch(falha);
+  }
+  function cliqueClubes(t) {
+    var x, cor = function () { clubes(raiz.querySelector('.ha-corpo')); };
+    if (t.closest('[data-clube-novo]')) { var n = prompt('Nome do clube:'); if (!n || !n.trim()) return true; sb.from('clubes').insert({ nome: n.trim() }).select().single().then(ok).then(function (k) { st.clube = k.id; aviso('Clube criado'); cor(); }).catch(falha); return true; }
+    if ((x = t.closest('[data-clube-sel]'))) { st.clube = +x.getAttribute('data-clube-sel'); cor(); return true; }
+    if (!st.clube) return false;
+    if (t.closest('[data-clube-salvar]')) { sb.from('clubes').update({ nome: raiz.querySelector('[data-clube-nome]').value.trim(), ativo: raiz.querySelector('[data-clube-ativo]').checked }).eq('id', st.clube).then(ok).then(function () { aviso('Clube salvo'); cor(); }).catch(falha); return true; }
+    if (t.closest('[data-clube-apagar]')) { if (!confirm('Apagar o clube, a lista de e-mails, os recados e os arquivos? Os cursos do clube não são apagados (ficam sem clube e escondidos dos alunos até você decidir). Não dá para desfazer.')) return true;
+      sb.from('clube_arquivos').select('caminho').eq('clube_id', st.clube).then(ok).then(function (as) { return as.length ? sb.storage.from('clubes').remove(as.map(function (a) { return a.caminho; })) : null; })
+        .then(function () { return sb.from('cursos').update({ publicado: false }).eq('clube_id', st.clube).then(ok); })
+        .then(function () { return sb.from('clubes').delete().eq('id', st.clube).then(ok); }).then(function () { st.clube = null; aviso('Clube apagado'); cor(); }).catch(falha); return true; }
+    if (t.closest('[data-clube-add]')) {
+      var ems = (raiz.querySelector('[data-clube-emails]').value || '').toLowerCase().split(/[\s,;]+/).map(function (e) { return e.trim(); }).filter(function (e) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e); });
+      if (!ems.length) { aviso('Nenhum e-mail válido', true); return true; }
+      ems = ems.filter(function (e, i) { return ems.indexOf(e) === i; });
+      sb.from('clube_membros').upsert(ems.map(function (e) { return { clube_id: st.clube, email: e }; }), { onConflict: 'clube_id,email', ignoreDuplicates: true }).then(ok).then(function () { aviso(ems.length + ' e-mail(s) adicionados'); cor(); }).catch(falha); return true; }
+    if ((x = t.closest('[data-clube-rem]'))) { var em = x.getAttribute('data-clube-rem'); if (!confirm('Tirar ' + em + ' do clube? A pessoa perde a aba do clube e o Premium que vinha dele.')) return true; sb.from('clube_membros').delete().eq('clube_id', st.clube).eq('email', em).then(ok).then(function () { aviso('E-mail retirado'); cor(); }).catch(falha); return true; }
+    if (t.closest('[data-clube-publicar]')) { var tx = (raiz.querySelector('[data-clube-recado]').value || '').trim(); if (!tx) { aviso('Escreva o recado', true); return true; } sb.from('clube_recados').insert({ clube_id: st.clube, texto: tx }).then(ok).then(function () { aviso('Recado publicado'); cor(); }).catch(falha); return true; }
+    if ((x = t.closest('[data-clube-recado-apagar]'))) { if (!confirm('Apagar este recado?')) return true; sb.from('clube_recados').delete().eq('id', +x.getAttribute('data-clube-recado-apagar')).then(ok).then(function () { aviso('Recado apagado'); cor(); }).catch(falha); return true; }
+    if (t.closest('[data-clube-enviar]')) {
+      var f = (raiz.querySelector('[data-clube-arq]').files || [])[0], tit = (raiz.querySelector('[data-clube-arq-tit]').value || '').trim(), stt = raiz.querySelector('[data-clube-arq-st]');
+      if (!f) { aviso('Escolha o arquivo', true); return true; }
+      if (!tit) tit = f.name.replace(/\.[^.]+$/, '');
+      var nome = st.clube + '/' + Date.now() + '-' + f.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-');
+      stt.textContent = 'Enviando…';
+      sb.storage.from('clubes').upload(nome, f, { upsert: false, contentType: f.type || 'application/octet-stream' }).then(ok)
+        .then(function () { return sb.from('clube_arquivos').insert({ clube_id: st.clube, titulo: tit, caminho: nome, tamanho: f.size }).then(ok); })
+        .then(function () { aviso('Arquivo enviado'); cor(); }).catch(function (e) { stt.textContent = ''; falha(e); }); return true; }
+    if ((x = t.closest('[data-clube-arq-ver]'))) { var a = (st.clubeArqs || []).filter(function (y) { return y.id === +x.getAttribute('data-clube-arq-ver'); })[0]; if (a) { var w = window.open('', '_blank'); sb.storage.from('clubes').createSignedUrl(a.caminho, 900).then(ok).then(function (u) { if (w) w.location = u.signedUrl; }).catch(function (e) { if (w) w.close(); falha(e); }); } return true; }
+    if ((x = t.closest('[data-clube-arq-apagar]'))) { var ap = (st.clubeArqs || []).filter(function (y) { return y.id === +x.getAttribute('data-clube-arq-apagar'); })[0]; if (!ap || !confirm('Apagar o arquivo "' + ap.titulo + '"?')) return true;
+      sb.storage.from('clubes').remove([ap.caminho]).then(function () { return sb.from('clube_arquivos').delete().eq('id', ap.id).then(ok); }).then(function () { aviso('Arquivo apagado'); cor(); }).catch(falha); return true; }
+    if (t.closest('[data-clube-curso]')) { var tt = prompt('Nome do curso do clube:'); if (!tt) return true;
+      var slug = 'clube-' + st.clube + '-' + tt.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      sb.from('cursos').insert({ titulo: tt, slug: slug, publicado: false, clube_id: st.clube, ordem: 900 }).select().single().then(ok).then(function (k) { return carregarCursos().then(function () { st.aba = 'cursos'; st.aberto = k.id; desenhar(); }); }).catch(falha); return true; }
+    if ((x = t.closest('[data-abrir-curso-clube]'))) { var id = +x.getAttribute('data-abrir-curso-clube'); carregarCursos().then(function () { st.aba = 'cursos'; st.aberto = id; desenhar(); }).catch(falha); return true; }
+    return false;
+  }
+
   // ---------- Engajamento ----------
   function engajamento(c) {
     c.innerHTML = 'Carregando…';
@@ -551,6 +633,7 @@
       var box = x.closest('[data-curso]'), d = box.tagName === 'TR' ? linhaCurso(box) : (function () { var o = {}; box.querySelectorAll('[data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; o[i.getAttribute('data-f')] = v; }); return o; })();
       return sb.from('cursos').update(d).eq('id', +x.getAttribute('data-salvar-curso')).then(ok).then(function () { aviso('Curso salvo'); return carregarCursos(); }).catch(falha);
     }
+    if (st.aba === 'clubes' && cliqueClubes(t)) return;
     if (t.closest('[data-novo-curso]')) {
       var tt = prompt('Nome do novo curso:'); if (!tt) return;
       var slug = tt.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -758,7 +841,7 @@
           if (t.matches('[data-f-mom],[data-f-esc],[data-f-mod-mom],[data-f-mod-esc]')) return salvarFiltro(t);
           if (t.matches('[data-f-sem]')) raiz.querySelectorAll('[data-f-aula]').forEach(function (tr) { tr.style.display = t.checked && tr.getAttribute('data-vazio') === '0' ? 'none' : ''; });
         });
-        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros|emails)$/.test(location.hash)) st.aba = location.hash.slice(1);
+        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros|emails|clubes)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

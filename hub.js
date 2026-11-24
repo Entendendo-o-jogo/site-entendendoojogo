@@ -15,7 +15,7 @@
   // ---------- Catálogo ----------
   var AULA_COLS = 'id,titulo,duracao_seg,ordem,publicado_em,momento,escopo';
   H.cursos = function () {
-    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,modulos(id,titulo,ordem,oculto,capa,aulas(id))')
+    return sb.from('cursos').select('id,slug,titulo,descricao,capa,carga_horaria,tipo,formato,gratuito,ordem,clube_id,modulos(id,titulo,ordem,oculto,capa,aulas(id))')
       .order('ordem').order('titulo').then(ok).then(function (cs) { (cs || []).forEach(function (c) { c.modulos = (c.modulos || []).filter(function (m) { return !m.oculto; }); }); return cs; });
   };
   H.curso = function (filtro) {
@@ -66,6 +66,19 @@
 
   // ---------- Busca e sugestões ----------
   H.trechos = function (q) { return sb.rpc('buscar_trechos', { q: q, lim: 30 }).then(ok); };
+  // ---------- Clubes parceiros (aba visível só para os e-mails do clube e para o admin) ----------
+  H.meusClubes = function () { return B.user ? sb.rpc('meus_clubes').then(ok).then(function (r) { return r || []; }) : Promise.resolve([]); };
+  H.clubeConteudo = function (id) {
+    return Promise.all([
+      sb.from('clube_recados').select('id,texto,criado_em').eq('clube_id', id).order('criado_em', { ascending: false }).then(ok),
+      sb.from('clube_arquivos').select('id,titulo,caminho,tamanho,criado_em').eq('clube_id', id).order('criado_em', { ascending: false }).then(ok)
+    ]).then(function (r) { return { recados: r[0] || [], arquivos: r[1] || [] }; });
+  };
+  H.abrirArquivoClube = function (a) {
+    var w = window.open('', '_blank');
+    return sb.storage.from('clubes').createSignedUrl(a.caminho, 900).then(ok).then(function (u) { if (w) w.location = u.signedUrl; else location.assign(u.signedUrl); H.ev('hub_clube_arquivo', { arquivo: a.id }); })
+      .catch(function (e) { if (w) w.close(); throw e; });
+  };
   H.ehPremium = function () { return B.user ? sb.rpc('eh_premium').then(function (r) { return !!r.data; }) : Promise.resolve(false); };
   H.perguntar = function (q) { return sb.functions.invoke('ia', { body: { acao: 'pergunta', pergunta: q } }).then(function (r) { if (r.error) throw r.error; H.ev('hub_ia_pergunta'); return r.data || {}; }); };
   H.buscar = function (q) { return sb.rpc('buscar_hub', { q: q, lim: 40 }).then(ok); };

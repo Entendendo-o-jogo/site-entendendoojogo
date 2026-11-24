@@ -21,6 +21,8 @@
       var u = new URL(a.href); var p = PROMO[u.searchParams.get('off')]; if (!p) return;
       a.__bf = 1; u.searchParams.set('off', p[0]); u.searchParams.delete('bid'); a.href = u.toString();
       if (a.textContent.indexOf(p[1]) >= 0) a.innerHTML = a.innerHTML.split(p[1]).join(p[2] + ' (50% OFF)');
+      var sec = a.closest('section, #precos'); if (sec) [].forEach.call(sec.querySelectorAll('span, b, strong, p'), function (el) {
+        if (!el.__bf && el.children.length === 0 && el.textContent.trim() === p[1]) { el.__bf = 1; el.innerHTML = '<s style="opacity:.55;font-size:.55em;margin-right:8px">' + p[1] + '</s>' + p[2]; } });
     } catch (e) {}
   }
   function varrer() { [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), trocar); }

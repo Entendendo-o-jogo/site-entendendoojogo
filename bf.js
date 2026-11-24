@@ -1,11 +1,11 @@
-/* Black Friday EOJ: faixa no topo + links de compra dos cursos trocados pelas ofertas de 50%.
+/* Black Weeks EOJ: faixa no topo + links de compra dos cursos trocados pelas ofertas de 50%.
    Tudo some sozinho em FIM (preços e links voltam ao normal). Desativar de vez: tirar o <script> do build_site.py. */
 (function () {
   'use strict';
   var FIM = new Date('2026-12-08T00:00:00-03:00'); // último dia: 07/12
   if (Date.now() >= FIM.getTime() || window.__eojBF) return; window.__eojBF = 1;
 
-  // oferta normal -> [oferta Black Friday, preço normal, preço promocional]
+  // oferta normal -> [oferta Black Weeks, preço normal, preço promocional]
   var PROMO = {
     npblpgqb: ['lyiu66nw', 'R$ 429,00', 'R$ 214,50', '12x de R$ 44,37', '12x de R$ 22,18'],  // Jogo de Posição
     mrzr2huv: ['sxf92srw', 'R$ 499,99', 'R$ 250,00', '3x de R$ 178,43', '3x de R$ 89,22'],  // Treinamento tático 1
@@ -45,7 +45,7 @@
       var img = [].filter.call(box.querySelectorAll('img'), function (i) { return (i.width || i.naturalWidth) >= 120; })[0], up = box, k2 = 0;
       if (img && img.parentElement.querySelector('.bf-etq')) img = null;
       if (img && !box.__bfTag) { box.__bfTag = 1; var pai = img.parentElement; if (getComputedStyle(pai).position === 'static') pai.style.position = 'relative';
-        var tag = document.createElement('span'); tag.className = 'bf-etq'; tag.textContent = 'Black Friday · 50% OFF'; pai.appendChild(tag); }
+        var tag = document.createElement('span'); tag.className = 'bf-etq'; tag.textContent = 'Black Weeks · 50% OFF'; pai.appendChild(tag); }
       [].forEach.call(box.querySelectorAll('span, b, strong, p, div'), function (el) {
         if (el.children.length) return; var t = el.textContent.trim();
         if (!el.__bf && t === p[1]) { el.__bf = 1; el.innerHTML = precoHtml(p[1], p[2]); }
@@ -62,17 +62,17 @@
 
   // aviso no "mensal → anual" da página de planos: a troca de plano usa o preço cheio; o promocional é por link
   function avisoAnual() {
-    var msg = 'https://api.whatsapp.com/send?phone=6281385430917&text=' + encodeURIComponent('Olá! Sou assinante do Premium mensal e quero o link promocional do Premium anual da Black Friday.');
+    var msg = 'https://api.whatsapp.com/send?phone=6281385430917&text=' + encodeURIComponent('Olá! Sou assinante do Premium mensal e quero o link promocional do Premium anual das Black Weeks.');
     [].forEach.call(document.querySelectorAll('[data-bf-anual],[data-bf-anual2]'), function (el) { if (el.__bf) return; el.__bf = 1;
-      el.innerHTML = ' <b style="color:inherit">Black Friday (até 07/12):</b> o anual está por menos de R$ 100/mês. Antes de trocar, <a href="' + msg + '" target="_blank" rel="noopener" style="color:inherit;font-weight:700;text-decoration:underline">peça o link promocional no WhatsApp</a>.'; });
+      el.innerHTML = ' <b style="color:inherit">Black Weeks (até 07/12):</b> o anual está por menos de R$ 100/mês. Antes de trocar, <a href="' + msg + '" target="_blank" rel="noopener" style="color:inherit;font-weight:700;text-decoration:underline">peça o link promocional no WhatsApp</a>.'; });
   }
   avisoAnual(); if (window.MutationObserver) new MutationObserver(avisoAnual).observe(document.documentElement, { childList: true, subtree: true });
   if (/^\/(es\/|en\/)?(hub\/(admin|certificado)|biblioteca\/(admin|editor))/.test(location.pathname)) return;
   var LG = (/^\/(es|en)(\/|$)/.exec(location.pathname) || [])[1] || 'pt';
   var T = {
-    pt: { c1: 'Cursos', c1b: '50% OFF', c1s: 'Exceto Indicadores táticos por posição', b1: 'Ver cursos', c2: 'EOJHub Premium anual', c2b: 'Menos de R$ 100/mês', c2s: 'Link promocional pelo WhatsApp', b2: 'Quero o Premium', fim: 'Termina em', msg2: 'Olá! Vim pelo site e quero o link promocional do EOJHub Premium anual da Black Friday.' },
-    es: { c1: 'Cursos', c1b: '50% OFF', c1s: 'Excepto Indicadores tácticos por posición', b1: 'Ver cursos', c2: 'EOJHub Premium anual', c2b: 'Menos de R$ 100/mes', c2s: 'Enlace promocional por WhatsApp', b2: 'Quiero el Premium', fim: 'Termina en', msg2: '¡Hola! Vengo del sitio y quiero el enlace promocional de EOJHub Premium anual de Black Friday.' },
-    en: { c1: 'Courses', c1b: '50% OFF', c1s: 'Except Tactical indicators by position', b1: 'See courses', c2: 'EOJHub Premium yearly', c2b: 'Under R$ 100/month', c2s: 'Promo link on WhatsApp', b2: 'Get Premium', fim: 'Ends in', msg2: 'Hi! I came from the website and want the Black Friday promo link for EOJHub Premium yearly.' }
+    pt: { c1: 'Cursos', c1b: '50% OFF', c1s: 'Exceto Indicadores táticos por posição', b1: 'Ver cursos', c2: 'EOJHub Premium anual', c2b: 'Menos de R$ 100/mês', c2s: 'Link promocional pelo WhatsApp', b2: 'Quero o Premium', fim: 'Termina em', msg2: 'Olá! Vim pelo site e quero o link promocional do EOJHub Premium anual das Black Weeks.' },
+    es: { c1: 'Cursos', c1b: '50% OFF', c1s: 'Excepto Indicadores tácticos por posición', b1: 'Ver cursos', c2: 'EOJHub Premium anual', c2b: 'Menos de R$ 100/mes', c2s: 'Enlace promocional por WhatsApp', b2: 'Quiero el Premium', fim: 'Termina en', msg2: '¡Hola! Vengo del sitio y quiero el enlace promocional de EOJHub Premium anual de Black Weeks.' },
+    en: { c1: 'Courses', c1b: '50% OFF', c1s: 'Except Tactical indicators by position', b1: 'See courses', c2: 'EOJHub Premium yearly', c2b: 'Under R$ 100/month', c2s: 'Promo link on WhatsApp', b2: 'Get Premium', fim: 'Ends in', msg2: 'Hi! I came from the website and want the Black Weeks promo link for EOJHub Premium yearly.' }
   }[LG];
   var Y = '#FFD400';
   var css = document.createElement('style');
@@ -101,8 +101,8 @@
   var pre = LG === 'pt' ? '' : '/' + LG;
   function of(t, b, sub, href, btn, ext) { return '<span class="bf-of"><span class="bf-off"><small>' + t + '</small><b>' + b + '</b><span>' + sub + '</span></span>' +
     '<a class="bf-btn" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' + btn + ' →</a></span>'; }
-  var d = document.createElement('div'); d.id = 'eoj-bf'; d.setAttribute('role', 'region'); d.setAttribute('aria-label', 'Black Friday');
-  d.innerHTML = '<div class="bf-in"><span class="bf-tag">🏷 Black Friday</span><span class="bf-ofs">' +
+  var d = document.createElement('div'); d.id = 'eoj-bf'; d.setAttribute('role', 'region'); d.setAttribute('aria-label', 'Black Weeks');
+  d.innerHTML = '<div class="bf-in"><span class="bf-tag">🏷 Black Weeks</span><span class="bf-ofs">' +
     of(T.c1, T.c1b, T.c1s, pre + '/cursos', T.b1, false) + of(T.c2, T.c2b, T.c2s, WA + encodeURIComponent(T.msg2), T.b2, true) +
     '</span><span class="bf-cd"><small>' + T.fim + '</small><b data-cd>—</b></span></div><div class="bf-fita" aria-hidden="true"></div>';
   var cd = d.querySelector('[data-cd]');

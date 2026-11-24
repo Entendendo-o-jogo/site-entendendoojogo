@@ -42,6 +42,9 @@
       if (!box || n > 7 || box.tagName === 'BODY' || box.tagName === 'MAIN' || box.tagName === 'SECTION') return;
       var outros = [].filter.call(box.querySelectorAll('a[href*="/cursos/"], a[href*="Curso-"]'), function (x) { var mm = /(?:\/cursos\/|Curso-)([a-z0-9-]+)/.exec(x.getAttribute('href') || ''); return mm && mm[1].replace(/\.dc$/, '') !== m[1]; });
       if (outros.length) return;
+      var img = box.querySelector('img');
+      if (img && !box.__bfTag && box.contains(a)) { box.__bfTag = 1; var pai = img.parentElement; if (getComputedStyle(pai).position === 'static') pai.style.position = 'relative';
+        var tag = document.createElement('span'); tag.className = 'bf-etq'; tag.textContent = 'Black Friday · 50% OFF'; pai.appendChild(tag); }
       [].forEach.call(box.querySelectorAll('span, b, strong, p, div'), function (el) {
         if (el.children.length) return; var t = el.textContent.trim();
         if (!el.__bf && t === p[1]) { el.__bf = 1; el.innerHTML = precoHtml(p[1], p[2]); }
@@ -50,6 +53,7 @@
       });
     });
   }
+  (function () { var st = document.createElement('style'); st.textContent = '.bf-etq{position:absolute;top:12px;left:12px;z-index:3;background:#FFD400;color:#111111;font:900 12px/1 Montserrat,Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none}'; (document.head || document.documentElement).appendChild(st); })();
   function varrer() { [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), trocar); cartoes(); }
   document.addEventListener('click', function (ev) { var a = ev.target.closest && ev.target.closest('a[href*="pay.hotmart.com"]'); if (a) trocar(a); }, true);
   varrer(); var nV = 0, iv = setInterval(function () { varrer(); if (++nV > 40) clearInterval(iv); }, 500);

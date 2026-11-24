@@ -605,7 +605,7 @@
       return sb.functions.invoke('emails', { body: rsTeste ? { acao: 'teste', para: rsPara.trim() } : { acao: 'status' } }).then(function (r) {
         if (r.error) throw r.error; var d = r.data || {};
         if (rsTeste) { var rs = d.resultado || []; var okN = rs.filter(function (z) { return z && (z.ok || z.id); }).length; rsSt.textContent = okN + ' de ' + rs.length + ' enviados' + (okN < rs.length ? ' · ' + JSON.stringify(rs.filter(function (z) { return !(z && (z.ok || z.id)); })[0]).slice(0, 160) : ''); }
-        else { var ds = d.dominios || []; rsSt.textContent = ds.length ? ds.map(function (z) { return z.nome + ': ' + (z.status === 'verified' ? 'verificado ✓' : z.status); }).join(' · ') : 'Nenhum domínio cadastrado na Resend'; }
+        else if (d.ok === false) { rsSt.textContent = 'A chave tem só permissão de envio, então não consegue ler o status. Confira o domínio direto na Resend (Domains) e use o envio de teste.'; } else { var ds = d.dominios || []; rsSt.textContent = ds.length ? ds.map(function (z) { return z.nome + ': ' + (z.status === 'verified' ? 'verificado ✓' : z.status); }).join(' · ') : 'Nenhum domínio cadastrado na Resend'; }
       }).catch(function (e) { rsSt.textContent = 'Erro: ' + ((e && e.message) || e); });
     }
     if ((x = t.closest('[data-lista]'))) { var tp = x.getAttribute('data-lista'); return sb.rpc('admin_lista_emails', { tipo: tp, dias: 7 }).then(ok).then(function (rs) { csv(rs, (tp === 'resumo' ? 'lista-resumo-semanal-' : 'cadastros-7-dias-') + new Date().toISOString().slice(0, 10) + '.csv'); aviso(rs.length + ' e-mails na lista'); }).catch(falha); }

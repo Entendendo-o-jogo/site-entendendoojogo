@@ -22,14 +22,35 @@
       a.__bf = 1; u.searchParams.set('off', p[0]); u.searchParams.delete('bid'); a.href = u.toString();
       if (a.textContent.indexOf(p[1]) >= 0) a.innerHTML = a.innerHTML.split(p[1]).join(p[2] + ' (50% OFF)');
       var sec = a.parentElement; while (sec && sec.tagName !== 'SECTION' && sec.textContent.indexOf(p[1]) < 0) sec = sec.parentElement; if (sec && sec.tagName !== 'SECTION' && sec.tagName !== 'BODY') { [].forEach.call(sec.querySelectorAll('span, b, strong, p'), function (el) {
-        if (!el.__bf && el.children.length === 0 && el.textContent.trim() === p[1]) { el.__bf = 1; el.innerHTML = '<s style="opacity:.55;font-size:.55em;margin-right:8px">' + p[1] + '</s>' + p[2]; } });
+        if (!el.__bf && el.children.length === 0 && el.textContent.trim() === p[1]) { el.__bf = 1; el.innerHTML = precoHtml(p[1], p[2]); } });
         [].forEach.call(sec.querySelectorAll('span, p, small, div'), function (el) { if (el.__bf2 || el.children.length) return; var t = el.textContent.trim();
           if (/^De R\$/.test(t)) { el.__bf2 = 1; el.style.display = 'none'; }
           else if (p[3] && t.indexOf(p[3]) >= 0) { el.__bf2 = 1; el.textContent = el.textContent.split(p[3]).join(p[4]); }
           else if (!p[3] && /\d+x de R\$/.test(t)) { el.__bf2 = 1; el.textContent = 'à vista'; } }); }
     } catch (e) {}
   }
-  function varrer() { [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), trocar); }
+  function precoHtml(de, por) { return '<s style="font-size:.55em;color:#8A8A8A;font-weight:600;margin-right:8px">' + de + '</s>' + por +
+    '<span style="display:inline-block;vertical-align:middle;margin-left:8px;background:#FFD400;color:#111111;font-size:.42em;font-weight:900;padding:3px 7px;border-radius:6px;letter-spacing:.02em">-50%</span>'; }
+  // cartões da lista de cursos (sem link de compra): acha o curso pelo link "Ver curso"
+  var SLUG = { 'jogo-de-posicao': 'npblpgqb', 'treinamento-tatico-1': 'mrzr2huv', 'treinamento-tatico-2': 'z3eyd3rs', 'bolas-paradas': 'jqzqajq3', 'sistemas-taticos': 'mktm71ps', 'tatica-individual': 'hgb4v9ai', 'consultoria': 'f10fzg6x' };
+  var PARC_TT2 = '3x de R$ 166,67';
+  function cartoes() {
+    [].forEach.call(document.querySelectorAll('a[href*="/cursos/"], a[href*="Curso-"]'), function (a) {
+      var m = /(?:\/cursos\/|Curso-)([a-z0-9-]+?)(?:\.dc\.html)?\/?(?:[?#].*)?$/.exec(a.getAttribute('href') || ''); if (!m || !SLUG[m[1]]) return;
+      var p = PROMO[SLUG[m[1]]], box = a.parentElement, n = 0;
+      while (box && n++ < 7 && box.textContent.indexOf(p[1]) < 0 && box.textContent.indexOf(p[2]) < 0) box = box.parentElement;
+      if (!box || n > 7 || box.tagName === 'BODY' || box.tagName === 'MAIN' || box.tagName === 'SECTION') return;
+      var outros = [].filter.call(box.querySelectorAll('a[href*="/cursos/"], a[href*="Curso-"]'), function (x) { var mm = /(?:\/cursos\/|Curso-)([a-z0-9-]+)/.exec(x.getAttribute('href') || ''); return mm && mm[1].replace(/\.dc$/, '') !== m[1]; });
+      if (outros.length) return;
+      [].forEach.call(box.querySelectorAll('span, b, strong, p, div'), function (el) {
+        if (el.children.length) return; var t = el.textContent.trim();
+        if (!el.__bf && t === p[1]) { el.__bf = 1; el.innerHTML = precoHtml(p[1], p[2]); }
+        else if (!el.__bf2 && p[3] && t.indexOf(p[3]) >= 0) { el.__bf2 = 1; el.textContent = el.textContent.split(p[3]).join(p[4]); }
+        else if (!el.__bf2 && !p[3] && t.indexOf(PARC_TT2) >= 0) { el.__bf2 = 1; el.textContent = 'à vista'; }
+      });
+    });
+  }
+  function varrer() { [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), trocar); cartoes(); }
   document.addEventListener('click', function (ev) { var a = ev.target.closest && ev.target.closest('a[href*="pay.hotmart.com"]'); if (a) trocar(a); }, true);
   varrer(); var nV = 0, iv = setInterval(function () { varrer(); if (++nV > 40) clearInterval(iv); }, 500);
   if (window.MutationObserver) new MutationObserver(function () { varrer(); }).observe(document.documentElement, { childList: true, subtree: true });

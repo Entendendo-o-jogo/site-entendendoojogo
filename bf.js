@@ -21,12 +21,12 @@
       var u = new URL(a.href); var p = PROMO[u.searchParams.get('off')]; if (!p) return;
       a.__bf = 1; u.searchParams.set('off', p[0]); u.searchParams.delete('bid'); a.href = u.toString();
       if (a.textContent.indexOf(p[1]) >= 0) a.innerHTML = a.innerHTML.split(p[1]).join(p[2] + ' (50% OFF)');
-      var sec = a.closest('section, #precos'); if (sec) [].forEach.call(sec.querySelectorAll('span, b, strong, p'), function (el) {
+      var sec = a.parentElement; while (sec && sec.tagName !== 'SECTION' && sec.textContent.indexOf(p[1]) < 0) sec = sec.parentElement; if (sec && sec.tagName !== 'SECTION' && sec.tagName !== 'BODY') { [].forEach.call(sec.querySelectorAll('span, b, strong, p'), function (el) {
         if (!el.__bf && el.children.length === 0 && el.textContent.trim() === p[1]) { el.__bf = 1; el.innerHTML = '<s style="opacity:.55;font-size:.55em;margin-right:8px">' + p[1] + '</s>' + p[2]; } });
         [].forEach.call(sec.querySelectorAll('span, p, small, div'), function (el) { if (el.__bf2 || el.children.length) return; var t = el.textContent.trim();
           if (/^De R\$/.test(t)) { el.__bf2 = 1; el.style.display = 'none'; }
           else if (p[3] && t.indexOf(p[3]) >= 0) { el.__bf2 = 1; el.textContent = el.textContent.split(p[3]).join(p[4]); }
-          else if (!p[3] && /\d+x de R\$/.test(t)) { el.__bf2 = 1; el.textContent = 'à vista'; } });
+          else if (!p[3] && /\d+x de R\$/.test(t)) { el.__bf2 = 1; el.textContent = 'à vista'; } }); }
     } catch (e) {}
   }
   function varrer() { [].forEach.call(document.querySelectorAll('a[href*="pay.hotmart.com"]'), trocar); }

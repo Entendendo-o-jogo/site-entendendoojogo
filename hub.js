@@ -296,6 +296,7 @@
       bg.innerHTML = '<style>' + css + '</style><div class="pw"><button type="button" class="pw-x" data-pw-x>Fechar ✕</button>' +
         '<h2 id="pw-t">Este conteúdo não está no seu plano</h2><p>' + (c.titulo ? 'Ele faz parte de <strong>' + esc(c.titulo) + '</strong>. ' : '') + 'Escolha como liberar:</p>' +
         '<div class="pw-op">' + op.join('') + '</div>' +
+        '<p style="font-size:13px;color:#7A4A00;background:#FFF4DC;border-radius:8px;padding:8px 10px">Já é Basic? Depois de assinar o Premium, cancele o Basic na Hotmart (ele não é cancelado sozinho) ou fale com a gente.</p>' +
         '<p style="font-size:13px;color:#555555">Já comprou? Confira se entrou com o mesmo e-mail da compra na Hotmart. Dúvidas: <a href="https://api.whatsapp.com/send?phone=6282113761580" target="_blank" rel="noopener">fale com a gente no WhatsApp</a> · <a href="/eojhub">comparar os planos</a></p></div>';
       document.body.appendChild(bg);
       var x = bg.querySelector('[data-pw-x]'); x.focus();
@@ -316,6 +317,43 @@
     var m = /^\/cursos\/([a-z0-9-]+)/.exec(a.getAttribute('href')); if (!m) return;
     e.preventDefault(); abrir(m[1], a.getAttribute('href'));
   }, true);
+})();
+
+// ---------- Aviso para quem é Basic (todas as páginas do /hub) ----------
+(function () {
+  if (!/^\/(es\/|en\/)?hub(\/|$)/.test(location.pathname) || /\/hub\/(admin|certificado)/.test(location.pathname)) return;
+  var LG = (/^\/(es|en)\//.exec(location.pathname) || [])[1] || 'pt';
+  var T = {
+    pt: { so: '<b>Já é Basic?</b> Se assinar o Premium, cancele o Basic na Hotmart depois: ele não é cancelado sozinho. Dúvidas? Fale com a gente pelo chat.',
+          dois: '<b>Você tem o Basic e o Premium ativos.</b> O Premium já inclui tudo do Basic: cancele o Basic na Hotmart para não pagar duas vezes, ou fale com a gente pelo chat.',
+          como: 'Como cancelar', x: 'Fechar aviso' },
+    es: { so: '<b>¿Ya eres Basic?</b> Si te suscribes al Premium, cancela el Basic en Hotmart después: no se cancela solo. ¿Dudas? Escríbenos por el chat.',
+          dois: '<b>Tienes Basic y Premium activos.</b> El Premium ya incluye todo el Basic: cancela el Basic en Hotmart para no pagar dos veces, o escríbenos por el chat.',
+          como: 'Cómo cancelar', x: 'Cerrar aviso' },
+    en: { so: '<b>Already on Basic?</b> If you subscribe to Premium, cancel Basic on Hotmart afterwards: it is not cancelled automatically. Questions? Message us in the chat.',
+          dois: '<b>You have both Basic and Premium active.</b> Premium already includes everything in Basic: cancel Basic on Hotmart so you don\'t pay twice, or message us in the chat.',
+          como: 'How to cancel', x: 'Close notice' }
+  }[LG];
+  function mostrar(dois) {
+    var chave = 'eojAvisoBasic' + (dois ? '2' : '1');
+    try { if (sessionStorage.getItem(chave)) return; } catch (e) {}
+    var d = document.createElement('div'); d.id = 'eoj-aviso-basic'; d.setAttribute('role', 'status');
+    d.style.cssText = 'background:' + (dois ? '#FDE7E7' : '#FFF4DC') + ';color:#3A2A00;border-bottom:1px solid ' + (dois ? '#F2B8B5' : '#F0D9A0') + ';font:14px/1.45 Montserrat,Inter,system-ui,sans-serif;padding:10px 48px 10px 20px;position:relative;text-align:center';
+    d.innerHTML = '<span>' + (dois ? T.dois : T.so) + '</span> <a href="https://help.hotmart.com/pt-br/article/115002183968" target="_blank" rel="noopener" style="color:#4A79A6;font-weight:700;margin-left:6px">' + T.como + ' →</a>' +
+      '<button type="button" aria-label="' + T.x + '" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:20px;line-height:1;cursor:pointer;color:#3A2A00;padding:4px 8px">×</button>';
+    d.querySelector('button').onclick = function () { d.remove(); try { sessionStorage.setItem(chave, '1'); } catch (e) {} };
+    var menu = document.getElementById('menu-principal'), cab = menu && (menu.closest('header') || menu.parentElement);
+    if (cab && cab.parentElement && getComputedStyle(cab).position !== 'fixed') cab.parentElement.insertBefore(d, cab.nextSibling);
+    else document.body.insertBefore(d, document.body.firstChild);
+  }
+  function iniciar() {
+    var B = window.EOJB; if (!B || !B.ready) return setTimeout(iniciar, 400);
+    B.ready.then(function () {
+      if (!B.user) return;
+      B.sb.rpc('meus_planos').then(function (r) { var p = r && r.data; if (p && p.basic) mostrar(!!p.premium); });
+    });
+  }
+  if (document.readyState === 'complete') setTimeout(iniciar, 300); else window.addEventListener('load', function () { setTimeout(iniciar, 300); });
 })();
 
 /* QR Code (c) 2009 Kazuhiko Arase, MIT license — empacotado de qrcode-terminal/vendor. EOJQR.svg(texto) devolve um <svg>. */

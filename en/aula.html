@@ -45,7 +45,7 @@ document.addEventListener('click', function (ev) {
 <style>
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{margin:0;background:#0B0B0C;color:#FFFFFF;font-family:Montserrat,Inter,system-ui,sans-serif}
+html,body{overscroll-behavior-x:none;margin:0;background:#0B0B0C;color:#FFFFFF;font-family:Montserrat,Inter,system-ui,sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer}
 .bt{background:#1C1C1C;color:#FFFFFF;border:1px solid #333333;border-radius:10px;padding:9px 13px;font-size:14px;font-weight:600}
@@ -74,7 +74,7 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 .cab .play span{font-size:12px;opacity:.85}
 .cab .mini{display:flex;gap:6px}
 .cab .mini button{flex:1;background:transparent;color:#8A8A8A;border:1px solid #2A2A2A;border-radius:8px;padding:4px 6px;font-size:12px}
-.clips{flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;align-items:stretch}
+.clips{overscroll-behavior-x:contain;flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;align-items:stretch}
 .clip{flex:0 0 136px;display:flex;flex-direction:column;gap:5px;background:#161616;border:2px solid transparent;border-radius:10px;padding:6px;cursor:grab;user-select:none}
 .clip.sel{border-color:#A1C4E6}
 .clip.tocando{border-color:#FFD400}
@@ -100,6 +100,9 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 .cor.on{border-color:#FFFFFF}
 .cor i{width:16px;height:16px;border-radius:50%;display:block}
 .hud{position:absolute;right:12px;top:12px;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;z-index:3}
+.trava{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(11,11,12,.9);text-align:center;padding:24px}
+.trava b{font-size:20px}
+.trava span{font-size:14px;color:#BBBBBB;max-width:520px;line-height:1.5}
 .toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(17,17,17,.88);border-radius:12px;padding:12px 18px;font-size:22px;font-weight:900;z-index:4;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
 .vaz{pointer-events:none;position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#A6A6A6;text-align:center;padding:20px;z-index:2}
@@ -174,6 +177,7 @@ aside .ck input{width:18px;height:18px}
 <div class="clique" id="clique"></div>
 <canvas id="tela"></canvas>
 <button class="tc" id="bTela" aria-label="Tela cheia" title="Tela cheia (F)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="icTela"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+<div class="trava" id="trava" hidden><b>O Chrome pediu para liberar os vídeos desta aula</b><span>Por segurança, depois de recarregar a página o Chrome precisa da sua autorização para ler os arquivos do HD. Clique abaixo e, na janela do Chrome, escolha <strong>“Permitir em todas as visitas”</strong> para não precisar fazer isso de novo.</span><div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center"><button class="bt p" id="bTrava">Liberar os vídeos</button><button class="bt" id="bTravaPasta">Liberar tudo pela pasta dos vídeos</button></div><span style="font-size:12px">Se o Chrome pedir um vídeo de cada vez, use “Liberar tudo pela pasta” e escolha a pasta (ou o HD) onde estão os vídeos.</span></div>
 <div class="vaz" id="vaz"><b>Adicione vídeos para começar</b><span>Use "Adicionar vídeos do HD" ou arraste arquivos do Finder para uma linha.</span></div>
 <div class="ferr" role="toolbar" aria-label="Caneta" id="ferr"></div>
 <div class="hud" id="hud" hidden></div>
@@ -222,7 +226,7 @@ function tx(modo) { return db.transaction('roteiros', modo).objectStore('roteiro
 function todos() { return new Promise(function (ok) { var r = tx('readonly').getAll(); r.onsuccess = function () { ok(r.result || []); }; r.onerror = function () { ok([]); }; }); }
 var salvarT;
 function salvar() { clearTimeout(salvarT); salvarT = setTimeout(function () {
-  var copia = { id: R.id, nome: R.nome, semSom: !!R.semSom, atualizado: Date.now(), linhas: R.linhas.map(function (l) { return { id: l.id, nome: l.nome, clips: l.clips.map(function (c) { return { id: c.id, nome: c.nome, handle: c.handle || null, ini: c.ini, fim: c.fim, vel: c.vel, pausar: c.pausar, mudo: c.mudo, dur: c.dur }; }) }; }) };
+  var copia = { id: R.id, nome: R.nome, semSom: !!R.semSom, atualizado: Date.now(), linhas: R.linhas.map(function (l) { return { id: l.id, nome: l.nome, pasta: l.pasta || null, clips: l.clips.map(function (c) { return { id: c.id, nome: c.nome, handle: c.handle || null, ini: c.ini, fim: c.fim, vel: c.vel, pausar: c.pausar, mudo: c.mudo, dur: c.dur }; }) }; }) };
   try { tx('readwrite').put(copia); } catch (e) { console.warn(e); }
 }, 300); }
 
@@ -247,14 +251,38 @@ function urlDe(c) {
 function permOk(h) { return h.queryPermission ? h.queryPermission({ mode: 'read' }).then(function (p) { return p === 'granted'; }) : Promise.resolve(true); }
 function checarPerm() {
   var hs = []; R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (c.handle && !FILES[c.id]) hs.push(c.handle); }); });
-  return Promise.all(hs.map(permOk)).then(function (r) { var falta = r.some(function (x) { return !x; }); $('bReco').hidden = !falta; return !falta; });
+  return Promise.all(hs.map(permOk)).then(function (r) { var falta = r.some(function (x) { return !x; }); $('bReco').hidden = !falta; $('trava').hidden = !falta; return !falta; });
 }
+var reconectando = null;
 function reconectar() {
-  var cs = []; R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (c.handle) cs.push(c); }); });
+  if (reconectando) return reconectando;
+  var pastas = [], vistos = [];
+  R.linhas.forEach(function (l) { if (l.pasta && vistos.indexOf(l.pasta) < 0) { vistos.push(l.pasta); pastas.push(l.pasta); } });
   var p = Promise.resolve();
-  cs.forEach(function (c) { p = p.then(function () { return c.handle.requestPermission({ mode: 'read' }).catch(function () {}); }); });
-  return p.then(checarPerm).then(desenharLinhas);
+  pastas.forEach(function (d) { p = p.then(function () { return d.requestPermission({ mode: 'read' }).catch(function () {}); }); });
+  p = p.then(function () {
+    var cs = []; R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (c.handle && !FILES[c.id]) cs.push(c); }); });
+    var q = Promise.resolve();
+    cs.forEach(function (c) { q = q.then(function () { return permOk(c.handle).then(function (ok) { return ok ? null : c.handle.requestPermission({ mode: 'read' }).catch(function () {}); }); }); });
+    return q;
+  });
+  reconectando = p.then(checarPerm).then(function (ok) { reconectando = null; if (ok) return carregarTodos(); desenharLinhas(); return false; });
+  return reconectando;
 }
+function carregarTodos() {
+  var p = Promise.resolve();
+  R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (c.handle) p = p.then(function () { return urlDe(c).catch(function () {}); }); }); });
+  return p.then(function () { desenharLinhas(); if (!toc) prepararPrimeiro(); return true; });
+}
+$('bTrava').onclick = function () { reconectar(); };
+$('bTravaPasta').onclick = function () {
+  if (!window.showDirectoryPicker) return reconectar();
+  window.showDirectoryPicker().then(function (d) {
+    var p = Promise.resolve(), achou = 0;
+    R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (!c.handle || !d.resolve) return; p = p.then(function () { return d.resolve(c.handle).then(function (cam) { if (cam && !l.pasta) { l.pasta = d; achou++; } else if (cam) achou++; }).catch(function () {}); }); }); });
+    return p.then(function () { if (!achou) { toast('Os vídeos não estão nessa pasta'); return; } salvar(); return checarPerm().then(function (ok) { if (ok) return carregarTodos(); return reconectar(); }); });
+  }).catch(function () {});
+};
 function adicionarArquivos(lista, li) {
   var l = R.linhas[li == null ? (sel ? sel.l : R.linhas.length - 1) : li];
   lista.forEach(function (it) {
@@ -275,7 +303,7 @@ function escolherPasta() {
   window.showDirectoryPicker().then(function (d) {
     var its = []; var it = d.values();
     function prox() { return it.next().then(function (r) { if (r.done) return; var h = r.value; if (h.kind === 'file' && EXT.test(h.name) && h.name.indexOf('._') !== 0) its.push({ nome: h.name, handle: h }); return prox(); }); }
-    return prox().then(function () { its.sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt', { numeric: true }); }); var l = novaLinha(d.name); R.linhas.push(l); adicionarArquivos(its, R.linhas.length - 1); });
+    return prox().then(function () { its.sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt', { numeric: true }); }); var l = novaLinha(d.name); l.pasta = d; R.linhas.push(l); adicionarArquivos(its, R.linhas.length - 1); });
   }).catch(function () {});
 }
 $('fIn').addEventListener('change', function () { var li = this.dataset.li; adicionarArquivos([].map.call(this.files, function (f) { return { nome: f.name, file: f }; }), li === '' ? null : +li); this.value = ''; });
@@ -349,7 +377,11 @@ $('linhas').addEventListener('drop', function (e) {
   var items = [].slice.call(e.dataTransfer.items || []).filter(function (i) { return i.kind === 'file'; });
   if (items.length && items[0].getAsFileSystemHandle) {
     Promise.all(items.map(function (i) { return i.getAsFileSystemHandle(); })).then(function (hs) {
-      var its = hs.filter(function (h) { return h && h.kind === 'file' && EXT.test(h.name); }).map(function (h) { return { nome: h.name, handle: h }; });
+      hs.filter(function (h) { return h && h.kind === 'directory'; }).forEach(function (d) {
+        var lista = [], it = d.values();
+        (function prox() { return it.next().then(function (r) { if (r.done) { lista.sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt', { numeric: true }); }); var l = novaLinha(d.name); l.pasta = d; R.linhas.push(l); adicionarArquivos(lista, R.linhas.length - 1); return; } var h = r.value; if (h.kind === 'file' && EXT.test(h.name) && h.name.indexOf('._') !== 0) lista.push({ nome: h.name, handle: h }); return prox(); }); })();
+      });
+      var its = hs.filter(function (h) { return h && h.kind === 'file' && EXT.test(h.name) && h.name.indexOf('._') !== 0; }).map(function (h) { return { nome: h.name, handle: h }; });
       its.sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt', { numeric: true }); }); inserir(its, li, pos);
     });
   } else {
@@ -381,6 +413,7 @@ function precarregar() { var n = toc && proximoDe(toc); if (!n) { precarregado =
 function mostrar(i) { ativo = i; V.forEach(function (v, k) { v.classList.toggle('ativo', k === i); if (k !== i) v.pause(); }); }
 function tocarLinha(li, ci) {
   var c = R.linhas[li] && R.linhas[li].clips[ci]; if (!c) return;
+  if (c.handle && !FILES[c.id] && !$('trava').hidden) { reconectar().then(function (ok) { if (ok) tocarLinha(li, ci); }); return; }
   pausadoNoFim = false; toc = { l: li, c: ci }; sel = { l: li, c: ci }; limparTela();
   var usar = precarregado && precarregado.id === c.id ? 1 - ativo : ativo;
   V.forEach(function (v, k) { if (k !== usar) v.pause(); });
@@ -550,7 +583,7 @@ document.addEventListener('keydown', function (e) {
 // ---------- roteiros ----------
 function desenharRots() { var s = $('rotSel'); s.innerHTML = ROTS.map(function (r) { return '<option value="' + r.id + '"' + (R && r.id === R.id ? ' selected' : '') + '>' + esc(r.nome) + '</option>'; }).join(''); $('tit').textContent = R ? R.nome : 'EOJ'; document.title = (R ? R.nome + ' — ' : '') + 'Modo aula EOJ'; }
 function abrirRot(r) { parar(); Object.keys(URLS).forEach(function (k) { URL.revokeObjectURL(URLS[k]); }); URLS = {}; FILES = {}; R = r; sel = null; try { localStorage.setItem('eojAulaUlt', r.id); } catch (e) {} desenharRots(); desenharLinhas(); painel(); atualizarSom();
-  checarPerm().then(function (ok) { if (ok) { var p = Promise.resolve(); R.linhas.forEach(function (l) { l.clips.forEach(function (c) { if (c.handle) p = p.then(function () { return urlDe(c).catch(function () {}); }); }); }); p.then(function () { desenharLinhas(); prepararPrimeiro(); }); } }); }
+  checarPerm().then(function (ok) { if (ok) carregarTodos(); }); }
 $('rotSel').onchange = function () { var r = ROTS.filter(function (x) { return x.id === $('rotSel').value; })[0]; if (r) abrirRot(r); };
 $('bNovoRot').onclick = function () { var n = prompt('Nome do novo roteiro (ex.: Aula 13 · Bolas paradas):'); if (!n || !n.trim()) return; var r = novoRot(n.trim()); ROTS.unshift(r); R = r; salvar(); abrirRot(r); };
 $('bRenRot').onclick = function () { var n = prompt('Novo nome do roteiro:', R.nome); if (!n || !n.trim()) return; R.nome = n.trim(); salvar(); desenharRots(); };

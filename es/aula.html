@@ -67,13 +67,24 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 .linha{display:flex;gap:10px;align-items:stretch;background:#121212;border:1px solid #232323;border-radius:14px;padding:8px}
 .linha.on{background:#16202B;border-color:#3A5875}
 .linha.alvo{outline:2px dashed #A1C4E6}
-.cab{flex:0 0 170px;display:flex;flex-direction:column;gap:6px}
+.cab{flex:0 0 196px;display:flex;flex-direction:column;gap:6px}
 .cab .play{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:0;border-radius:10px;background:#1C1C1C;color:#FFFFFF;padding:10px 12px;text-align:left;flex:1}
 .linha.on .cab .play{background:#A1C4E6;color:#111111}
 .cab .play b{font-size:16px;font-weight:900}
 .cab .play span{font-size:12px;opacity:.85}
 .cab .mini{display:flex;gap:6px}
 .cab .mini button{flex:1;background:transparent;color:#8A8A8A;border:1px solid #2A2A2A;border-radius:8px;padding:4px 6px;font-size:12px}
+.cab .mini .ic{flex:0 0 30px;display:flex;align-items:center;justify-content:center;padding:4px 0;color:#BBBBBB}
+.cab .mini .ic:hover{color:#FFD400;border-color:#FFD400}
+.cab .mini .pega{cursor:grab;font-size:15px;line-height:1}
+.linha.oculta{opacity:.5}
+.linha.oculta .cab .play{background:#161616}
+.oc-txt{font-size:13px;color:#8A8A8A;align-self:center}
+.linha.ins-cima{box-shadow:0 -4px 0 #FFD400}
+.linha.ins-baixo{box-shadow:0 4px 0 #FFD400}
+.linha.arrastando{opacity:.35}
+.clip.ins-esq{box-shadow:-4px 0 0 #FFD400}
+.clip.ins-dir{box-shadow:4px 0 0 #FFD400}
 .novalinha{align-self:flex-start;background:transparent;border:2px dashed #3A3A3A;color:#BBBBBB;border-radius:10px;padding:10px 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .novalinha:hover{border-color:#FFD400;color:#FFD400}
 .clips{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;align-items:center}
@@ -348,10 +359,13 @@ function desenharLinhas() {
   var box = $('linhas'); box.innerHTML = '';
   R.linhas.forEach(function (l, li) {
     var tot = l.clips.reduce(function (a, c) { return a + Math.max(0, (c.fim || c.dur || 0) - (c.ini || 0)) / (c.vel || 1); }, 0);
-    var d = document.createElement('div'); d.className = 'linha' + (toc && toc.l === li ? ' on' : ''); d.dataset.li = li;
+    var d = document.createElement('div'); d.className = 'linha' + (toc && toc.l === li ? ' on' : '') + (l.oculta ? ' oculta' : ''); d.dataset.li = li;
     d.innerHTML = '<div class="cab"><button class="play" data-play="' + li + '"><b>▶ ' + esc(l.nome) + '</b><span>' + l.clips.length + (l.clips.length === 1 ? ' vídeo' : ' vídeos') + (tot ? ' · ' + fmt(tot) : '') + '</span></button>' +
-      '<div class="mini"><button data-ren="' + li + '" aria-label="Renomear ' + esc(l.nome) + '">Renomear</button><button data-del="' + li + '" aria-label="Apagar ' + esc(l.nome) + '">Apagar</button></div></div><div class="clips"></div>';
+      '<div class="mini"><button class="ic pega" draggable="true" data-pega="' + li + '" aria-label="Mover a linha ' + esc(l.nome) + ' (arraste para cima ou para baixo)" title="Arraste para mover a linha">⠿</button>' +
+      '<button class="ic" data-olho="' + li + '" aria-pressed="' + (l.oculta ? 'true' : 'false') + '" aria-label="' + (l.oculta ? 'Mostrar' : 'Ocultar') + ' a linha ' + esc(l.nome) + '" title="' + (l.oculta ? 'Linha oculta: clique para mostrar' : 'Ocultar a linha') + '">' + (l.oculta ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.5 10.5 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.9 9.9 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>') + '</button>' +
+      '<button data-ren="' + li + '" aria-label="Renomear ' + esc(l.nome) + '">Renomear</button><button data-del="' + li + '" aria-label="Apagar ' + esc(l.nome) + '">Apagar</button></div></div><div class="clips"></div>';
     var cl = d.querySelector('.clips');
+    if (l.oculta) { var oc = document.createElement('span'); oc.className = 'oc-txt'; oc.textContent = 'Linha oculta · ' + l.clips.length + (l.clips.length === 1 ? ' vídeo' : ' vídeos') + ' · não aparece na tela cheia nem ao tocar'; cl.appendChild(oc); box.appendChild(d); return; }
     l.clips.forEach(function (c, ci) {
       var k = document.createElement('div'); k.className = 'clip' + (sel && sel.l === li && sel.c === ci ? ' sel' : '') + (toc && toc.l === li && toc.c === ci ? ' tocando' : '') + (!c.handle && !FILES[c.id] ? ' off' : '');
       k.draggable = true; k.dataset.li = li; k.dataset.ci = ci; k.tabIndex = 0; k.setAttribute('role', 'button'); k.setAttribute('aria-label', 'Vídeo ' + (ci + 1) + ': ' + c.nome);
@@ -395,17 +409,36 @@ $('linhas').addEventListener('click', function (e) {
   var t = e.target, x;
   if ((x = t.closest('[data-play]'))) return tocarLinha(+x.dataset.play, 0);
   if ((x = t.closest('[data-addli]'))) return escolherArquivos(+x.dataset.addli);
+  if ((x = t.closest('[data-olho]'))) { var lo = R.linhas[+x.dataset.olho]; lo.oculta = !lo.oculta; if (lo.oculta && toc && toc.l === +x.dataset.olho) { va().pause(); } salvar(); desenharLinhas(); toast(lo.oculta ? 'Linha oculta' : 'Linha visível'); return; }
+  if ((x = t.closest('[data-pega]'))) return;
   if ((x = t.closest('[data-ren]'))) { var l = R.linhas[+x.dataset.ren], n = prompt('Nome da linha:', l.nome); if (n && n.trim()) { l.nome = n.trim(); salvar(); desenharLinhas(); } return; }
   if ((x = t.closest('[data-del]'))) { var li = +x.dataset.del, ll = R.linhas[li]; if (!confirm('Apagar a linha "' + ll.nome + '"? Os vídeos continuam no seu HD; só saem do roteiro.')) return; R.linhas.splice(li, 1); if (!R.linhas.length) R.linhas.push(novaLinha('Linha 1')); sel = null; parar(); salvar(); desenharLinhas(); painel(); return; }
   if ((x = t.closest('.clip'))) { var p = { l: +x.dataset.li, c: +x.dataset.ci }; sel = p; tocarLinha(p.l, p.c); }
 });
 $('linhas').addEventListener('keydown', function (e) { var x = e.target.closest('.clip'); if (x && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); x.click(); } });
-$('linhas').addEventListener('dragstart', function (e) { var k = e.target.closest('.clip'); if (!k) return; arrasto = { l: +k.dataset.li, c: +k.dataset.ci }; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'clip'); });
-$('linhas').addEventListener('dragover', function (e) { var ln = e.target.closest('.linha'); if (!ln) return; e.preventDefault(); [].forEach.call(document.querySelectorAll('.linha.alvo'), function (x) { if (x !== ln) x.classList.remove('alvo'); }); ln.classList.add('alvo'); });
+var arrastoL = null;
+function limparIns() { [].forEach.call(document.querySelectorAll('.ins-cima,.ins-baixo,.ins-esq,.ins-dir'), function (x) { x.classList.remove('ins-cima', 'ins-baixo', 'ins-esq', 'ins-dir'); }); }
+$('linhas').addEventListener('dragstart', function (e) {
+  var pg = e.target.closest && e.target.closest('[data-pega]');
+  if (pg) { arrastoL = +pg.dataset.pega; arrasto = null; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'linha'); var ln = pg.closest('.linha'); try { e.dataTransfer.setDragImage(ln, 20, 20); } catch (er) {} setTimeout(function () { ln.classList.add('arrastando'); }, 0); return; }
+  var k = e.target.closest('.clip'); if (!k) return; arrastoL = null; arrasto = { l: +k.dataset.li, c: +k.dataset.ci }; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'clip');
+});
+$('linhas').addEventListener('dragover', function (e) {
+  var ln = e.target.closest('.linha'); if (!ln) return; e.preventDefault(); limparIns();
+  if (arrastoL != null) { var r = ln.getBoundingClientRect(); ln.classList.add(e.clientY < r.top + r.height / 2 ? 'ins-cima' : 'ins-baixo'); return; }
+  [].forEach.call(document.querySelectorAll('.linha.alvo'), function (x) { if (x !== ln) x.classList.remove('alvo'); }); ln.classList.add('alvo');
+  var k = e.target.closest('.clip'); if (k) { var rk = k.getBoundingClientRect(); k.classList.add(e.clientX < rk.left + rk.width / 2 ? 'ins-esq' : 'ins-dir'); }
+});
 $('linhas').addEventListener('dragleave', function (e) { var ln = e.target.closest('.linha'); if (ln && !ln.contains(e.relatedTarget)) ln.classList.remove('alvo'); });
 $('linhas').addEventListener('drop', function (e) {
-  var ln = e.target.closest('.linha'); if (!ln) return; e.preventDefault(); ln.classList.remove('alvo');
-  var li = +ln.dataset.li, alvo = e.target.closest('.clip'), pos = alvo ? +alvo.dataset.ci : R.linhas[li].clips.length;
+  var ln = e.target.closest('.linha'); if (!ln) return; e.preventDefault(); ln.classList.remove('alvo'); limparIns();
+  if (arrastoL != null) {
+    var de = arrastoL, rl = ln.getBoundingClientRect(), para = +ln.dataset.li + (e.clientY < rl.top + rl.height / 2 ? 0 : 1); arrastoL = null;
+    if (para > de) para--; if (para === de) { desenharLinhas(); return; }
+    var tocL = clipDe(toc), selL = clipDe(sel), mv = R.linhas.splice(de, 1)[0]; R.linhas.splice(para, 0, mv);
+    toc = acharPos(tocL); sel = acharPos(selL); salvar(); desenharLinhas(); return;
+  }
+  var li = +ln.dataset.li, alvo = e.target.closest('.clip'), pos = alvo ? +alvo.dataset.ci + (e.clientX < alvo.getBoundingClientRect().left + alvo.getBoundingClientRect().width / 2 ? 0 : 1) : R.linhas[li].clips.length;
   if (arrasto) {
     var tocando = clipDe(toc), selec = clipDe(sel);
     var c = R.linhas[arrasto.l].clips.splice(arrasto.c, 1)[0];
@@ -427,7 +460,7 @@ $('linhas').addEventListener('drop', function (e) {
     var fs = [].filter.call(e.dataTransfer.files || [], function (f) { return EXT.test(f.name); }).map(function (f) { return { nome: f.name, file: f }; }); inserir(fs, li, pos);
   }
 });
-$('linhas').addEventListener('dragend', function () { arrasto = null; [].forEach.call(document.querySelectorAll('.linha.alvo'), function (x) { x.classList.remove('alvo'); }); });
+$('linhas').addEventListener('dragend', function () { arrasto = null; arrastoL = null; limparIns(); [].forEach.call(document.querySelectorAll('.linha.alvo, .linha.arrastando'), function (x) { x.classList.remove('alvo', 'arrastando'); }); });
 function inserir(its, li, pos) {
   var novos = its.map(function (it) { var c = { id: uid(), nome: semExt(it.nome), handle: it.handle || null, ini: 0, fim: null, vel: 1, pausar: false, mudo: false, dur: 0 }; if (it.file) FILES[c.id] = it.file; return c; });
   var tocando = clipDe(toc), selec = clipDe(sel);
@@ -466,9 +499,9 @@ function avancar() {
 }
 function voltar() { if (!toc) return; if (va().currentTime - (clipDe(toc).ini || 0) > 2) { va().currentTime = clipDe(toc).ini || 0; return; } if (toc.c > 0) tocarLinha(toc.l, toc.c - 1); }
 function parar() { V.forEach(function (v) { v.pause(); v.removeAttribute('src'); v.dataset.cid = ''; v.load(); }); toc = null; precarregado = null; atualizarHud(); }
-function prepararPrimeiro() { for (var i = 0; i < R.linhas.length; i++) if (R.linhas[i].clips.length) { var c = R.linhas[i].clips[0]; if (FILES[c.id] || URLS[c.id]) { toc = { l: i, c: 0 }; sel = sel || { l: i, c: 0 }; carregar(va(), c, false).then(function () { precarregar(); atualizarHud(); }).catch(function () {}); desenharLinhas(); painel(); } return; } }
+function prepararPrimeiro() { for (var i = 0; i < R.linhas.length; i++) if (R.linhas[i].clips.length && !R.linhas[i].oculta) { var c = R.linhas[i].clips[0]; if (FILES[c.id] || URLS[c.id]) { toc = { l: i, c: 0 }; sel = sel || { l: i, c: 0 }; carregar(va(), c, false).then(function () { precarregar(); atualizarHud(); }).catch(function () {}); desenharLinhas(); painel(); } return; } }
 function playPause() {
-  if (!toc) { for (var i = 0; i < R.linhas.length; i++) if (R.linhas[i].clips.length) return tocarLinha(i, 0); return; }
+  if (!toc) { for (var i = 0; i < R.linhas.length; i++) if (R.linhas[i].clips.length && !R.linhas[i].oculta) return tocarLinha(i, 0); return; }
   if (pausadoNoFim) { pausadoNoFim = false; return avancar(); }
   var v = va(); if (v.paused) v.play().catch(function () {}); else v.pause();
 }
@@ -637,6 +670,7 @@ document.addEventListener('fullscreenchange', function () { fstlChave = ''; setT
 function desenharFsl() {
   var b = $('fslBox'); if (!b || !R) return;
   b.innerHTML = R.linhas.map(function (l, li) {
+    if (l.oculta) return '';
     return '<div class="fsl-l"><h3><span>' + esc(l.nome) + '</span>' + (l.clips.length ? '<button data-fl="' + li + '" data-fc="0">▶ Tocar linha</button>' : '') + '</h3>' +
       (l.clips.length ? l.clips.map(function (c, ci) { var on = toc && toc.l === li && toc.c === ci; return '<button class="fsl-c' + (on ? ' on' : '') + '" data-fl="' + li + '" data-fc="' + ci + '" title="' + esc(c.nome) + '"><span class="num">' + (ci + 1) + '</span><span class="nm1">' + esc(c.nome) + '</span></button>'; }).join('') : '<span style="font-size:12px;color:#777777">Linha vazia</span>') + '</div>';
   }).join('');

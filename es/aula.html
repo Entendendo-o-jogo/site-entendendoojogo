@@ -85,6 +85,7 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 .linha.arrastando{opacity:.35}
 .clip.ins-esq{box-shadow:-4px 0 0 #FFD400}
 .clip.ins-dir{box-shadow:4px 0 0 #FFD400}
+.rd.on{background:#A1C4E6;color:#111111}
 .novalinha{align-self:flex-start;background:transparent;border:2px dashed #3A3A3A;color:#BBBBBB;border-radius:10px;padding:10px 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .novalinha:hover{border-color:#FFD400;color:#FFD400}
 .clips{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;align-items:center}
@@ -233,17 +234,18 @@ aside .ck input{width:18px;height:18px}
 <button class="rd" id="bNext" aria-label="Próximo vídeo">⏭</button>
 <span class="tempo" id="tempo">0:00 / 0:00</span>
 <button class="rd" id="bSom" aria-label="Tirar o som de todos os vídeos" title="Som (M)">🔊</button>
+<button class="rd" id="bOpc" aria-expanded="false" aria-controls="lado" title="Opções do vídeo e atalhos (E)" style="width:auto;padding:0 14px;font-size:13px;font-weight:800;white-space:nowrap">⚙ Opções</button>
 <div class="vels" role="group" aria-label="Velocidade"><span>Velocidade</span></div>
 </div>
 </div>
 </section>
-<aside aria-label="Vídeo selecionado">
-<h3>Vídeo selecionado</h3>
+<aside aria-label="Vídeo selecionado" id="lado" hidden>
+<div style="display:flex;justify-content:space-between;align-items:center"><h3>Vídeo selecionado</h3><button type="button" id="ladoX" aria-label="Fechar as opções do vídeo" style="background:none;border:0;color:#8A8A8A;font-size:16px;cursor:pointer;padding:2px 6px">✕</button></div>
 <div id="painel"><p class="dica" style="margin:0">Clique num vídeo das linhas para ver as opções.</p></div>
 <div class="atalhos"><b style="color:#CCCCCC">Atalhos</b><br>
 <kbd>espaço</kbd> tocar/pausar · <kbd>←</kbd><kbd>→</kbd> 5 s (<kbd>shift</kbd> 1 s)<br>
 <kbd>↑</kbd><kbd>↓</kbd> velocidade · <kbd>N</kbd>/<kbd>P</kbd> próximo/anterior<br>
-<kbd>I</kbd>/<kbd>O</kbd> marcar início/fim · <kbd>D</kbd> caneta · <kbd>C</kbd> limpar desenho · <kbd>M</kbd> som · <kbd>F</kbd> tela cheia · <kbd>L</kbd> linhas na tela cheia<br>
+<kbd>I</kbd>/<kbd>O</kbd> marcar início/fim · <kbd>D</kbd> caneta · <kbd>C</kbd> limpar desenho · <kbd>M</kbd> som · <kbd>F</kbd> tela cheia · <kbd>L</kbd> linhas na tela cheia · <kbd>E</kbd> abrir/fechar este painel<br>
 Trackpad no vídeo: dois dedos para os lados = avançar/voltar · pinça = velocidade</div>
 </aside>
 </div>
@@ -690,6 +692,12 @@ $('fsl').addEventListener('click', function (e) { e.stopPropagation(); var x = e
 $('fsl').addEventListener('pointermove', function (e) { e.stopPropagation(); $('palco').classList.remove('quieto'); });
 $('fsl').addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true });
 
+// ---------- painel de opções (oculto até clicar) ----------
+function abrirLado(abrir) { var a = $('lado'); a.hidden = !abrir; $('bOpc').setAttribute('aria-expanded', abrir ? 'true' : 'false'); $('bOpc').classList.toggle('on', abrir); try { localStorage.setItem('eoj-aula-opc', abrir ? '1' : '0'); } catch (e) {} setTimeout(ajustarTela, 30); }
+$('bOpc').onclick = function () { abrirLado($('lado').hidden); };
+$('ladoX').onclick = function () { abrirLado(false); };
+try { if (localStorage.getItem('eoj-aula-opc') === '1') abrirLado(true); } catch (e) {}
+
 // ---------- tela cheia ----------
 function telaCheia() { var p = $('palco'); if (document.fullscreenElement) return document.exitFullscreen(); var pr = (p.requestFullscreen || p.webkitRequestFullscreen).call(p); if (pr && pr.catch) pr.catch(function () {}); if (!toc) playPause(); }
 $('bApres').onclick = telaCheia; $('bTela').onclick = telaCheia;
@@ -714,6 +722,7 @@ document.addEventListener('keydown', function (e) {
   else if (k === 'c' || k === 'C') limparTela();
   else if (k === 'm' || k === 'M') alternarSom();
   else if (k === 'l' || k === 'L') alternarFsl();
+  else if (k === 'e' || k === 'E') abrirLado($('lado').hidden);
   else if ((k === 'i' || k === 'I') && $('pMI')) $('pMI').click();
   else if ((k === 'o' || k === 'O') && $('pMO')) $('pMO').click();
 });

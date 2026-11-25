@@ -29,6 +29,7 @@
       return c;
     });
   };
+  H.salvarOrdem = function (aulas) { return Promise.all(aulas.map(function (a) { return sb.from('aulas').update({ ordem: a.ordem }).eq('id', a.id).select('id').then(ok).then(function (r) { if (!r || !r.length) throw new Error('sem permissão para mudar a ordem'); }); })); };
   // Cursos cujos módulos são temas independentes (cada módulo vira um card na área do aluno)
   H.TEMAS = { masterclasses: 1 };
   H.porTema = function (c) { return !!(c && H.TEMAS[c.slug]); };

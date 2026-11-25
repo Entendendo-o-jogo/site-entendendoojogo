@@ -112,10 +112,10 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 #tela{position:absolute;inset:0;width:100%;height:100%;z-index:2;touch-action:none}
 #palco.desenhar #tela{cursor:crosshair}
 #palco:not(.desenhar) #tela{pointer-events:none}
-.ferr{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:5px;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:12px;padding:5px;z-index:3}
-.ic{width:42px;height:42px;border-radius:9px;border:0;background:transparent;color:#FFFFFF;font-size:16px;font-weight:800}
+.ferr{position:absolute;left:12px;top:12px;display:grid;grid-template-columns:repeat(2,40px);gap:4px;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:12px;padding:5px;z-index:3}
+.ic{width:40px;height:40px;border-radius:9px;border:0;background:transparent;color:#FFFFFF;font-size:16px;font-weight:800}
 .ic.on{background:#A1C4E6;color:#111111}
-.cor{width:42px;height:26px;border-radius:8px;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
+.cor{width:40px;height:28px;border-radius:8px;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
 .cor.on{border-color:#FFFFFF}
 .cor i{width:16px;height:16px;border-radius:50%;display:block}
 .hud{position:absolute;right:12px;top:12px;text-align:right;line-height:1.35;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:12px;padding:7px 12px;font-size:13px;font-weight:700;z-index:3}
@@ -600,13 +600,18 @@ function painel() {
 
 // ---------- caneta ----------
 var cv = $('tela'), cx = cv.getContext('2d'), FER = 'cursor', COR = '#FFD400', tracos = [], atual = null;
-var FERS = [['cursor', '↖', 'Sem caneta'], ['caneta', '✎', 'Caneta'], ['seta', '➚', 'Seta'], ['circulo', '◯', 'Círculo'], ['desfazer', '↶', 'Desfazer último traço'], ['limpar', '✕', 'Limpar desenhos']];
+var SVG = function (d) { return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; };
+var FERS = [['cursor', '↖', 'Sem caneta'], ['caneta', '✎', 'Caneta'],
+  ['seta', SVG('<path d="M5 19L19 5"/><path d="M10 5h9v9"/>'), 'Seta'], ['setaT', SVG('<path d="M5 19l2.5-2.5M10 14l2.5-2.5M15 9l4-4" /><path d="M10 5h9v9"/>'), 'Seta tracejada'],
+  ['circulo', SVG('<circle cx="12" cy="12" r="8"/>'), 'Círculo'], ['circuloT', SVG('<circle cx="12" cy="12" r="8" stroke-dasharray="3.2 3"/>'), 'Círculo tracejado'],
+  ['spot', SVG('<path d="M9 3h6l3 11H6z" fill="currentColor" stroke="none" opacity=".35"/><ellipse cx="12" cy="17" rx="7" ry="3"/>'), 'Spotlight (destaca uma área e escurece o resto)'],
+  ['desfazer', '↶', 'Desfazer último traço'], ['limpar', '✕', 'Limpar desenhos']];
 var CORES = [['#FFD400', 'Amarelo'], ['#FFFFFF', 'Branco'], ['#E74C3C', 'Vermelho'], ['#4AA3FF', 'Azul']];
 function desenharFerr() {
   var b = $('ferr'); b.innerHTML = '';
-  FERS.forEach(function (f) { var x = document.createElement('button'); x.className = 'ic' + (FER === f[0] ? ' on' : ''); x.textContent = f[1]; x.title = f[2]; x.setAttribute('aria-label', f[2]); x.setAttribute('aria-pressed', FER === f[0] ? 'true' : 'false');
+  FERS.forEach(function (f) { var x = document.createElement('button'); x.className = 'ic' + (FER === f[0] ? ' on' : ''); if (f[1].charAt(0) === '<') x.innerHTML = f[1]; else x.textContent = f[1]; x.title = f[2]; x.setAttribute('aria-label', f[2]); x.setAttribute('aria-pressed', FER === f[0] ? 'true' : 'false');
     x.onclick = function () { if (f[0] === 'limpar') return limparTela(); if (f[0] === 'desfazer') { tracos.pop(); return redesenhar(); } FER = f[0]; $('palco').classList.toggle('desenhar', FER !== 'cursor'); desenharFerr(); }; b.appendChild(x); });
-  var s = document.createElement('span'); s.style.cssText = 'height:1px;background:#333333;margin:2px 4px'; b.appendChild(s);
+  var s = document.createElement('span'); s.style.cssText = 'grid-column:1/-1;height:1px;background:#333333;margin:2px 4px'; b.appendChild(s);
   CORES.forEach(function (c) { var x = document.createElement('button'); x.className = 'cor' + (COR === c[0] ? ' on' : ''); x.title = c[1]; x.setAttribute('aria-label', 'Cor ' + c[1]); x.innerHTML = '<i style="background:' + c[0] + '"></i>'; x.onclick = function () { COR = c[0]; desenharFerr(); }; b.appendChild(x); });
 }
 function ajustarTela() { var r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d); redesenhar(); }
@@ -616,12 +621,24 @@ function traco(t) {
   cx.strokeStyle = t.cor; cx.fillStyle = t.cor; cx.lineWidth = lw; cx.lineCap = 'round'; cx.lineJoin = 'round';
   var p = t.pts; if (!p.length) return;
   if (t.tipo === 'caneta') { cx.beginPath(); cx.moveTo(p[0].x * W, p[0].y * H); p.forEach(function (q) { cx.lineTo(q.x * W, q.y * H); }); cx.stroke(); }
-  else if (t.tipo === 'seta') { var a = p[0], b = p[p.length - 1], ax = a.x * W, ay = a.y * H, bx = b.x * W, by = b.y * H, an = Math.atan2(by - ay, bx - ax), L = lw * 5;
-    cx.beginPath(); cx.moveTo(ax, ay); cx.lineTo(bx, by); cx.stroke(); cx.beginPath(); cx.moveTo(bx, by); cx.lineTo(bx - L * Math.cos(an - 0.45), by - L * Math.sin(an - 0.45)); cx.lineTo(bx - L * Math.cos(an + 0.45), by - L * Math.sin(an + 0.45)); cx.closePath(); cx.fill(); }
-  else if (t.tipo === 'circulo') { var a2 = p[0], b2 = p[p.length - 1], x0 = Math.min(a2.x, b2.x) * W, y0 = Math.min(a2.y, b2.y) * H, w = Math.abs(b2.x - a2.x) * W, h = Math.abs(b2.y - a2.y) * H;
-    cx.beginPath(); cx.ellipse(x0 + w / 2, y0 + h / 2, Math.max(1, w / 2), Math.max(1, h / 2), 0, 0, Math.PI * 2); cx.stroke(); }
+  else if (t.tipo === 'seta' || t.tipo === 'setaT') { var a = p[0], b = p[p.length - 1], ax = a.x * W, ay = a.y * H, bx = b.x * W, by = b.y * H, an = Math.atan2(by - ay, bx - ax), L = lw * 5;
+    if (t.tipo === 'setaT') cx.setLineDash([lw * 3, lw * 2.4]);
+    cx.beginPath(); cx.moveTo(ax, ay); cx.lineTo(bx - L * 0.6 * Math.cos(an), by - L * 0.6 * Math.sin(an)); cx.stroke(); cx.setLineDash([]); cx.beginPath(); cx.moveTo(bx, by); cx.lineTo(bx - L * Math.cos(an - 0.45), by - L * Math.sin(an - 0.45)); cx.lineTo(bx - L * Math.cos(an + 0.45), by - L * Math.sin(an + 0.45)); cx.closePath(); cx.fill(); }
+  else if (t.tipo === 'circulo' || t.tipo === 'circuloT') { var e2 = elipse(t, W, H);
+    if (t.tipo === 'circuloT') cx.setLineDash([lw * 2.6, lw * 2]);
+    cx.beginPath(); cx.ellipse(e2.x, e2.y, e2.rx, e2.ry, 0, 0, Math.PI * 2); cx.stroke(); cx.setLineDash([]); }
+  else if (t.tipo === 'spot') { var e3 = elipse(t, W, H);
+    var g = cx.createLinearGradient(e3.x, e3.y - e3.ry - H * 0.35, e3.x, e3.y); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(255,255,255,0.22)');
+    cx.beginPath(); cx.moveTo(e3.x - e3.rx * 0.35, Math.max(0, e3.y - e3.ry - H * 0.35)); cx.lineTo(e3.x + e3.rx * 0.35, Math.max(0, e3.y - e3.ry - H * 0.35)); cx.lineTo(e3.x + e3.rx, e3.y); cx.lineTo(e3.x - e3.rx, e3.y); cx.closePath(); cx.moveTo(e3.x + e3.rx, e3.y); cx.ellipse(e3.x, e3.y, e3.rx, e3.ry, 0, 0, Math.PI * 2); cx.fillStyle = g; cx.fill('evenodd');
+    cx.beginPath(); cx.ellipse(e3.x, e3.y, e3.rx, e3.ry, 0, 0, Math.PI * 2); cx.fillStyle = 'rgba(255,255,255,0.12)'; cx.fill(); cx.lineWidth = lw * 0.9; cx.strokeStyle = t.cor; cx.stroke(); }
 }
-function redesenhar() { cx.clearRect(0, 0, cv.width, cv.height); tracos.forEach(traco); if (atual) traco(atual); }
+function elipse(t, W, H) { var a = t.pts[0], b = t.pts[t.pts.length - 1], x0 = Math.min(a.x, b.x) * W, y0 = Math.min(a.y, b.y) * H, w = Math.abs(b.x - a.x) * W, h = Math.abs(b.y - a.y) * H; return { x: x0 + w / 2, y: y0 + h / 2, rx: Math.max(1, w / 2), ry: Math.max(1, h / 2) }; }
+function redesenhar() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  var todos = tracos.concat(atual ? [atual] : []), spots = todos.filter(function (t) { return t.tipo === 'spot' && t.pts.length > 1; });
+  if (spots.length) { var W = cv.width, H = cv.height; cx.save(); cx.beginPath(); cx.rect(0, 0, W, H); spots.forEach(function (t) { var e = elipse(t, W, H); cx.moveTo(e.x + e.rx, e.y); cx.ellipse(e.x, e.y, e.rx, e.ry, 0, 0, Math.PI * 2); }); cx.fillStyle = 'rgba(0,0,0,0.55)'; cx.fill('evenodd'); cx.restore(); }
+  todos.forEach(traco);
+}
 function limparTela() { tracos = []; atual = null; redesenhar(); }
 cv.addEventListener('pointerdown', function (e) { if (FER === 'cursor') return; cv.setPointerCapture(e.pointerId); atual = { tipo: FER, cor: COR, pts: [pt(e)] }; });
 cv.addEventListener('pointermove', function (e) { if (!atual) return; if (atual.tipo === 'caneta') atual.pts.push(pt(e)); else atual.pts[1] = pt(e); redesenhar(); });

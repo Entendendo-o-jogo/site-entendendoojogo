@@ -125,6 +125,20 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 #palco:fullscreen .fsbar{display:flex;position:absolute;left:50%;bottom:14px;transform:translateX(-50%);gap:8px;align-items:center;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:99px;padding:6px 10px;z-index:3;transition:opacity .3s}
 #palco:fullscreen.quieto .fsbar,#palco:fullscreen.quieto .ferr,#palco:fullscreen.quieto .hud{opacity:0}
 #palco:fullscreen.quieto{cursor:none}
+.fsl{display:none}
+#palco:fullscreen.comlinhas .fsl{display:flex;flex-direction:column;position:absolute;left:14px;top:14px;bottom:78px;width:min(380px,34vw);background:rgba(17,17,17,.94);border:1px solid #333333;border-radius:14px;z-index:4;overflow:hidden;cursor:default}
+#palco:fullscreen.comlinhas .ferr{left:auto;right:14px;top:auto;bottom:90px}
+.fsl-top{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #2A2A2A;color:#FFFFFF;font-size:14px}
+.fsl-top button{background:none;border:0;color:#BBBBBB;font-size:16px;cursor:pointer;padding:2px 6px}
+#fslBox{overflow-y:auto;padding:10px 12px 14px;display:flex;flex-direction:column;gap:14px;overscroll-behavior:contain}
+.fsl-l h3{margin:0 0 6px;font-size:12px;font-weight:800;color:#FFD400;text-transform:uppercase;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center}
+.fsl-l h3 button{background:#FFD400;color:#111111;border:0;border-radius:6px;font:inherit;font-size:11px;font-weight:800;padding:3px 8px;cursor:pointer;text-transform:none;letter-spacing:0}
+.fsl-c{display:flex;width:100%;align-items:center;gap:8px;background:#1C1C1C;border:2px solid transparent;border-radius:8px;padding:7px 9px;margin-bottom:5px;color:#DDDDDD;font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.fsl-c:hover{border-color:#555555}
+.fsl-c.on{border-color:#FFD400;color:#FFFFFF}
+.fsl-c .num{flex:0 0 auto;min-width:20px;height:20px;border-radius:5px;background:#2A2A2A;color:#FFFFFF;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.fsl-c.on .num{background:#FFD400;color:#111111}
+.fsl-c .nm1{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ctrl{background:#141414;border:1px solid #262626;border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
 .barra{position:relative;height:30px;cursor:pointer}
 .barra .tr{position:absolute;left:0;right:0;top:11px;height:8px;border-radius:99px;background:#2A2A2A}
@@ -185,7 +199,8 @@ aside .ck input{width:18px;height:18px}
 <div class="ferr" role="toolbar" aria-label="Caneta" id="ferr"></div>
 <div class="hud" id="hud" hidden></div>
 <div class="toast" id="toast"></div>
-<div class="fsbar"><button class="rd" id="fsPrev" aria-label="Vídeo anterior">⏮</button><button class="rd big" id="fsPlay" aria-label="Tocar ou pausar">▶</button><button class="rd" id="fsNext" aria-label="Próximo vídeo">⏭</button><span class="tempo" id="fsTempo"></span><button class="rd" id="fsSom" aria-label="Som">🔊</button><button class="rd" id="fsSair" aria-label="Sair da tela cheia">✕</button></div>
+<aside class="fsl" id="fsl" aria-label="Linhas da aula"><div class="fsl-top"><b>Linhas da aula</b><button id="fslX" aria-label="Fechar as linhas">✕</button></div><div id="fslBox"></div></aside>
+<div class="fsbar"><button class="rd" id="fsPrev" aria-label="Vídeo anterior">⏮</button><button class="rd big" id="fsPlay" aria-label="Tocar ou pausar">▶</button><button class="rd" id="fsNext" aria-label="Próximo vídeo">⏭</button><span class="tempo" id="fsTempo"></span><button class="rd" id="fsLin" aria-label="Mostrar as linhas" title="Linhas (L)" style="width:auto;padding:0 12px;font-size:13px;font-weight:800">☰ Linhas</button><button class="rd" id="fsSom" aria-label="Som">🔊</button><button class="rd" id="fsSair" aria-label="Sair da tela cheia">✕</button></div>
 </div>
 <div class="ctrl">
 <div class="barra" id="barra" role="slider" aria-label="Posição do vídeo" tabindex="0"><div class="tr"></div><div class="rc" id="rc"></div><div class="pr" id="pr"></div><div class="mk" id="mkI"></div><div class="mk" id="mkO"></div><div class="cab2" id="cab2"></div></div>
@@ -205,7 +220,7 @@ aside .ck input{width:18px;height:18px}
 <div class="atalhos"><b style="color:#CCCCCC">Atalhos</b><br>
 <kbd>espaço</kbd> tocar/pausar · <kbd>←</kbd><kbd>→</kbd> 5 s (<kbd>shift</kbd> 1 s)<br>
 <kbd>↑</kbd><kbd>↓</kbd> velocidade · <kbd>N</kbd>/<kbd>P</kbd> próximo/anterior<br>
-<kbd>I</kbd>/<kbd>O</kbd> marcar início/fim · <kbd>D</kbd> caneta · <kbd>C</kbd> limpar desenho · <kbd>M</kbd> som · <kbd>F</kbd> tela cheia<br>
+<kbd>I</kbd>/<kbd>O</kbd> marcar início/fim · <kbd>D</kbd> caneta · <kbd>C</kbd> limpar desenho · <kbd>M</kbd> som · <kbd>F</kbd> tela cheia · <kbd>L</kbd> linhas na tela cheia<br>
 Trackpad no vídeo: dois dedos para os lados = avançar/voltar · pinça = velocidade</div>
 </aside>
 </div>
@@ -341,6 +356,7 @@ function desenharLinhas() {
   var nl = document.createElement('button'); nl.className = 'novalinha'; nl.textContent = '+ Adicionar linha';
   nl.onclick = function () { R.linhas.push(novaLinha()); salvar(); desenharLinhas(); };
   box.appendChild(nl);
+  desenharFsl();
   $('vaz').hidden = R.linhas.some(function (l) { return l.clips.length; });
 }
 var THUMB = {}, fila = [], gerando = false;
@@ -472,7 +488,7 @@ function atualizarBarra() {
 function atualizarHud() {
   var c = clipDe(toc), h = $('hud');
   if (!c) { h.hidden = true; atualizarPlay(); return; }
-  h.hidden = false; h.innerHTML = '<span style="display:block;font-size:15px;font-weight:800;max-width:52vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(c.nome) + '</span><span style="display:block;font-size:12px;font-weight:600;color:#BBBBBB">' + esc(R.linhas[toc.l].nome) + ' · vídeo ' + (toc.c + 1) + ' de ' + R.linhas[toc.l].clips.length + ' · ' + String(va().playbackRate).replace('.', ',') + '×</span>';
+  marcarFsl(); h.hidden = false; h.innerHTML = '<span style="display:block;font-size:15px;font-weight:800;max-width:52vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(c.nome) + '</span><span style="display:block;font-size:12px;font-weight:600;color:#BBBBBB">' + esc(R.linhas[toc.l].nome) + ' · vídeo ' + (toc.c + 1) + ' de ' + R.linhas[toc.l].clips.length + ' · ' + String(va().playbackRate).replace('.', ',') + '×</span>';
   desenharVels(); atualizarPlay(); atualizarBarra();
 }
 function pular(s) { var v = va(); if (!toc) return; var c = clipDe(toc); v.currentTime = Math.max(c.ini || 0, Math.min((c.fim || v.duration || 0) - 0.05, v.currentTime + s)); atualizarBarra(); }
@@ -564,6 +580,29 @@ cv.addEventListener('pointermove', function (e) { if (!atual) return; if (atual.
 cv.addEventListener('pointerup', function () { if (atual) { tracos.push(atual); atual = null; redesenhar(); } });
 window.addEventListener('resize', ajustarTela); document.addEventListener('fullscreenchange', function () { setTimeout(ajustarTela, 60); });
 
+// ---------- linhas na tela cheia ----------
+function desenharFsl() {
+  var b = $('fslBox'); if (!b || !R) return;
+  b.innerHTML = R.linhas.map(function (l, li) {
+    return '<div class="fsl-l"><h3><span>' + esc(l.nome) + '</span>' + (l.clips.length ? '<button data-fl="' + li + '" data-fc="0">▶ Tocar linha</button>' : '') + '</h3>' +
+      (l.clips.length ? l.clips.map(function (c, ci) { var on = toc && toc.l === li && toc.c === ci; return '<button class="fsl-c' + (on ? ' on' : '') + '" data-fl="' + li + '" data-fc="' + ci + '" title="' + esc(c.nome) + '"><span class="num">' + (ci + 1) + '</span><span class="nm1">' + esc(c.nome) + '</span></button>'; }).join('') : '<span style="font-size:12px;color:#777777">Linha vazia</span>') + '</div>';
+  }).join('');
+  var on = b.querySelector('.fsl-c.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest' });
+}
+var fslMarc = '';
+function marcarFsl() { var k = toc ? toc.l + ':' + toc.c : ''; if (k === fslMarc) return; fslMarc = k; var b = $('fslBox'); if (!b) return; b.querySelectorAll('.fsl-c').forEach(function (x) { var on = toc && +x.dataset.fl === toc.l && +x.dataset.fc === toc.c; x.classList.toggle('on', !!on); if (on && $('palco').classList.contains('comlinhas')) x.scrollIntoView({ block: 'nearest' }); }); }
+function alternarFsl(forcar) {
+  var p = $('palco'); var abrir = typeof forcar === 'boolean' ? forcar : !p.classList.contains('comlinhas');
+  if (abrir && !document.fullscreenElement) telaCheia();
+  p.classList.toggle('comlinhas', abrir); $('fsLin').setAttribute('aria-pressed', abrir ? 'true' : 'false');
+  if (abrir) desenharFsl();
+}
+$('fsLin').onclick = function (e) { e.stopPropagation(); alternarFsl(); };
+$('fslX').onclick = function (e) { e.stopPropagation(); alternarFsl(false); };
+$('fsl').addEventListener('click', function (e) { e.stopPropagation(); var x = e.target.closest('[data-fl]'); if (!x) return; tocarLinha(+x.dataset.fl, +x.dataset.fc); setTimeout(desenharFsl, 50); });
+$('fsl').addEventListener('pointermove', function (e) { e.stopPropagation(); $('palco').classList.remove('quieto'); });
+$('fsl').addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true });
+
 // ---------- tela cheia ----------
 function telaCheia() { var p = $('palco'); if (document.fullscreenElement) return document.exitFullscreen(); var pr = (p.requestFullscreen || p.webkitRequestFullscreen).call(p); if (pr && pr.catch) pr.catch(function () {}); if (!toc) playPause(); }
 $('bApres').onclick = telaCheia; $('bTela').onclick = telaCheia;
@@ -587,6 +626,7 @@ document.addEventListener('keydown', function (e) {
   else if (k === 'd' || k === 'D') { FER = FER === 'cursor' ? 'caneta' : 'cursor'; $('palco').classList.toggle('desenhar', FER !== 'cursor'); desenharFerr(); toast(FER === 'cursor' ? 'Caneta desligada' : 'Caneta'); }
   else if (k === 'c' || k === 'C') limparTela();
   else if (k === 'm' || k === 'M') alternarSom();
+  else if (k === 'l' || k === 'L') alternarFsl();
   else if ((k === 'i' || k === 'I') && $('pMI')) $('pMI').click();
   else if ((k === 'o' || k === 'O') && $('pMO')) $('pMO').click();
 });

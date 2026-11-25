@@ -117,6 +117,10 @@ main{padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px}
 .ic.on{background:#A1C4E6;color:#111111}
 .cor{width:40px;height:28px;border-radius:8px;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
 .cor.on{border-color:#FFFFFF}
+.zoomc{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0 4px;color:#BBBBBB;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.zoomc div{display:flex;align-items:center;gap:4px}
+.zoomc button{width:24px;height:24px;border-radius:6px;border:1px solid #444444;background:#1C1C1C;color:#FFFFFF;font-size:15px;font-weight:800;line-height:1;padding:0;cursor:pointer}
+.zoomc b{min-width:30px;text-align:center;color:#FFD400;font-size:12px;text-transform:none}
 .cor i{width:16px;height:16px;border-radius:50%;display:block}
 .hud{position:absolute;right:12px;top:12px;text-align:right;line-height:1.35;background:rgba(17,17,17,.85);border:1px solid #333333;border-radius:12px;padding:7px 12px;font-size:13px;font-weight:700;z-index:3}
 .trava{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(11,11,12,.9);text-align:center;padding:24px}
@@ -599,18 +603,41 @@ function painel() {
 }
 
 // ---------- caneta ----------
-var cv = $('tela'), cx = cv.getContext('2d'), FER = 'cursor', COR = '#FFD400', tracos = [], atual = null;
+var cv = $('tela'), cx = cv.getContext('2d'), FER = 'cursor', COR = '#FFD400', tracos = [], atual = null, ZOOM = 2;
+function mudarZoom(d) { ZOOM = Math.min(6, Math.max(1.5, Math.round((ZOOM + d) * 2) / 2)); var ul = null; for (var i = tracos.length - 1; i >= 0; i--) if (tracos[i].tipo === 'lupa') { ul = tracos[i]; break; } if (ul) ul.zoom = ZOOM; desenharFerr(); redesenhar(); }
+function lupa(t, W, H, lw) {
+  var a = t.pts[0], b = t.pts[t.pts.length - 1], cxp = a.x * W, cyp = a.y * H, r = Math.max(H * 0.07, Math.hypot((b.x - a.x) * W, (b.y - a.y) * H)), z = t.zoom || ZOOM, v = va();
+  cx.save(); cx.beginPath(); cx.arc(cxp, cyp, r, 0, Math.PI * 2); cx.clip();
+  cx.fillStyle = '#000000'; cx.fillRect(cxp - r, cyp - r, r * 2, r * 2);
+  if (v && v.videoWidth) {
+    var esc0 = Math.min(W / v.videoWidth, H / v.videoHeight), dw = v.videoWidth * esc0, dh = v.videoHeight * esc0, ox = (W - dw) / 2, oy = (H - dh) / 2;
+    var vx = (cxp - ox) / esc0, vy = (cyp - oy) / esc0, half = r / (esc0 * z);
+    try { cx.drawImage(v, vx - half, vy - half, half * 2, half * 2, cxp - r, cyp - r, r * 2, r * 2); } catch (e) {}
+  }
+  cx.restore();
+  cx.beginPath(); cx.arc(cxp, cyp, r, 0, Math.PI * 2); cx.lineWidth = lw * 1.2; cx.strokeStyle = t.cor; cx.stroke();
+  cx.font = '700 ' + Math.round(Math.max(12, r * 0.16)) + 'px Montserrat, sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+  var tx = String(z).replace('.', ',') + '×', ty = cyp + r - Math.max(14, r * 0.16); cx.fillStyle = 'rgba(0,0,0,.65)'; var tw = cx.measureText(tx).width + 14; cx.fillRect(cxp - tw / 2, ty - Math.max(9, r * 0.1), tw, Math.max(18, r * 0.2)); cx.fillStyle = '#FFFFFF'; cx.fillText(tx, cxp, ty);
+}
+var lupaRaf = 0;
+function loopLupa() { lupaRaf = 0; var tem = tracos.some(function (t) { return t.tipo === 'lupa'; }) || (atual && atual.tipo === 'lupa'); if (!tem) return; redesenhar(); lupaRaf = requestAnimationFrame(loopLupa); }
+function garantirLupa() { if (!lupaRaf) lupaRaf = requestAnimationFrame(loopLupa); }
 var SVG = function (d) { return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; };
 var FERS = [['cursor', '↖', 'Sem caneta'], ['caneta', '✎', 'Caneta'],
   ['seta', SVG('<path d="M5 19L19 5"/><path d="M10 5h9v9"/>'), 'Seta'], ['setaT', SVG('<path d="M5 19l2.5-2.5M10 14l2.5-2.5M15 9l4-4" /><path d="M10 5h9v9"/>'), 'Seta tracejada'],
   ['circulo', SVG('<circle cx="12" cy="12" r="8"/>'), 'Círculo'], ['circuloT', SVG('<circle cx="12" cy="12" r="8" stroke-dasharray="3.2 3"/>'), 'Círculo tracejado'],
   ['spot', SVG('<path d="M9 3h6l3 11H6z" fill="currentColor" stroke="none" opacity=".35"/><ellipse cx="12" cy="17" rx="7" ry="3"/>'), 'Spotlight (destaca uma área e escurece o resto)'],
+  ['lupa', SVG('<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M8 10.5h5M10.5 8v5"/>'), 'Lupa (zoom numa área do vídeo)'],
   ['desfazer', '↶', 'Desfazer último traço'], ['limpar', '✕', 'Limpar desenhos']];
 var CORES = [['#FFD400', 'Amarelo'], ['#FFFFFF', 'Branco'], ['#E74C3C', 'Vermelho'], ['#4AA3FF', 'Azul']];
 function desenharFerr() {
   var b = $('ferr'); b.innerHTML = '';
   FERS.forEach(function (f) { var x = document.createElement('button'); x.className = 'ic' + (FER === f[0] ? ' on' : ''); if (f[1].charAt(0) === '<') x.innerHTML = f[1]; else x.textContent = f[1]; x.title = f[2]; x.setAttribute('aria-label', f[2]); x.setAttribute('aria-pressed', FER === f[0] ? 'true' : 'false');
-    x.onclick = function () { if (f[0] === 'limpar') return limparTela(); if (f[0] === 'desfazer') { tracos.pop(); return redesenhar(); } FER = f[0]; $('palco').classList.toggle('desenhar', FER !== 'cursor'); desenharFerr(); }; b.appendChild(x); });
+    x.onclick = function () { if (f[0] === 'limpar') return limparTela(); if (f[0] === 'desfazer') { tracos.pop(); redesenhar(); return desenharFerr(); } FER = f[0]; $('palco').classList.toggle('desenhar', FER !== 'cursor'); desenharFerr(); }; b.appendChild(x); });
+  if (FER === 'lupa' || tracos.some(function (t) { return t.tipo === 'lupa'; })) {
+    var z = document.createElement('div'); z.className = 'zoomc'; z.innerHTML = '<span>Zoom</span><div><button type="button" aria-label="Menos zoom">−</button><b>' + String(ZOOM).replace('.', ',') + '×</b><button type="button" aria-label="Mais zoom">+</button></div>';
+    var bs = z.querySelectorAll('button'); bs[0].onclick = function () { mudarZoom(-0.5); }; bs[1].onclick = function () { mudarZoom(0.5); }; b.appendChild(z);
+  }
   var s = document.createElement('span'); s.style.cssText = 'grid-column:1/-1;height:1px;background:#333333;margin:2px 4px'; b.appendChild(s);
   CORES.forEach(function (c) { var x = document.createElement('button'); x.className = 'cor' + (COR === c[0] ? ' on' : ''); x.title = c[1]; x.setAttribute('aria-label', 'Cor ' + c[1]); x.innerHTML = '<i style="background:' + c[0] + '"></i>'; x.onclick = function () { COR = c[0]; desenharFerr(); }; b.appendChild(x); });
 }
@@ -629,8 +656,10 @@ function traco(t) {
     cx.beginPath(); cx.ellipse(e2.x, e2.y, e2.rx, e2.ry, 0, 0, Math.PI * 2); cx.stroke(); cx.setLineDash([]); }
   else if (t.tipo === 'spot') { var e3 = elipse(t, W, H);
     var g = cx.createLinearGradient(e3.x, e3.y - e3.ry - H * 0.35, e3.x, e3.y); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(255,255,255,0.22)');
-    cx.beginPath(); cx.moveTo(e3.x - e3.rx * 0.35, Math.max(0, e3.y - e3.ry - H * 0.35)); cx.lineTo(e3.x + e3.rx * 0.35, Math.max(0, e3.y - e3.ry - H * 0.35)); cx.lineTo(e3.x + e3.rx, e3.y); cx.lineTo(e3.x - e3.rx, e3.y); cx.closePath(); cx.moveTo(e3.x + e3.rx, e3.y); cx.ellipse(e3.x, e3.y, e3.rx, e3.ry, 0, 0, Math.PI * 2); cx.fillStyle = g; cx.fill('evenodd');
-    cx.beginPath(); cx.ellipse(e3.x, e3.y, e3.rx, e3.ry, 0, 0, Math.PI * 2); cx.fillStyle = 'rgba(255,255,255,0.12)'; cx.fill(); cx.lineWidth = lw * 0.9; cx.strokeStyle = t.cor; cx.stroke(); }
+    cx.save(); cx.beginPath(); cx.rect(0, 0, W, H); cx.moveTo(e3.x + e3.rx, e3.y); cx.ellipse(e3.x, e3.y, e3.rx, e3.ry, 0, 0, Math.PI * 2); cx.clip('evenodd');
+    cx.beginPath(); cx.moveTo(e3.x - e3.rx * 0.35, Math.max(0, e3.y - e3.ry - H * 0.35)); cx.lineTo(e3.x + e3.rx * 0.35, Math.max(0, e3.y - e3.ry - H * 0.35)); cx.lineTo(e3.x + e3.rx, e3.y); cx.lineTo(e3.x - e3.rx, e3.y); cx.closePath(); cx.fillStyle = g; cx.fill(); cx.restore();
+    cx.beginPath(); cx.ellipse(e3.x, e3.y, e3.rx, e3.ry, 0, 0, Math.PI * 2); cx.lineWidth = lw * 0.9; cx.strokeStyle = t.cor; cx.stroke(); }
+  else if (t.tipo === 'lupa') { lupa(t, W, H, lw); }
 }
 function elipse(t, W, H) { var a = t.pts[0], b = t.pts[t.pts.length - 1], x0 = Math.min(a.x, b.x) * W, y0 = Math.min(a.y, b.y) * H, w = Math.abs(b.x - a.x) * W, h = Math.abs(b.y - a.y) * H; return { x: x0 + w / 2, y: y0 + h / 2, rx: Math.max(1, w / 2), ry: Math.max(1, h / 2) }; }
 function redesenhar() {
@@ -639,10 +668,11 @@ function redesenhar() {
   if (spots.length) { var W = cv.width, H = cv.height; cx.save(); cx.beginPath(); cx.rect(0, 0, W, H); spots.forEach(function (t) { var e = elipse(t, W, H); cx.moveTo(e.x + e.rx, e.y); cx.ellipse(e.x, e.y, e.rx, e.ry, 0, 0, Math.PI * 2); }); cx.fillStyle = 'rgba(0,0,0,0.55)'; cx.fill('evenodd'); cx.restore(); }
   todos.forEach(traco);
 }
-function limparTela() { tracos = []; atual = null; redesenhar(); }
-cv.addEventListener('pointerdown', function (e) { if (FER === 'cursor') return; cv.setPointerCapture(e.pointerId); atual = { tipo: FER, cor: COR, pts: [pt(e)] }; });
+function limparTela() { tracos = []; atual = null; redesenhar(); desenharFerr(); }
+cv.addEventListener('pointerdown', function (e) { if (FER === 'cursor') return; cv.setPointerCapture(e.pointerId); atual = { tipo: FER, cor: COR, pts: [pt(e)], zoom: FER === 'lupa' ? ZOOM : undefined }; if (FER === 'lupa') garantirLupa(); });
 cv.addEventListener('pointermove', function (e) { if (!atual) return; if (atual.tipo === 'caneta') atual.pts.push(pt(e)); else atual.pts[1] = pt(e); redesenhar(); });
-cv.addEventListener('pointerup', function () { if (atual) { tracos.push(atual); atual = null; redesenhar(); } });
+cv.addEventListener('pointerup', function () { if (atual) { var eraLupa = atual.tipo === 'lupa'; tracos.push(atual); atual = null; redesenhar(); if (eraLupa) { garantirLupa(); desenharFerr(); } } });
+cv.addEventListener('wheel', function (e) { if (FER !== 'lupa') return; e.preventDefault(); e.stopPropagation(); mudarZoom(e.deltaY < 0 ? 0.5 : -0.5); }, { passive: false });
 window.addEventListener('resize', ajustarTela); document.addEventListener('fullscreenchange', function () { setTimeout(ajustarTela, 60); });
 
 // ---------- linha do tempo da linha inteira (tela cheia, com cortes por vídeo) ----------

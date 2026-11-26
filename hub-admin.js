@@ -7,7 +7,7 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function aviso(t, erro) { var a = raiz.querySelector('.ha-aviso'); a.textContent = t; a.style.background = erro ? '#8C1D18' : '#111111'; a.style.display = 'block'; clearTimeout(aviso.t); aviso.t = setTimeout(function () { a.style.display = 'none'; }, 3500); }
   function falha(e) { aviso(B.msg ? B.msg(e) : String(e && e.message || e), true); }
-  var CSS = '.ha{display:flex;flex-direction:column;gap:18px}.ha-tabs{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E2E2E2}' +
+  var CSS = '.ha-lb{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:#555555}.ha{display:flex;flex-direction:column;gap:18px}.ha-tabs{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E2E2E2}' +
     '.ha-tab{font:inherit;font-size:15px;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;padding:12px 10px;cursor:pointer;color:#555555}.ha-tab[aria-selected="true"]{color:#111111;border-bottom-color:#4A79A6}' +
     '.ha-box{background:#FFFFFF;border:1px solid #E2E2E2;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px}' +
     '.ha-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.ha-in{font:inherit;font-size:14px;padding:8px 10px;border:1.5px solid #CCCCCC;border-radius:8px;background:#FFFFFF;min-width:0}' +
@@ -24,7 +24,7 @@
     '.ha-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);color:#FFFFFF;padding:12px 18px;border-radius:10px;font-size:15px;z-index:60;display:none}';
 
   function tabs() {
-    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['emails', 'E-mails'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento'], ['clubes', 'Clubes']];
+    var T = [['cursos', 'Cursos e aulas'], ['hotmart', 'Produtos da Hotmart'], ['acessos', 'Acessos'], ['eventos', 'Notificações da Hotmart'], ['sugestoes', 'Sugestões dos alunos'], ['trilhas', 'Trilhas'], ['filtros', 'Filtros das masterclasses'], ['emails', 'E-mails'], ['almanaque', 'Almanaque de artigos'], ['engajamento', 'Engajamento'], ['clubes', 'Clubes'], ['relatorio', 'Relatório']];
     return '<div class="ha-tabs" role="tablist">' + T.map(function (t) { return '<button type="button" role="tab" class="ha-tab" data-aba="' + t[0] + '" aria-selected="' + (st.aba === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>';
   }
   function desenhar() {
@@ -40,6 +40,46 @@
     if (st.aba === 'filtros') return filtrosMc(c);
     if (st.aba === 'emails') return emails(c);
     if (st.aba === 'clubes') return clubes(c);
+    if (st.aba === 'relatorio') return relatorio(c);
+  }
+
+  // ---------- Relatório do período (PDF) ----------
+  function relatorio(c) {
+    var hoje = new Date(), d2 = function (x) { return x.toLocaleDateString('sv-SE'); };
+    var iniMes = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1), fimMes = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+    st.rel = st.rel || { per: 'mes', lay: 'executivo', ini: d2(iniMes), fim: d2(fimMes) };
+    var r = st.rel;
+    function op(v, t, sub) { return '<label class="ha-chk" style="align-items:flex-start;border:1.5px solid ' + (r.lay === v ? '#4A79A6' : '#DDDDDD') + ';background:' + (r.lay === v ? '#E6EFF8' : '#FFFFFF') + ';border-radius:10px;padding:12px 14px;flex:1 1 220px;cursor:pointer"><input type="radio" name="rel-lay" value="' + v + '" data-rel-lay' + (r.lay === v ? ' checked' : '') + ' style="margin-top:3px"><span><b style="display:block">' + t + '</b><span style="font-size:13px;color:#555555">' + sub + '</span></span></label>'; }
+    c.innerHTML = '<div class="ha-box" style="display:flex;flex-direction:column;gap:16px"><div><b style="font-size:18px">Relatório do EOJHub e da Biblioteca</b><p style="margin:6px 0 0;font-size:14px;color:#555555;line-height:1.5">Contas novas, quem entrou e assistiu, vendas da Hotmart por produto, reembolsos e cancelamentos, aulas e clipes postados, aulas mais assistidas, uso da Biblioteca, chat e pedidos, sempre comparando com o período anterior. Abre pronto para salvar em PDF.</p></div>' +
+      '<div class="ha-row" style="align-items:flex-end"><label class="ha-lb">Período<select class="ha-in" data-rel-per>' +
+      [['mes', 'Mês passado'], ['atual', 'Este mês (até hoje)'], ['7d', 'Últimos 7 dias'], ['30d', 'Últimos 30 dias'], ['custom', 'Escolher as datas']].map(function (o) { return '<option value="' + o[0] + '"' + (r.per === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
+      (r.per === 'custom' ? '<label class="ha-lb">De<input class="ha-in" type="date" data-rel-ini value="' + r.ini + '"></label><label class="ha-lb">Até (inclusive)<input class="ha-in" type="date" data-rel-fim value="' + r.fim + '"></label>' : '') + '</div>' +
+      '<div><b style="font-size:14px">Modelo</b><div class="ha-row" style="margin-top:8px;align-items:stretch">' + op('executivo', '1 · Executivo', 'Cartões com os números principais, destaques e gráficos. 2 páginas.') + op('detalhado', '2 · Detalhado', 'Tabelas por área com período, anterior e variação. Para arquivar.') + op('apresentacao', '3 · Apresentação', 'Uma página por tema, em paisagem. Para mostrar em reunião.') + '</div></div>' +
+      '<div class="ha-row"><button type="button" class="ha-p" data-rel-gerar>Gerar e salvar em PDF</button><button type="button" class="ha-b" data-rel-html>Baixar como arquivo (HTML)</button><span data-rel-msg style="font-size:14px;color:#555555"></span></div>' +
+      '<p style="margin:0;font-size:12px;color:#777777">Visitas ao site não ficam no banco do EOJ (veja no Cloudflare). Na janela que abrir, escolha “Salvar como PDF” como impressora.</p></div>';
+  }
+  function relPeriodo() {
+    var r = st.rel, h = new Date(), ini, fim;
+    var dia0 = function (y, m, d) { return new Date(y, m, d, 0, 0, 0); };
+    if (r.per === 'mes') { ini = dia0(h.getFullYear(), h.getMonth() - 1, 1); fim = dia0(h.getFullYear(), h.getMonth(), 1); }
+    else if (r.per === 'atual') { ini = dia0(h.getFullYear(), h.getMonth(), 1); fim = dia0(h.getFullYear(), h.getMonth(), h.getDate() + 1); }
+    else if (r.per === '7d' || r.per === '30d') { var k = r.per === '7d' ? 7 : 30; fim = dia0(h.getFullYear(), h.getMonth(), h.getDate()); ini = new Date(fim.getTime() - k * 86400000); }
+    else { var a = r.ini.split('-'), b = r.fim.split('-'); ini = dia0(+a[0], +a[1] - 1, +a[2]); fim = dia0(+b[0], +b[1] - 1, +b[2] + 1); }
+    return [ini, fim];
+  }
+  function relCarregarJs() { return window.EOJRel ? Promise.resolve() : new Promise(function (ok2, erro) { var s2 = document.createElement('script'); s2.src = '/relatorio.js?v=' + Date.now(); s2.onload = ok2; s2.onerror = erro; document.head.appendChild(s2); }); }
+  function relGerar(modo) {
+    var p = relPeriodo(), msg = raiz.querySelector('[data-rel-msg]');
+    if (!(p[1] > p[0])) return aviso('Confira as datas do período.', true);
+    var w = modo === 'pdf' ? window.open('', '_blank') : null;
+    if (w) w.document.write('<p style="font-family:sans-serif;padding:30px">Montando o relatório…</p>');
+    if (msg) msg.textContent = 'Calculando…';
+    Promise.all([relCarregarJs(), sb.rpc('relatorio_hub', { ini: p[0].toISOString(), fim: p[1].toISOString() }).then(ok)]).then(function (r) {
+      var html = window.EOJRel.html(r[1], st.rel.lay), nome = 'Relatorio-EOJ-' + st.rel.lay + '-' + p[0].toLocaleDateString('sv-SE') + '.html';
+      if (msg) msg.textContent = '';
+      if (w) { w.document.open(); w.document.write(html.replace('</body>', '<script>window.onload=function(){setTimeout(function(){window.print();},600)};<\/script></body>')); w.document.close(); return; }
+      var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = nome; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    }).catch(function (e) { if (w) w.close(); if (msg) msg.textContent = ''; falha(e); });
   }
 
   // ---------- Cursos ----------
@@ -651,6 +691,7 @@
       return sb.from('cursos').update(d).eq('id', +x.getAttribute('data-salvar-curso')).then(ok).then(function () { aviso('Curso salvo'); return carregarCursos(); }).catch(falha);
     }
     if (st.aba === 'clubes' && cliqueClubes(t)) return;
+    if (st.aba === 'relatorio') { if (t.closest('[data-rel-gerar]')) return relGerar('pdf'); if (t.closest('[data-rel-html]')) return relGerar('html'); }
     if (t.closest('[data-novo-curso]')) {
       var tt = prompt('Nome do novo curso:'); if (!tt) return;
       var slug = tt.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -864,10 +905,14 @@
           var t = e.target;
           if (t.matches('[data-selmod]')) { var mm = raiz.querySelector('[data-mod="' + t.getAttribute('data-selmod') + '"]'); mm.querySelectorAll('[data-selaula]').forEach(function (i) { i.checked = t.checked; }); if (t.checked) { var cm2 = mm.querySelector('[data-corpomod]'); if (cm2 && cm2.hidden) mm.querySelector('[data-togmod]').click(); var rs2 = mm.querySelector('[data-resto]'); if (rs2 && rs2.hidden) mm.querySelector('[data-maisaulas]').click(); } return atualizaSel(); }
           if (t.matches('[data-selaula]')) return atualizaSel();
+          if (t.matches('[data-rel-per]')) { st.rel.per = t.value; return desenhar(); }
+          if (t.matches('[data-rel-lay]')) { st.rel.lay = t.value; return desenhar(); }
+          if (t.matches('[data-rel-ini]')) { st.rel.ini = t.value; return; }
+          if (t.matches('[data-rel-fim]')) { st.rel.fim = t.value; return; }
           if (t.matches('[data-f-mom],[data-f-esc],[data-f-mod-mom],[data-f-mod-esc]')) return salvarFiltro(t);
           if (t.matches('[data-f-sem]')) raiz.querySelectorAll('[data-f-aula]').forEach(function (tr) { tr.style.display = t.checked && tr.getAttribute('data-vazio') === '0' ? 'none' : ''; });
         });
-        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros|emails|clubes)$/.test(location.hash)) st.aba = location.hash.slice(1);
+        if (/^#(sugestoes|eventos|acessos|hotmart|trilhas|engajamento|almanaque|filtros|emails|clubes|relatorio)$/.test(location.hash)) st.aba = location.hash.slice(1);
         return carregarCursos().then(desenhar);
       }).catch(function (e) { raiz.innerHTML = '<p>' + esc(String(e && e.message || e)) + '</p>'; });
     }

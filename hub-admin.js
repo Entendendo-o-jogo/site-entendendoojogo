@@ -163,7 +163,7 @@
       }).join('') + '</ul>' : '<span style="font-size:14px;color:#777777">Nenhum material.</span>') +
         '<div class="ha-row" style="border-top:1px dashed #DDDDDD;padding-top:8px"><input class="ha-in" data-m="titulo" placeholder="Título do material" style="flex:1 1 200px">' +
         '<select class="ha-in" data-m="tipo"><option value="pdf">PDF da aula</option><option value="video">Vídeo de apoio</option><option value="relatorio_coletivo">Relatório coletivo</option><option value="relatorio_individual">Relatório individual</option><option value="artigo">Artigo científico</option><option value="outro">Outro</option></select></div>' +
-        '<div class="ha-row"><input type="file" data-m="arquivo" class="ha-in" style="flex:1 1 220px"><span style="font-size:13px;color:#777777">ou</span><input class="ha-in" data-m="vimeo" placeholder="ID do Vimeo" style="width:120px"><span style="font-size:13px;color:#777777">ou</span><input class="ha-in" data-m="url" placeholder="Link" style="flex:1 1 180px">' +
+        '<div class="ha-row"><input type="file" data-m="arquivo" class="ha-in" style="flex:1 1 220px"><span style="font-size:13px;color:#777777">ou</span><input class="ha-in" data-m="vimeo" placeholder="Link do vídeo ou da pasta do Vimeo" style="flex:1 1 220px"><span style="font-size:13px;color:#777777">ou</span><input class="ha-in" data-m="url" placeholder="Link" style="flex:1 1 180px">' +
         '<button type="button" class="ha-p" data-add-mat="' + aulaId + '">Adicionar material</button></div>';
     }).catch(falha);
   }
@@ -172,6 +172,23 @@
     var titulo = g('titulo').value.trim(), tipo = g('tipo').value, file = g('arquivo').files[0], vimeo = g('vimeo').value.trim(), url = g('url').value.trim();
     if (!titulo) return aviso('Dê um título ao material.', true);
     if (!file && !vimeo && !url) return aviso('Escolha um arquivo, um ID do Vimeo ou um link.', true);
+    // Pasta do Vimeo (no campo do Vimeo ou no de link): vira um material de vídeo para cada vídeo da pasta
+    var pasta = /vimeo\.com\/share\//i.test(vimeo + url) ? null : (vimeo + ' ' + url).match(/vimeo\.com\/.*(?:folders?|projects)\/(\d+)(?![0-9a-z-])/i);
+    if (pasta && !file) {
+      aviso('Buscando os vídeos da pasta do Vimeo…');
+      return sb.functions.invoke('vimeo', { body: { acao: 'pasta', pasta: pasta[1] } }).then(function (r) {
+        if (r.error) throw r.error;
+        var vs = ((r.data && r.data.videos) || []).slice().sort(function (a, b) { return String(a.nome).localeCompare(String(b.nome), 'pt-BR', { numeric: true, sensitivity: 'base' }); });
+        if (!vs.length) throw new Error('Nenhum vídeo nessa pasta (ou a pasta é de outra conta do Vimeo).');
+        var linhas = vs.map(function (v, k) { return { aula_id: aulaId, titulo: vs.length === 1 ? titulo : String(v.nome || ('Vídeo ' + (k + 1))).replace(/\.(mp4|mov|m4v)$/i, ''), tipo: 'video', vimeo_id: String(v.id), vimeo_hash: v.hash || null, ordem: k + 1 }; });
+        return sb.from('materiais').insert(linhas).then(ok).then(function () { aviso(vs.length + (vs.length === 1 ? ' vídeo adicionado' : ' vídeos de apoio adicionados (um card para cada vídeo da pasta)') + '.'); materiais(aulaId); });
+      }).catch(falha);
+    }
+    // Link compartilhado de pasta/showcase (sem número da pasta): abre no Vimeo em outra aba
+    if (vimeo && /vimeo\.com\/(share|showcase|album|user\/[^/]+\/(folder|showcase))/i.test(vimeo)) { url = vimeo; vimeo = ''; }
+    // Link de um vídeo do Vimeo: guarda só o número e o código de privacidade
+    var vHash = null;
+    if (vimeo) { var hv = vimeo.match(/vimeo\.com\/(?:video\/)?\d{6,}\/([0-9a-f]{6,})/i) || vimeo.match(/[?&]h=([0-9a-f]{6,})/i); if (hv) vHash = hv[1]; var mv = vimeo.match(/(\d{6,})/); if (!mv) return aviso('Não reconheci o vídeo do Vimeo. Cole o link do vídeo (ou de uma pasta).', true); vimeo = mv[1]; }
     var p = Promise.resolve(null);
     if (file) {
       var nome = file.name.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-');
@@ -180,7 +197,7 @@
       p = sb.storage.from('materiais').upload(caminho, file, { upsert: false, contentType: file.type || undefined }).then(ok).then(function () { return caminho; });
     }
     p.then(function (caminho) {
-      return sb.from('materiais').insert({ aula_id: aulaId, titulo: titulo, tipo: tipo, arquivo: caminho, vimeo_id: vimeo || null, url: caminho || vimeo ? null : url, tamanho_kb: file ? Math.round(file.size / 1024) : null }).then(ok);
+      return sb.from('materiais').insert({ aula_id: aulaId, titulo: titulo, tipo: tipo, arquivo: caminho, vimeo_id: vimeo || null, vimeo_hash: vHash, url: caminho || vimeo ? null : url, tamanho_kb: file ? Math.round(file.size / 1024) : null }).then(ok);
     }).then(function () { aviso('Material adicionado'); materiais(aulaId); }).catch(falha);
   }
 

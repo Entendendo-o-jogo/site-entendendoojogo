@@ -264,7 +264,7 @@
         '<span class="bv-tx"><span class="bv-tag">' + T[0] + '</span><span class="bv-t">' + T[1] + '</span><span class="bv-d">' + T[2] + '</span></span>' +
         '<button type="button" class="bv-cta">' + T[3] + '</button><button type="button" class="bv-x" aria-label="' + T[4] + '">×</button>';
       document.body.appendChild(el);
-      function ver() { B.tutorial('/media/biblioteca.mp4?v=5', '/media/biblioteca.jpg', T[1]); B.ev('bib_video_barra'); }
+      function ver() { B.tutorial('/media/biblioteca.mp4?v=6', '/media/biblioteca.jpg', T[1]); B.ev('bib_video_barra'); }
       el.querySelector('.bv-img').onclick = ver; el.querySelector('.bv-cta').onclick = ver;
       el.querySelector('.bv-x').onclick = function () { el.classList.remove('on'); try { localStorage.setItem('eojBibVideoFechado', String(Date.now())); } catch (e) {} setTimeout(function () { el.remove(); }, 500); };
       function escolheu() { try { return !!localStorage.getItem('eoj-cookies'); } catch (e) { return true; } }

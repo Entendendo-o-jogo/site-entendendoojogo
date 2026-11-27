@@ -43,7 +43,7 @@
     if (menu && a === dono) { e.preventDefault(); fechar(); return; }
     // o botão "Acessar Biblioteca EOJ" e o item "Biblioteca EOJ" do menu do topo (qualquer idioma)
     var txt = (a.textContent || '').trim(), href = a.getAttribute('href') || '';
-    var doTopo = /\/biblioteca\/acervo$/.test(href) && a.getBoundingClientRect().top < 100;
+    var doTopo = /\/biblioteca\/acervo$/.test(href) && (a.closest('header, nav, [role="navigation"]') || a.getBoundingClientRect().top < 220 || /^(Biblioteca EOJ|Conheça a Biblioteca EOJ|Conoce la Biblioteca EOJ|Discover the EOJ Library)/.test(txt));
     if (ROTULOS.indexOf(txt) < 0 && !doTopo) return;
     e.preventDefault(); abrir(a);
   }, true);

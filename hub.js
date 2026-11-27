@@ -29,6 +29,69 @@
       return c;
     });
   };
+  // Arrastar aulas para mudar a ordem (só admin vê a alça [data-pega]). Um tratador por página.
+  var tratadorArrasto = null;
+  H.aoArrastarAulas = function (fn) { tratadorArrasto = fn; instalarArrasto(); };
+  H.reordenarAulas = function (raiz, ids, movido) {
+    if (!raiz || !raiz.modulos) return Promise.resolve(false);
+    var porId = {}; raiz.modulos.forEach(function (m) { m.aulas.forEach(function (a) { porId[a.id] = a; a._mod = m.id; }); });
+    var mv = porId[movido]; if (!mv) return Promise.resolve(false);
+    var lista = ids.map(function (i) { return porId[i]; }).filter(function (a) { return a && a._mod === mv._mod; });
+    var ords = lista.map(function (a) { return a.ordem; }).sort(function (x, y) { return x - y; });
+    var distintos = ords.every(function (o, k) { return !k || o > ords[k - 1]; });
+    if (!distintos) ords = ords.map(function (o, k) { return (ords[0] || 1) + k; });
+    var mud = [];
+    lista.forEach(function (a, k) { if (a.ordem !== ords[k]) { a.ordem = ords[k]; mud.push(a); } });
+    var o = function (x, y) { return x.ordem - y.ordem || x.id - y.id; };
+    raiz.modulos.forEach(function (m) { m.aulas.sort(o); });
+    if (raiz.tema) raiz.aulas.sort(o); else { raiz.aulas = []; raiz.modulos.forEach(function (m) { m.aulas.forEach(function (x) { raiz.aulas.push(x); }); }); }
+    return mud.length ? H.salvarOrdem(mud).then(function () { return true; }) : Promise.resolve(false);
+  };
+  var arrastoOk = false;
+  function instalarArrasto() {
+    if (arrastoOk) return; arrastoOk = true;
+    var ar = null;
+    function irmaos(li) { return [].slice.call(li.parentNode.children).filter(function (x) { return x.matches && x.matches('li[data-aid]'); }); }
+    function limpar() { if (!ar) return; ar.li.classList.remove('hub-arrastando'); ar.marca.remove(); ar.fant.remove(); document.body.style.cursor = ''; ar = null; }
+    function alvo(y) {
+      var lis = irmaos(ar.li), pos = lis.length, r;
+      for (var i = 0; i < lis.length; i++) { r = lis[i].getBoundingClientRect(); if (y < r.top + r.height / 2) { pos = i; break; } }
+      var ref = lis[Math.min(pos, lis.length - 1)].getBoundingClientRect(), topo = pos < lis.length ? ref.top - 2 : ref.bottom + 1;
+      ar.marca.style.left = ref.left + 'px'; ar.marca.style.width = ref.width + 'px'; ar.marca.style.top = topo + 'px'; ar.pos = pos;
+    }
+    function soltar(li, pos) {
+      var lis = irmaos(li), ids = lis.map(function (x) { return +x.getAttribute('data-aid'); }), de = lis.indexOf(li), id = ids[de];
+      if (pos > de) pos--; if (pos === de || de < 0) return;
+      ids.splice(de, 1); ids.splice(pos, 0, id);
+      if (tratadorArrasto) tratadorArrasto(ids, id);
+    }
+    document.addEventListener('pointerdown', function (e) {
+      var h = e.target.closest && e.target.closest('[data-pega]'); if (!h || e.button) return;
+      var li = h.closest('li[data-aid]'); if (!li) return;
+      e.preventDefault(); e.stopPropagation();
+      var marca = document.createElement('div'); marca.className = 'hub-marca'; document.body.appendChild(marca);
+      var fant = document.createElement('div'); fant.className = 'hub-fantasma'; var t = li.querySelector('a'); fant.textContent = (t ? t.textContent : '').replace(/\s+/g, ' ').trim(); document.body.appendChild(fant);
+      ar = { li: li, marca: marca, fant: fant, pos: null, y0: e.clientY };
+      li.classList.add('hub-arrastando'); document.body.style.cursor = 'grabbing';
+      fant.style.left = (e.clientX + 14) + 'px'; fant.style.top = (e.clientY - 18) + 'px'; alvo(e.clientY);
+    }, true);
+    document.addEventListener('pointermove', function (e) {
+      if (!ar) return; e.preventDefault();
+      ar.fant.style.left = (e.clientX + 14) + 'px'; ar.fant.style.top = (e.clientY - 18) + 'px'; alvo(e.clientY);
+      if (e.clientY < 70) window.scrollBy(0, -14); else if (e.clientY > window.innerHeight - 70) window.scrollBy(0, 14);
+    });
+    document.addEventListener('pointerup', function () { if (!ar) return; var li = ar.li, pos = ar.pos; limpar(); if (pos != null) soltar(li, pos); });
+    document.addEventListener('pointercancel', limpar);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') return limpar();
+      var h = e.target.closest && e.target.closest('[data-pega]'); if (!h || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+      e.preventDefault(); var li = h.closest('li[data-aid]'), lis = irmaos(li), de = lis.indexOf(li), aid = li.getAttribute('data-aid');
+      var pos = e.key === 'ArrowUp' ? de - 1 : de + 2; if (pos < 0 || pos > lis.length) return;
+      soltar(li, pos);
+      setTimeout(function () { var x = document.querySelector('[data-pega="' + aid + '"]'); if (x) x.focus(); }, 120);
+    });
+    document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('[data-pega]')) { e.preventDefault(); e.stopPropagation(); } }, true);
+  }
   H.salvarOrdem = function (aulas) { return Promise.all(aulas.map(function (a) { return sb.from('aulas').update({ ordem: a.ordem }).eq('id', a.id).select('id').then(ok).then(function (r) { if (!r || !r.length) throw new Error('sem permissão para mudar a ordem'); }); })); };
   // Cursos cujos módulos são temas independentes (cada módulo vira um card na área do aluno)
   H.TEMAS = { masterclasses: 1 };

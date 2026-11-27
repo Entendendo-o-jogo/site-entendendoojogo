@@ -83,6 +83,8 @@
   }
 
   // ---------- Cursos ----------
+  // Coleção (Conteúdos gratuitos etc.): aula nova no topo. Curso em sequência: aula nova no fim.
+  function noTopo() { var c = (st.cursos || []).filter(function (x) { return x.id === st.aberto; })[0]; return !!(c && c.formato === 'colecao'); }
   function carregarCursos() { return sb.from('cursos').select('*').order('ordem').order('id').then(ok).then(function (d) { st.cursos = d; }); }
   function listaCursos(c) {
     c.innerHTML = '<div class="ha-box" data-vimeo-box><b style="font-size:18px">Vídeos das aulas no Vimeo</b><p style="margin:0;font-size:14px;color:#555555">Autoriza o domínio entendendoojogo.com.br em todos os vídeos das aulas (necessário uma vez, depois da troca para o /hub). Leva alguns minutos; deixe esta aba aberta.</p><div class="ha-row"><button type="button" class="ha-p" data-liberar-vimeo>Liberar vídeos no site novo</button><span data-vimeo-st style="font-size:14px"></span></div>' +
@@ -134,7 +136,7 @@
         '<p style="margin:10px 0 0;font-size:14px;color:#555555">A aula nova aparece sozinha em “Mais recentes” no /hub e na busca.</p></details>' +
         '<div class="ha-row" style="justify-content:space-between"><b style="font-size:18px">Módulos e aulas</b><button type="button" class="ha-p" data-novo-mod="' + k.id + '">+ Novo módulo</button></div>';
       var CORES = [['#2F6FB5', '#EEF4FB'], ['#2E9E5B', '#EEF8F2'], ['#C77C1E', '#FCF4EA'], ['#7B4FC9', '#F4F0FB'], ['#C8322F', '#FBEFEE'], ['#1E8C99', '#ECF7F8'], ['#8A6D3B', '#F6F2EA']];
-      html += '<p style="margin:0;font-size:14px;color:#555555">Em cada módulo, as aulas aparecem aqui na mesma ordem que o aluno vê. Aula nova entra no topo. Para mudar a ordem, use as setas ↑ ↓ ao lado de cada aula (aqui ou direto na página do curso, na área do aluno).</p>';
+      html += '<p style="margin:0;font-size:14px;color:#555555">Em cada módulo, as aulas aparecem aqui na mesma ordem que o aluno vê. Nos cursos, aula nova entra no fim do módulo; nas coleções (como Conteúdos gratuitos), no topo. Para mudar a ordem, arraste pela alça ⠿ na página do curso (área do aluno) ou use as setas ↑ ↓ aqui.</p>';
       html += mods.map(function (m, mi) {
         var cor = CORES[mi % CORES.length], as = aulas.filter(function (a) { return a.modulo_id === m.id; }).sort(function (x, y) { return x.ordem - y.ordem || y.id - x.id; });
         var VIS = 3, ab = st.modAberto && st.modAberto[m.id], ex = st.modExp && st.modExp[m.id];
@@ -169,7 +171,7 @@
       var jaLa = ids.filter(function (i) { var a = raiz.querySelector('[data-aula="' + i + '"]'); return a && +a.closest('[data-mod]').getAttribute('data-mod') === dest; });
       ids = ids.filter(function (i) { return jaLa.indexOf(i) < 0; }); if (!ids.length) return aviso('As aulas selecionadas já estão nesse módulo.');
       if (!confirm('Mover ' + ids.length + (ids.length === 1 ? ' aula' : ' aulas') + ' para “' + nomeD + '”? Progresso, comentários, índice e filtros vão junto.')) return;
-      var ords = [].map.call(raiz.querySelectorAll('[data-mod="' + dest + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), base = (ords.length ? Math.min.apply(null, ords) : 1) - ids.length - 1;
+      var ords = [].map.call(raiz.querySelectorAll('[data-mod="' + dest + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), base = noTopo() ? (ords.length ? Math.min.apply(null, ords) : 1) - ids.length - 1 : (ords.length ? Math.max.apply(null, ords) : 0);
       st.modAberto = st.modAberto || {}; st.modAberto[dest] = true; st.modExp = st.modExp || {}; st.modExp[dest] = true;
       return Promise.all(ids.map(function (id, k) { return sb.from('aulas').update({ modulo_id: dest, ordem: base + k + 1 }).eq('id', id).then(ok); }))
         .then(function () { aviso(ids.length + ' aula(s) movida(s) para ' + nomeD); }).then(desenhar).catch(falha);
@@ -716,7 +718,7 @@
     }
     if ((x = t.closest('[data-lote]'))) return lote(x.getAttribute('data-lote'));
     if ((x = t.closest('[data-importar]'))) return importarVimeo(+x.getAttribute('data-importar'));
-    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = (ords.length ? Math.min.apply(null, ords) : 1) - 1; st.modExp = st.modExp || {}; st.modExp[mN] = true;
+    if ((x = t.closest('[data-nova-aula]'))) { var ta = prompt('Título da aula:'); if (!ta) return; var mN = +x.getAttribute('data-nova-aula'), ords = [].map.call(raiz.querySelectorAll('[data-mod="' + mN + '"] [data-aula] > .ha-row [data-f="ordem"]'), function (i) { return +i.value || 0; }), prox = noTopo() ? (ords.length ? Math.min.apply(null, ords) : 1) - 1 : (ords.length ? Math.max.apply(null, ords) : 0) + 1; st.modExp = st.modExp || {}; st.modExp[mN] = true;
       return sb.from('aulas').insert({ modulo_id: mN, titulo: ta, ordem: prox, publicado: false }).select('id').single().then(ok).then(function (r) { st.novaAula = r && r.id; }).then(desenhar).catch(falha); }
     if ((x = t.closest('[data-salvar-aula]'))) { var ab = x.closest('[data-aula]'), da = {}; ab.querySelectorAll(':scope > .ha-row [data-f], :scope > [data-f]').forEach(function (i) { var v = i.type === 'checkbox' ? i.checked : (i.value === '' ? null : i.value); if (i.type === 'number' && v != null) v = +v; if (i.getAttribute('data-f') === 'vimeo_id' && v) { var hv = String(v).match(/vimeo\.com\/(?:video\/)?\d{6,}\/([0-9a-f]{6,})/i) || String(v).match(/[?&]h=([0-9a-f]{6,})/i); if (hv) da.vimeo_hash = hv[1]; var mv = String(v).match(/(\d{6,})/); if (mv) { v = mv[1]; i.value = v; } } da[i.getAttribute('data-f')] = v; });
       return sb.from('aulas').update(da).eq('id', +x.getAttribute('data-salvar-aula')).then(ok).then(function () { aviso('Aula salva');
@@ -826,8 +828,9 @@
       if (!sel.length) return;
       var pub = corpo.querySelector('[data-imp-pub]').checked, prep = corpo.querySelector('[data-imp-prep]').checked;
       btn.disabled = true; stt.textContent = 'Criando ' + sel.length + ' aulas…';
-      sb.from('aulas').select('ordem').eq('modulo_id', modId).order('ordem', { ascending: true }).limit(1).then(ok).then(function (r) {
-        var base = (r[0] ? r[0].ordem : 1) - sel.length - 1;
+      var topo = noTopo();
+      sb.from('aulas').select('ordem').eq('modulo_id', modId).order('ordem', { ascending: topo }).limit(1).then(ok).then(function (r) {
+        var base = topo ? (r[0] ? r[0].ordem : 1) - sel.length - 1 : (r[0] ? r[0].ordem : 0);
         var linhas = sel.map(function (v, k) { return { modulo_id: modId, titulo: v.titulo, vimeo_id: v.id, vimeo_hash: v.hash || null, duracao_seg: v.dur || null, ordem: base + k + 1, publicado: pub }; });
         return sb.from('aulas').insert(linhas).select('id, vimeo_id').then(ok);
       }).then(function (novas) {

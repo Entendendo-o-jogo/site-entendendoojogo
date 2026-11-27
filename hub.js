@@ -351,30 +351,42 @@
   var HM = 'https://pay.hotmart.com/T89761885Q?off=';
   var LINK = { basic: HM + 'l30o64an', anual: HM + '4kfotxvj', mensal: HM + 'foqitieg&bid=1704899286192' };
   var VENDA = { 'atuacao-profissional': 'consultoria', 'masterclasses': '' };
-  var css = '.pw-bg{position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.6);display:flex;align-items:center;justify-content:center;padding:16px}' +
-    '.pw{background:#FFFFFF;border-radius:16px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:26px;display:flex;flex-direction:column;gap:16px;font-family:inherit;color:#111111;box-shadow:0 30px 80px rgba(0,0,0,.35)}' +
-    '.pw h2{margin:0;font-size:24px;font-weight:800;line-height:1.15}.pw p{margin:0;font-size:15px;line-height:1.55;color:#444444}' +
-    '.pw-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}' +
-    '.pw-c{border:1.5px solid #E2E2E2;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}.pw-c.dest{border-color:#D4AF37;background:#FFFBEF}' +
-    '.pw-c b{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#4A79A6}.pw-c.dest b{color:#8A6A12}' +
-    '.pw-c .v{font-size:26px;font-weight:800;line-height:1}.pw-c .v small{font-size:13px;font-weight:600;color:#555555}.pw-c span{font-size:14px;line-height:1.45;color:#444444}' +
-    '.pw-c a{margin-top:auto;display:inline-flex;justify-content:center;text-decoration:none;font-weight:700;font-size:15px;padding:12px 14px;border-radius:8px;background:#111111;color:#FFFFFF}' +
-    '.pw-c.dest a{background:#D4AF37;color:#111111}.pw-x{align-self:flex-end;font:inherit;font-size:14px;font-weight:600;background:none;border:0;color:#4A79A6;cursor:pointer;padding:6px 0}';
+  var css = '.pw-bg{position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.7);display:flex;align-items:center;justify-content:center;padding:16px}' +
+    '.pw{position:relative;background:#F5F5F5;border-radius:18px;max-width:820px;width:100%;max-height:92vh;overflow:auto;font-family:Montserrat,"Helvetica Neue",Arial,sans-serif;color:#111111;box-shadow:0 30px 80px rgba(0,0,0,.45)}' +
+    '.pw *{box-sizing:border-box;font-family:inherit}' +
+    '.pw-topo{background:#111111;color:#FFFFFF;padding:28px 30px 26px;border-radius:18px 18px 0 0}' +
+    '.pw-eb{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#A1C4E6}' +
+    '.pw h2{margin:0;font-size:30px;font-weight:800;line-height:1.05;text-transform:uppercase;color:#FFFFFF;padding-right:40px}' +
+    '.pw-topo p{margin:10px 0 0;font-size:15px;line-height:1.5;color:#CCCCCC}.pw-topo strong{color:#FFFFFF}' +
+    '.pw-x{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:99px;border:1px solid #333333;background:#1C1C1C;color:#FFFFFF;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}.pw-x:hover{border-color:#A1C4E6}' +
+    '.pw-corpo{padding:22px 30px 26px;display:flex;flex-direction:column;gap:14px}' +
+    '.pw-op{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}' +
+    '.pw-c{background:#FFFFFF;border:1px solid #E2E2E2;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px}' +
+    '.pw-c.dest{background:#111111;border-color:#111111;color:#FFFFFF;position:relative}' +
+    '.pw-c b{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#4A79A6}.pw-c.dest b{color:#A1C4E6}' +
+    '.pw-c .v{font-size:30px;font-weight:800;line-height:1.05;letter-spacing:-.01em}.pw-c .v.t{font-size:20px;text-transform:uppercase}.pw-c .v small{font-size:13px;font-weight:600;color:#777777;letter-spacing:0}.pw-c.dest .v small{color:#BBBBBB}' +
+    '.pw-c span{font-size:14px;line-height:1.5;color:#555555}.pw-c.dest span{color:#CCCCCC}' +
+    '.pw-tag{position:absolute;top:-11px;right:16px;background:#FFD400;color:#111111;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px}' +
+    '.pw-c a{margin-top:auto;display:inline-flex;justify-content:center;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:15px;padding:13px 16px;border-radius:10px;background:#111111;color:#FFFFFF}.pw-c a:hover{background:#333333}' +
+    '.pw-c.dest a{background:#A1C4E6;color:#111111}.pw-c.dest a:hover{background:#B9D4EE}' +
+    '.pw-nota{margin:0;font-size:13px;line-height:1.5;color:#555555;background:#FFFFFF;border:1px solid #E2E2E2;border-left:4px solid #FFD400;border-radius:0;padding:10px 14px}' +
+    '.pw-rod{margin:0;font-size:13px;line-height:1.5;color:#555555}.pw-rod a{color:#3A6894;font-weight:700}' +
+    '@media (max-width:600px){.pw-topo{padding:22px 20px}.pw h2{font-size:23px}.pw-corpo{padding:18px 20px 22px}}';
   function abrir(slug, href) {
     var B = window.EOJB, H = window.EOJH;
     var venda = slug in VENDA ? VENDA[slug] : slug;
     B.sb.from('cursos').select('titulo,plano_basic').eq('slug', slug).maybeSingle().then(function (r) {
       var c = (r && r.data) || { titulo: '', plano_basic: slug === 'masterclasses' };
       var op = [];
-      if (venda) op.push('<div class="pw-c"><b>Curso avulso</b><div class="v" style="font-size:20px">' + esc(c.titulo || 'Este curso') + '</div><span>Acesso por 12 meses a este curso, com certificado.</span><a data-pw="curso" href="/cursos/' + venda + '">Ver preço e comprar</a></div>');
+      if (venda) op.push('<div class="pw-c"><b>Curso avulso</b><div class="v t">' + esc(c.titulo || 'Este curso') + '</div><span>Acesso por 12 meses a este curso, com certificado.</span><a data-pw="curso" href="/cursos/' + venda + '">Ver preço e comprar</a></div>');
       if (c.plano_basic) op.push('<div class="pw-c"><b>Basic</b><div class="v">R$ 19,99<small> /mês</small></div><span>Todas as masterclasses + novas todo mês.</span><a data-pw="basic" href="' + LINK.basic + '">Assinar o Basic</a></div>');
-      op.push('<div class="pw-c dest"><b>Premium · tudo</b><div class="v">R$ 111,90<small> /mês no anual</small></div><span>Todos os cursos, masterclasses e conteúdos novos. Mensal: R$ 159,90.</span><a data-pw="premium" href="' + LINK.anual + '">Assinar o Premium</a></div>');
+      op.push('<div class="pw-c dest"><span class="pw-tag">Mais completo</span><b>EOJHub Premium</b><div class="v">R$ 111,90<small> /mês no anual</small></div><span>Todos os cursos, masterclasses e conteúdos novos. Mensal: R$ 159,90.</span><a data-pw="premium" href="' + LINK.anual + '">Assinar o Premium →</a></div>');
       var bg = document.createElement('div'); bg.className = 'pw-bg'; bg.setAttribute('role', 'dialog'); bg.setAttribute('aria-modal', 'true'); bg.setAttribute('aria-labelledby', 'pw-t');
-      bg.innerHTML = '<style>' + css + '</style><div class="pw"><button type="button" class="pw-x" data-pw-x>Fechar ✕</button>' +
-        '<h2 id="pw-t">Este conteúdo não está no seu plano</h2><p>' + (c.titulo ? 'Ele faz parte de <strong>' + esc(c.titulo) + '</strong>. ' : '') + 'Escolha como liberar:</p>' +
-        '<div class="pw-op">' + op.join('') + '</div>' +
-        '<p style="font-size:13px;color:#7A4A00;background:#FFF4DC;border-radius:8px;padding:8px 10px">Já é Basic? Depois de assinar o Premium, cancele o Basic na Hotmart (ele não é cancelado sozinho) ou fale com a gente.</p>' +
-        '<p style="font-size:13px;color:#555555">Já comprou? Confira se entrou com o mesmo e-mail da compra na Hotmart. Dúvidas: <a href="https://api.whatsapp.com/send?phone=6282113761580" target="_blank" rel="noopener">fale com a gente no WhatsApp</a> · <a href="/eojhub">comparar os planos</a></p></div>';
+      bg.innerHTML = '<style>' + css + '</style><div class="pw"><button type="button" class="pw-x" data-pw-x aria-label="Fechar">✕</button>' +
+        '<div class="pw-topo"><p class="pw-eb">Conteúdo exclusivo</p><h2 id="pw-t">Este conteúdo não está no seu plano</h2><p>' + (c.titulo ? 'Ele faz parte de <strong>' + esc(c.titulo) + '</strong>. ' : '') + 'Escolha como liberar:</p></div>' +
+        '<div class="pw-corpo"><div class="pw-op">' + op.join('') + '</div>' +
+        '<p class="pw-nota">Já é Basic? Depois de assinar o Premium, cancele o Basic na Hotmart (ele não é cancelado sozinho) ou fale com a gente.</p>' +
+        '<p class="pw-rod">Já comprou? Confira se entrou com o mesmo e-mail da compra na Hotmart. Dúvidas: <a href="https://api.whatsapp.com/send?phone=6282113761580" target="_blank" rel="noopener">fale com a gente no WhatsApp</a> · <a href="/eojhub">comparar os planos</a></p></div></div>';
       document.body.appendChild(bg);
       var x = bg.querySelector('[data-pw-x]'); x.focus();
       function fechar() { bg.remove(); document.removeEventListener('keydown', esc1); }
